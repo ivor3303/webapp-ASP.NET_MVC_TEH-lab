@@ -98,7 +98,7 @@ var sortedByDate = oprema.OrderBy(o => o.DatumNabave).ToList();
 var findOne = oprema.FirstOrDefault(o => o.InventarniBroj == "INV-002");
 var avgMaintenancePrice = oprema.SelectMany(o => o.Odrzavanja ?? new List<Odrzavanje>()).Select(x => x.Cijena).DefaultIfEmpty(0).Average();
 var hasExpensiveMaintenance = oprema.Any(o => o.Odrzavanja.Any(odr => odr.Cijena > 100));
-Console.WriteLine($"\nPostoji li oprema s održavanjem skupljim od 100: {hasExpensiveMaintenance}");
+Console.WriteLine($"\nPostoji li oprema s održavanjem skupljim od 100: {(hasExpensiveMaintenance ? "Da" : "Ne")}");
 
 // Ispis rezultata
 Console.WriteLine("Neispravna oprema:");
