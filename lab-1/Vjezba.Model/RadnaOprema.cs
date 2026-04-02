@@ -15,6 +15,7 @@ namespace Vjezba.Model
 		public Proizvodac Proizvodac { get; set; } = new Proizvodac();
 		public KategorijaOpreme Kategorija { get; set; } = new KategorijaOpreme();
 		public List<Odrzavanje> Odrzavanja { get; set; } = new List<Odrzavanje>();
+		public List<ZaduzenjeOpreme> Zaduzenja { get; set; } = new List<ZaduzenjeOpreme>();
 	}
 }
 

@@ -69,6 +69,26 @@ var oprema = new List<RadnaOprema>
 	}
 };
 
+var zaduzenja = new List<ZaduzenjeOpreme>
+{
+    new ZaduzenjeOpreme
+    {
+        Id = 1,
+        Radnik = radnik1,
+        RadnaOprema = oprema[0],
+        DatumZaduzenja = DateTime.Now.AddMonths(-6),
+        DatumRazduzenja = null
+    },
+    new ZaduzenjeOpreme
+    {
+        Id = 2,
+        Radnik = radnik2,
+        RadnaOprema = oprema[1],
+        DatumZaduzenja = DateTime.Now.AddMonths(-3),
+        DatumRazduzenja = DateTime.Now.AddMonths(-1)
+    }
+};
+
 // LINQ upiti
 var neispravna = oprema.Where(o => o.Status == StatusOpreme.Neispravna).ToList();
 var byProd1 = oprema.Where(o => o.Proizvodac?.Naziv == "Bosch").ToList();
@@ -77,6 +97,8 @@ var maintenanceCounts = oprema.Select(o => new { o.Naziv, Count = o.Odrzavanja?.
 var sortedByDate = oprema.OrderBy(o => o.DatumNabave).ToList();
 var findOne = oprema.FirstOrDefault(o => o.InventarniBroj == "INV-002");
 var avgMaintenancePrice = oprema.SelectMany(o => o.Odrzavanja ?? new List<Odrzavanje>()).Select(x => x.Cijena).DefaultIfEmpty(0).Average();
+var hasExpensiveMaintenance = oprema.Any(o => o.Odrzavanja.Any(odr => odr.Cijena > 100));
+Console.WriteLine($"\nPostoji li oprema s održavanjem skupljim od 100: {hasExpensiveMaintenance}");
 
 // Ispis rezultata
 Console.WriteLine("Neispravna oprema:");
@@ -99,6 +121,12 @@ Console.WriteLine(findOne != null ? $" - {findOne.Naziv} ({findOne.InventarniBro
 
 Console.WriteLine($"\nProsječna cijena održavanja: {avgMaintenancePrice:C}");
 
+Console.WriteLine("\nZaduzenja opreme:");
+foreach (var z in zaduzenja)
+{
+    Console.WriteLine($" - Radnik: {z.Radnik.Ime} {z.Radnik.Prezime}, Oprema: {z.RadnaOprema.Naziv}, Datum zaduzenja: {z.DatumZaduzenja:d}, Datum razduzenja: {(z.DatumRazduzenja.HasValue ? z.DatumRazduzenja.Value.ToString("d") : "N/A")}");
+}
+
 // Poziv async metode
 await SimulateAsyncWork();
 
@@ -110,4 +138,18 @@ static async Task SimulateAsyncWork()
 	await Task.Delay(500);
 	Console.WriteLine("Async zadatak dovršen.");
 }
+
+static async Task LoadMaintenanceDataAsync(List<RadnaOprema> oprema)
+{
+    Console.WriteLine("\nUčitavanje podataka o održavanju...");
+    await Task.Delay(1000); // Simulacija kašnjenja
+    foreach (var o in oprema)
+    {
+        Console.WriteLine($" - Oprema: {o.Naziv}, Broj održavanja: {o.Odrzavanja.Count}");
+    }
+    Console.WriteLine("Podaci o održavanju učitani.");
+}
+
+// Poziv metode u Main
+await LoadMaintenanceDataAsync(oprema);
 

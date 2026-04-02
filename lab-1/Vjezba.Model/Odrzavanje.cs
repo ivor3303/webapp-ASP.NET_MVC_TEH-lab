@@ -9,7 +9,11 @@ namespace Vjezba.Model
 		public string Opis { get; set; } = string.Empty;
 		public decimal Cijena { get; set; }
 		public Radnik Izvrsio { get; set; } = new Radnik();
-	
+
+		// New properties
+		public TimeSpan Trajanje { get; set; }
+		public RadnaOprema Oprema { get; set; } = new RadnaOprema();
+		public string Napomena { get; set; } = string.Empty;
 	}
 }
 
