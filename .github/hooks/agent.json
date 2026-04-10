@@ -3,13 +3,13 @@
     "UserPromptSubmit": [
       {
         "type": "command",
-        "command": "powershell.exe -ExecutionPolicy Bypass -Command \"$input | Add-Content -Path './lab-1/agent_log.txt'\""
+        "command": "powershell.exe -ExecutionPolicy Bypass -File \"C:\\Users\\ivorz\\webapp-ASP.NET_MVC_TEH-lab\\.github\\hooks\\log-user-prompt.ps1\""
       }
     ],
-    "preToolUse": [
+    "PreToolUse": [
       {
         "type": "command",
-        "command": "powershell.exe -ExecutionPolicy Bypass -Command \"$input | Add-Content -Path './lab-1/agent_log.txt'\""
+        "command": "powershell.exe -ExecutionPolicy Bypass -Command \"`$input | Add-Content -Path 'C:\\Users\\ivorz\\webapp-ASP.NET_MVC_TEH-lab\\lab-1\\agent_log.txt'\""
       }
     ]
   }

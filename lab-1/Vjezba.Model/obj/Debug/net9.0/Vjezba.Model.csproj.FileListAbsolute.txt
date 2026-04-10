@@ -10,3 +10,15 @@ C:\Users\ivorz\webapp-ASP.NET_MVC_TEH-lab\lab1\Vjezba.Model\obj\Debug\net9.0\Vje
 C:\Users\ivorz\webapp-ASP.NET_MVC_TEH-lab\lab1\Vjezba.Model\obj\Debug\net9.0\refint\Vjezba.Model.dll
 C:\Users\ivorz\webapp-ASP.NET_MVC_TEH-lab\lab1\Vjezba.Model\obj\Debug\net9.0\Vjezba.Model.pdb
 C:\Users\ivorz\webapp-ASP.NET_MVC_TEH-lab\lab1\Vjezba.Model\obj\Debug\net9.0\ref\Vjezba.Model.dll
+C:\Users\ivorz\webapp-ASP.NET_MVC_TEH-lab\lab-1\Vjezba.Model\bin\Debug\net9.0\Vjezba.Model.deps.json
+C:\Users\ivorz\webapp-ASP.NET_MVC_TEH-lab\lab-1\Vjezba.Model\bin\Debug\net9.0\Vjezba.Model.dll
+C:\Users\ivorz\webapp-ASP.NET_MVC_TEH-lab\lab-1\Vjezba.Model\bin\Debug\net9.0\Vjezba.Model.pdb
+C:\Users\ivorz\webapp-ASP.NET_MVC_TEH-lab\lab-1\Vjezba.Model\obj\Debug\net9.0\Vjezba.Model.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\ivorz\webapp-ASP.NET_MVC_TEH-lab\lab-1\Vjezba.Model\obj\Debug\net9.0\Vjezba.Model.AssemblyInfoInputs.cache
+C:\Users\ivorz\webapp-ASP.NET_MVC_TEH-lab\lab-1\Vjezba.Model\obj\Debug\net9.0\Vjezba.Model.AssemblyInfo.cs
+C:\Users\ivorz\webapp-ASP.NET_MVC_TEH-lab\lab-1\Vjezba.Model\obj\Debug\net9.0\Vjezba.Model.csproj.CoreCompileInputs.cache
+C:\Users\ivorz\webapp-ASP.NET_MVC_TEH-lab\lab-1\Vjezba.Model\obj\Debug\net9.0\Vjezba.Model.sourcelink.json
+C:\Users\ivorz\webapp-ASP.NET_MVC_TEH-lab\lab-1\Vjezba.Model\obj\Debug\net9.0\Vjezba.Model.dll
+C:\Users\ivorz\webapp-ASP.NET_MVC_TEH-lab\lab-1\Vjezba.Model\obj\Debug\net9.0\refint\Vjezba.Model.dll
+C:\Users\ivorz\webapp-ASP.NET_MVC_TEH-lab\lab-1\Vjezba.Model\obj\Debug\net9.0\Vjezba.Model.pdb
+C:\Users\ivorz\webapp-ASP.NET_MVC_TEH-lab\lab-1\Vjezba.Model\obj\Debug\net9.0\ref\Vjezba.Model.dll

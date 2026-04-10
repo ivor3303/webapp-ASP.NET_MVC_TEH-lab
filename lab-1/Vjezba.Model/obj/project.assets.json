@@ -14,11 +14,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\ivorz\\webapp-ASP.NET_MVC_TEH-lab\\lab1\\Vjezba.Model\\Vjezba.Model.csproj",
+      "projectUniqueName": "C:\\Users\\ivorz\\webapp-ASP.NET_MVC_TEH-lab\\lab-1\\Vjezba.Model\\Vjezba.Model.csproj",
       "projectName": "Vjezba.Model",
-      "projectPath": "C:\\Users\\ivorz\\webapp-ASP.NET_MVC_TEH-lab\\lab1\\Vjezba.Model\\Vjezba.Model.csproj",
+      "projectPath": "C:\\Users\\ivorz\\webapp-ASP.NET_MVC_TEH-lab\\lab-1\\Vjezba.Model\\Vjezba.Model.csproj",
       "packagesPath": "C:\\Users\\ivorz\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\ivorz\\webapp-ASP.NET_MVC_TEH-lab\\lab1\\Vjezba.Model\\obj\\",
+      "outputPath": "C:\\Users\\ivorz\\webapp-ASP.NET_MVC_TEH-lab\\lab-1\\Vjezba.Model\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
