@@ -7,11 +7,25 @@
 <section class="hero-panel">
     <div>
         <p class="eyebrow">INTERNA KONTROLA OPREME</p>
-        <h1>Evidencija odrzavanja radne opreme u zastiti na radu</h1>
+        <h1>Maintenance operativni centar</h1>
         <p>
             Operativna kontrolna ploca za tehnicke timove: status opreme, servisni rizici
             i aktivnosti odrzavanja na jednom mjestu.
         </p>
+        <div class="hero-meta-grid">
+            <article>
+                <span>Aktivne lokacije</span>
+                <strong>@Model.BrojLokacija</strong>
+            </article>
+            <article>
+                <span>Proizvodaci</span>
+                <strong>@Model.BrojProizvodaca</strong>
+            </article>
+            <article>
+                <span>Servisni zahtjevi</span>
+                <strong>@Model.BrojServisnihZahtjeva</strong>
+            </article>
+        </div>
     </div>
     <div class="hero-accent">
         <span>Ukupna oprema</span>
@@ -20,43 +34,52 @@
     </div>
 </section>
 
-<section class="stats-grid">
-    <article class="stat-card">
-        <p>Ukupno opreme</p>
-        <h2>@Model.UkupnoOpreme</h2>
-    </article>
-    <article class="stat-card info">
-        <p>Ispravna oprema</p>
-        <h2>@Model.IspravnaOprema</h2>
-    </article>
-    <article class="stat-card warning">
-        <p>Neispravna oprema</p>
-        <h2>@Model.NeispravnaOprema</h2>
-    </article>
-    <article class="stat-card muted">
-        <p>Otpisana oprema</p>
-        <h2>@Model.OtpisanaOprema</h2>
-    </article>
-    <article class="stat-card info">
-        <p>U servisu</p>
-        <h2>@Model.OpremaUServisu</h2>
-    </article>
-    <article class="stat-card">
-        <p>Radnici</p>
-        <h2>@Model.BrojRadnika</h2>
-    </article>
-    <article class="stat-card">
-        <p>Odrzavanja</p>
-        <h2>@Model.UkupnoOdrzavanja</h2>
-    </article>
-    <article class="stat-card">
-        <p>Servisni zahtjevi</p>
-        <h2>@Model.BrojServisnihZahtjeva</h2>
-    </article>
+<section class="kpi-section detail-panel">
+    <div class="section-heading">
+        <h2>Kljucni pokazatelji</h2>
+        <p>Status opreme i resursa za brzu dnevnu procjenu.</p>
+    </div>
+    <div class="stats-grid">
+        <article class="stat-card accent">
+            <p>Ukupno opreme</p>
+            <h2>@Model.UkupnoOpreme</h2>
+        </article>
+        <article class="stat-card info">
+            <p>Ispravna oprema</p>
+            <h2>@Model.IspravnaOprema</h2>
+        </article>
+        <article class="stat-card warning">
+            <p>Neispravna oprema</p>
+            <h2>@Model.NeispravnaOprema</h2>
+        </article>
+        <article class="stat-card muted">
+            <p>Otpisana oprema</p>
+            <h2>@Model.OtpisanaOprema</h2>
+        </article>
+        <article class="stat-card info">
+            <p>U servisu</p>
+            <h2>@Model.OpremaUServisu</h2>
+        </article>
+        <article class="stat-card">
+            <p>Radnici</p>
+            <h2>@Model.BrojRadnika</h2>
+        </article>
+        <article class="stat-card">
+            <p>Odrzavanja</p>
+            <h2>@Model.UkupnoOdrzavanja</h2>
+        </article>
+        <article class="stat-card">
+            <p>Servisni zahtjevi</p>
+            <h2>@Model.BrojServisnihZahtjeva</h2>
+        </article>
+    </div>
 </section>
 
 <section class="detail-panel">
-    <h2>Brzi ulazi u sekcije</h2>
+    <div class="section-heading">
+        <h2>Brzi ulazi u sekcije</h2>
+        <p>Najcesce koristen pristup operativnim modulima.</p>
+    </div>
     <div class="quick-links-grid">
         <a class="quick-link" asp-controller="RadnaOprema" asp-action="Index">Radna oprema</a>
         <a class="quick-link" asp-controller="Proizvodac" asp-action="Index">Proizvodaci</a>
@@ -71,8 +94,10 @@
 
 <section class="dashboard-split">
     <article class="detail-panel">
-        <h2>Najkriticnija oprema</h2>
-        <p>Oprema s vecim rizikom zbog statusa i servisnih indikatora.</p>
+        <div class="section-heading">
+            <h2>Najkriticnija oprema</h2>
+            <p>Oprema s vecim rizikom zbog statusa i servisnih indikatora.</p>
+        </div>
         <ul class="list-stack">
         @foreach (var item in Model.NajkriticnijaOprema)
         {
@@ -90,8 +115,10 @@
     </article>
 
     <article class="detail-panel">
-        <h2>Nedavna odrzavanja</h2>
-        <p>Zadnjih 5 izvrsenih zahvata.</p>
+        <div class="section-heading">
+            <h2>Nedavna odrzavanja</h2>
+            <p>Zadnjih 5 izvrsenih zahvata.</p>
+        </div>
         <ul class="list-stack">
         @foreach (var item in Model.NedavnaOdrzavanja)
         {
@@ -110,7 +137,10 @@
 </section>
 
 <section class="detail-panel">
-    <h2>Stanje po lokacijama</h2>
+    <div class="section-heading">
+        <h2>Stanje po lokacijama</h2>
+        <p>Usporedba opreme po lokaciji i trenutnom statusu.</p>
+    </div>
     <table class="data-table">
         <thead>
             <tr>

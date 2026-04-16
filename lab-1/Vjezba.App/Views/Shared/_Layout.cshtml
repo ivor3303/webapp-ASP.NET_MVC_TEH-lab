@@ -43,25 +43,39 @@
                 <p class="brand-subtitle">Evidencija radne opreme i servisnih aktivnosti</p>
             </div>
 
-            <p class="nav-section-title">Navigacija sustava</p>
-            <nav class="nav-stack">
-                <a class="@ActiveClass("Home")" asp-controller="Home" asp-action="Index">Home</a>
-                <a class="@ActiveClass("RadnaOprema")" asp-controller="RadnaOprema" asp-action="Index">Radna oprema</a>
-                <a class="@ActiveClass("Proizvodac")" asp-controller="Proizvodac" asp-action="Index">Proizvodaci</a>
-                <a class="@ActiveClass("KategorijaOpreme")" asp-controller="KategorijaOpreme" asp-action="Index">Kategorije</a>
-                <a class="@ActiveClass("Lokacija")" asp-controller="Lokacija" asp-action="Index">Lokacije</a>
-                <a class="@ActiveClass("Odrzavanje")" asp-controller="Odrzavanje" asp-action="Index">Odrzavanja</a>
-                <a class="@ActiveClass("Radnik")" asp-controller="Radnik" asp-action="Index">Radnici</a>
-                <a class="@ActiveClass("ServisniZahtjev")" asp-controller="ServisniZahtjev" asp-action="Index">Servisni zahtjevi</a>
-                <a class="@ActiveClass("ZaduzenjeOpreme")" asp-controller="ZaduzenjeOpreme" asp-action="Index">Zaduzenja opreme</a>
-            </nav>
+            <div class="nav-group">
+                <p class="nav-section-title">Pregled</p>
+                <nav class="nav-stack">
+                    <a class="@ActiveClass("Home")" asp-controller="Home" asp-action="Index">Home</a>
+                </nav>
+            </div>
+
+            <div class="nav-group">
+                <p class="nav-section-title">Operativni moduli</p>
+                <nav class="nav-stack">
+                    <a class="@ActiveClass("RadnaOprema")" asp-controller="RadnaOprema" asp-action="Index">Radna oprema</a>
+                    <a class="@ActiveClass("Proizvodac")" asp-controller="Proizvodac" asp-action="Index">Proizvodaci</a>
+                    <a class="@ActiveClass("KategorijaOpreme")" asp-controller="KategorijaOpreme" asp-action="Index">Kategorije</a>
+                    <a class="@ActiveClass("Lokacija")" asp-controller="Lokacija" asp-action="Index">Lokacije</a>
+                    <a class="@ActiveClass("Odrzavanje")" asp-controller="Odrzavanje" asp-action="Index">Odrzavanja</a>
+                    <a class="@ActiveClass("Radnik")" asp-controller="Radnik" asp-action="Index">Radnici</a>
+                    <a class="@ActiveClass("ServisniZahtjev")" asp-controller="ServisniZahtjev" asp-action="Index">Servisni zahtjevi</a>
+                    <a class="@ActiveClass("ZaduzenjeOpreme")" asp-controller="ZaduzenjeOpreme" asp-action="Index">Zaduzenja opreme</a>
+                </nav>
+            </div>
+
+            <div class="nav-footnote">
+                <p>Sustav aktivan</p>
+                <strong>Interni maintenance dashboard</strong>
+            </div>
         </aside>
 
         <div class="content-area">
             <header class="top-header">
-                <div>
+                <div class="header-heading">
                     <p class="page-kicker">Internal dashboard</p>
                     <h1 class="page-title">@LabelFor(currentController)</h1>
+                    <p class="header-subtitle">Operativni pregled i pracenje statusa radne opreme</p>
                 </div>
                 <div class="status-pill">Live tracking</div>
             </header>
@@ -70,13 +84,13 @@
                 <a asp-controller="Home" asp-action="Index">Home</a>
                 @if (!string.Equals(currentController, "Home", StringComparison.OrdinalIgnoreCase))
                 {
-                    <span>/</span>
+                    <span class="crumb-separator">/</span>
                     <a asp-controller="@currentController" asp-action="Index">@LabelFor(currentController)</a>
                 }
                 @if (!string.Equals(currentAction, "Index", StringComparison.OrdinalIgnoreCase))
                 {
-                    <span>/</span>
-                    <span>@LabelFor(currentAction)</span>
+                    <span class="crumb-separator">/</span>
+                    <span class="crumb-current">@LabelFor(currentAction)</span>
                 }
             </nav>
 
