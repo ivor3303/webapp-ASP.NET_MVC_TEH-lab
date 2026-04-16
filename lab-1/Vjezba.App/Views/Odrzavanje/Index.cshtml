@@ -1,0 +1,38 @@
+@model IEnumerable<Odrzavanje>
+
+@{
+    ViewData["Title"] = "Odrzavanja";
+}
+
+<section>
+    <h1>Evidencija odrzavanja</h1>
+    <p>Svi servisni i preventivni zahvati nad opremom.</p>
+</section>
+
+<table class="data-table">
+    <thead>
+        <tr>
+            <th>Datum</th>
+            <th>Opis</th>
+            <th>Oprema</th>
+            <th>Izvrsio</th>
+            <th>Cijena</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+    @foreach (var item in Model.OrderByDescending(x => x.Datum))
+    {
+        <tr>
+            <td>@item.Datum.ToString("dd.MM.yyyy")</td>
+            <td>@item.Opis</td>
+            <td>@item.Oprema.Naziv</td>
+            <td>@item.Izvrsio.Ime @item.Izvrsio.Prezime</td>
+            <td>@item.Cijena.ToString("0.00") EUR</td>
+            <td>
+                <a asp-controller="Odrzavanje" asp-action="Details" asp-route-id="@item.Id">Detalji</a>
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>

@@ -1,0 +1,143 @@
+@model Vjezba.App.ViewModels.HomeDashboardViewModel
+
+@{
+    ViewData["Title"] = "Landing dashboard";
+}
+
+<section class="hero-panel">
+    <div>
+        <p class="eyebrow">INTERNA KONTROLA OPREME</p>
+        <h1>Evidencija odrzavanja radne opreme u zastiti na radu</h1>
+        <p>
+            Operativna kontrolna ploca za tehnicke timove: status opreme, servisni rizici
+            i aktivnosti odrzavanja na jednom mjestu.
+        </p>
+    </div>
+    <div class="hero-accent">
+        <span>Ukupna oprema</span>
+        <strong>@Model.UkupnoOpreme</strong>
+        <p class="hero-note">@Model.BrojLokacija lokacija u sustavu</p>
+    </div>
+</section>
+
+<section class="stats-grid">
+    <article class="stat-card">
+        <p>Ukupno opreme</p>
+        <h2>@Model.UkupnoOpreme</h2>
+    </article>
+    <article class="stat-card info">
+        <p>Ispravna oprema</p>
+        <h2>@Model.IspravnaOprema</h2>
+    </article>
+    <article class="stat-card warning">
+        <p>Neispravna oprema</p>
+        <h2>@Model.NeispravnaOprema</h2>
+    </article>
+    <article class="stat-card muted">
+        <p>Otpisana oprema</p>
+        <h2>@Model.OtpisanaOprema</h2>
+    </article>
+    <article class="stat-card info">
+        <p>U servisu</p>
+        <h2>@Model.OpremaUServisu</h2>
+    </article>
+    <article class="stat-card">
+        <p>Radnici</p>
+        <h2>@Model.BrojRadnika</h2>
+    </article>
+    <article class="stat-card">
+        <p>Odrzavanja</p>
+        <h2>@Model.UkupnoOdrzavanja</h2>
+    </article>
+    <article class="stat-card">
+        <p>Servisni zahtjevi</p>
+        <h2>@Model.BrojServisnihZahtjeva</h2>
+    </article>
+</section>
+
+<section class="detail-panel">
+    <h2>Brzi ulazi u sekcije</h2>
+    <div class="quick-links-grid">
+        <a class="quick-link" asp-controller="RadnaOprema" asp-action="Index">Radna oprema</a>
+        <a class="quick-link" asp-controller="Proizvodac" asp-action="Index">Proizvodaci</a>
+        <a class="quick-link" asp-controller="KategorijaOpreme" asp-action="Index">Kategorije</a>
+        <a class="quick-link" asp-controller="Lokacija" asp-action="Index">Lokacije</a>
+        <a class="quick-link" asp-controller="Odrzavanje" asp-action="Index">Odrzavanja</a>
+        <a class="quick-link" asp-controller="Radnik" asp-action="Index">Radnici</a>
+        <a class="quick-link" asp-controller="ServisniZahtjev" asp-action="Index">Servisni zahtjevi</a>
+        <a class="quick-link" asp-controller="ZaduzenjeOpreme" asp-action="Index">Zaduzenja opreme</a>
+    </div>
+</section>
+
+<section class="dashboard-split">
+    <article class="detail-panel">
+        <h2>Najkriticnija oprema</h2>
+        <p>Oprema s vecim rizikom zbog statusa i servisnih indikatora.</p>
+        <ul class="list-stack">
+        @foreach (var item in Model.NajkriticnijaOprema)
+        {
+            <li class="list-item">
+                <div class="row-between">
+                    <h3>@item.Naziv</h3>
+                    <span class="severity-badge">@item.Status</span>
+                </div>
+                <p>Inv: @item.InventarniBroj | Lokacija: @item.Lokacija</p>
+                <p>Odrzavanja: @item.BrojOdrzavanja | Otvoreni zahtjevi: @item.OtvorenihZahtjeva</p>
+                <a asp-controller="RadnaOprema" asp-action="Details" asp-route-id="@item.Id">Pogledaj opremu</a>
+            </li>
+        }
+        </ul>
+    </article>
+
+    <article class="detail-panel">
+        <h2>Nedavna odrzavanja</h2>
+        <p>Zadnjih 5 izvrsenih zahvata.</p>
+        <ul class="list-stack">
+        @foreach (var item in Model.NedavnaOdrzavanja)
+        {
+            <li class="list-item">
+                <div class="row-between">
+                    <h3>@item.Opis</h3>
+                    <span class="metric-mini">@item.Datum.ToString("dd.MM.yyyy")</span>
+                </div>
+                <p>Oprema: @item.OpremaNaziv</p>
+                <p>Izvrsio: @item.Izvrsio | Cijena: @item.Cijena.ToString("0.00") EUR</p>
+                <a asp-controller="Odrzavanje" asp-action="Details" asp-route-id="@item.Id">Detalji odrzavanja</a>
+            </li>
+        }
+        </ul>
+    </article>
+</section>
+
+<section class="detail-panel">
+    <h2>Stanje po lokacijama</h2>
+    <table class="data-table">
+        <thead>
+            <tr>
+                <th>Lokacija</th>
+                <th>Ukupno</th>
+                <th>Ispravna</th>
+                <th>Neispravna</th>
+                <th>Otpisana</th>
+                <th>U servisu</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+        @foreach (var lokacija in Model.StanjePoLokacijama)
+        {
+            <tr>
+                <td>@lokacija.NazivLokacije</td>
+                <td>@lokacija.Ukupno</td>
+                <td>@lokacija.Ispravna</td>
+                <td>@lokacija.Neispravna</td>
+                <td>@lokacija.Otpisana</td>
+                <td>@lokacija.UServisu</td>
+                <td>
+                    <a asp-controller="Lokacija" asp-action="Details" asp-route-id="@lokacija.Id">Detalji</a>
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
+</section>

@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="hr">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - TEH Safety Maintenance Portal</title>
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+</head>
+<body>
+@{
+    var currentController = (string?)ViewContext.RouteData.Values["controller"] ?? "Home";
+    var currentAction = (string?)ViewContext.RouteData.Values["action"] ?? "Index";
+
+    string LabelFor(string value)
+    {
+        return value switch
+        {
+            "Home" => "Home",
+            "RadnaOprema" => "Radna oprema",
+            "Proizvodac" => "Proizvodaci",
+            "KategorijaOpreme" => "Kategorije",
+            "Lokacija" => "Lokacije",
+            "Odrzavanje" => "Odrzavanja",
+            "Radnik" => "Radnici",
+            "ServisniZahtjev" => "Servisni zahtjevi",
+            "ZaduzenjeOpreme" => "Zaduzenja opreme",
+            "Index" => "Pregled",
+            "Details" => "Detalji",
+            _ => value
+        };
+    }
+
+    string ActiveClass(string controller) => string.Equals(currentController, controller, StringComparison.OrdinalIgnoreCase)
+        ? "nav-item active"
+        : "nav-item";
+}
+
+    <div class="app-shell">
+        <aside class="side-nav">
+            <div class="brand-block">
+                <p class="brand-kicker">TEH LAB</p>
+                <a class="brand" asp-controller="Home" asp-action="Index">Safety Maintenance Portal</a>
+                <p class="brand-subtitle">Evidencija radne opreme i servisnih aktivnosti</p>
+            </div>
+
+            <nav class="nav-stack">
+                <a class="@ActiveClass("Home")" asp-controller="Home" asp-action="Index">Home</a>
+                <a class="@ActiveClass("RadnaOprema")" asp-controller="RadnaOprema" asp-action="Index">Radna oprema</a>
+                <a class="@ActiveClass("Proizvodac")" asp-controller="Proizvodac" asp-action="Index">Proizvodaci</a>
+                <a class="@ActiveClass("KategorijaOpreme")" asp-controller="KategorijaOpreme" asp-action="Index">Kategorije</a>
+                <a class="@ActiveClass("Lokacija")" asp-controller="Lokacija" asp-action="Index">Lokacije</a>
+                <a class="@ActiveClass("Odrzavanje")" asp-controller="Odrzavanje" asp-action="Index">Odrzavanja</a>
+                <a class="@ActiveClass("Radnik")" asp-controller="Radnik" asp-action="Index">Radnici</a>
+                <a class="@ActiveClass("ServisniZahtjev")" asp-controller="ServisniZahtjev" asp-action="Index">Servisni zahtjevi</a>
+                <a class="@ActiveClass("ZaduzenjeOpreme")" asp-controller="ZaduzenjeOpreme" asp-action="Index">Zaduzenja opreme</a>
+            </nav>
+        </aside>
+
+        <div class="content-area">
+            <header class="top-header">
+                <div>
+                    <p class="page-kicker">Internal dashboard</p>
+                    <h1 class="page-title">@LabelFor(currentController)</h1>
+                </div>
+                <div class="status-pill">Live tracking</div>
+            </header>
+
+            <nav class="breadcrumbs" aria-label="Breadcrumb">
+                <a asp-controller="Home" asp-action="Index">Home</a>
+                @if (!string.Equals(currentController, "Home", StringComparison.OrdinalIgnoreCase))
+                {
+                    <span>/</span>
+                    <a asp-controller="@currentController" asp-action="Index">@LabelFor(currentController)</a>
+                }
+                @if (!string.Equals(currentAction, "Index", StringComparison.OrdinalIgnoreCase))
+                {
+                    <span>/</span>
+                    <span>@LabelFor(currentAction)</span>
+                }
+            </nav>
+
+            <main class="page-content">
+                @RenderBody()
+            </main>
+
+            <footer class="app-footer">
+                <p>TEH Safety Maintenance Portal</p>
+                <p>Evidencija odrzavanja radne opreme u zastiti na radu</p>
+            </footer>
+        </div>
+    </div>
+</body>
+</html>

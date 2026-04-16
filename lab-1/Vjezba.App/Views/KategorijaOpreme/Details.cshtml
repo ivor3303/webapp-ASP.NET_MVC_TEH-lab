@@ -1,0 +1,15 @@
+@model KategorijaOpreme
+
+@{
+    ViewData["Title"] = "Detalji kategorije";
+}
+
+<section class="detail-panel">
+    <h1>@Model.Naziv</h1>
+    <p><strong>ID:</strong> @Model.Id</p>
+    <p><strong>Opis:</strong> @Model.Opis</p>
+</section>
+
+<p>
+    <a asp-controller="KategorijaOpreme" asp-action="Index">Povratak na popis kategorija</a>
+</p>

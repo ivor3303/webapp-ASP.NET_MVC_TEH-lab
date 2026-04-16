@@ -1,0 +1,23 @@
+@model IEnumerable<ServisniZahtjev>
+
+@{
+    ViewData["Title"] = "Servisni zahtjevi";
+}
+
+<section>
+    <h1>Servisni zahtjevi</h1>
+    <p>Prijave kvarova i servisnih potreba za opremu.</p>
+</section>
+
+<div class="list-stack">
+@foreach (var item in Model.OrderByDescending(x => x.DatumPrijave))
+{
+    <article class="list-item">
+        <h2>Zahtjev #@item.Id</h2>
+        <p><strong>Datum prijave:</strong> @item.DatumPrijave.ToString("dd.MM.yyyy")</p>
+        <p><strong>Oprema:</strong> @item.Oprema.Naziv</p>
+        <p><strong>Hitno:</strong> @(item.Hitno ? "Da" : "Ne")</p>
+        <a asp-controller="ServisniZahtjev" asp-action="Details" asp-route-id="@item.Id">Detalji zahtjeva</a>
+    </article>
+}
+</div>

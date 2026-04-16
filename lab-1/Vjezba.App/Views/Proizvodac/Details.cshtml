@@ -1,0 +1,45 @@
+@model Vjezba.App.ViewModels.ProizvodacDetailsViewModel
+
+@{
+    ViewData["Title"] = "Detalji proizvodaca";
+}
+
+<section>
+    <h1>@Model.Proizvodac.Naziv</h1>
+    <p>Detalji proizvodaca i pripadajuce opreme.</p>
+</section>
+
+<section class="detail-panel">
+    <h2>Podaci proizvodaca</h2>
+    <ul>
+        <li><strong>ID:</strong> @Model.Proizvodac.Id</li>
+        <li><strong>Drzava:</strong> @Model.Proizvodac.Drzava</li>
+        <li><strong>Kontakt:</strong> @Model.Proizvodac.KontaktEmail</li>
+    </ul>
+</section>
+
+<section class="detail-panel">
+    <h2>Pripadajuca oprema</h2>
+@if (Model.Oprema.Any())
+{
+    <ul class="list-stack">
+    @foreach (var oprema in Model.Oprema)
+    {
+        <li class="list-item">
+            <strong>@oprema.Naziv</strong> (@oprema.InventarniBroj)
+            <div>
+                <a asp-controller="RadnaOprema" asp-action="Details" asp-route-id="@oprema.Id">Detalji opreme</a>
+            </div>
+        </li>
+    }
+    </ul>
+}
+else
+{
+    <p>Nema opreme povezane s ovim proizvodacem.</p>
+}
+</section>
+
+<p>
+    <a asp-controller="Proizvodac" asp-action="Index">Povratak na popis proizvodaca</a>
+</p>

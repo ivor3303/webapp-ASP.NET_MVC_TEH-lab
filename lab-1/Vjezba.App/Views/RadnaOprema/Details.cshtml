@@ -1,0 +1,58 @@
+@model RadnaOprema
+
+@{
+    ViewData["Title"] = "Detalji opreme";
+}
+
+<section>
+    <h1>@Model.Naziv</h1>
+    <p>Detaljni prikaz evidencije radne opreme.</p>
+</section>
+
+<section class="details-grid">
+    <article class="detail-panel">
+        <h2>Osnovni podaci</h2>
+        <ul>
+            <li><strong>ID:</strong> @Model.Id</li>
+            <li><strong>Inventarni broj:</strong> @Model.InventarniBroj</li>
+            <li><strong>Serijski broj:</strong> @Model.SerijskiBroj</li>
+            <li><strong>Datum nabave:</strong> @Model.DatumNabave.ToString("dd.MM.yyyy")</li>
+            <li><strong>Status:</strong> @Model.Status</li>
+        </ul>
+    </article>
+
+    <article class="detail-panel">
+        <h2>Povezani podaci</h2>
+        <ul>
+            <li><strong>Proizvodac:</strong> @Model.Proizvodac.Naziv (@Model.Proizvodac.Drzava)</li>
+            <li><strong>Kategorija:</strong> @Model.Kategorija.Naziv</li>
+            <li><strong>Lokacija:</strong> @Model.Lokacija.Naziv, @Model.Lokacija.Adresa</li>
+        </ul>
+    </article>
+</section>
+
+<section class="detail-panel">
+    <h2>Odrzavanja</h2>
+@if (Model.Odrzavanja.Any())
+{
+    <div class="list-stack">
+    @foreach (var odrzavanje in Model.Odrzavanja.OrderByDescending(x => x.Datum))
+    {
+        <article class="list-item">
+            <h3>@odrzavanje.Datum.ToString("dd.MM.yyyy") - @odrzavanje.Opis</h3>
+            <p><strong>Izvrsio:</strong> @odrzavanje.Izvrsio.Ime @odrzavanje.Izvrsio.Prezime</p>
+            <p><strong>Cijena:</strong> @odrzavanje.Cijena.ToString("0.00") EUR</p>
+            <a asp-controller="Odrzavanje" asp-action="Details" asp-route-id="@odrzavanje.Id">Detalji odrzavanja</a>
+        </article>
+    }
+    </div>
+}
+else
+{
+    <p>Nema evidentiranih odrzavanja za ovu opremu.</p>
+}
+</section>
+
+<p>
+    <a asp-controller="RadnaOprema" asp-action="Index">Povratak na popis opreme</a>
+</p>

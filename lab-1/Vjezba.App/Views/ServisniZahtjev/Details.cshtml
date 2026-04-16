@@ -1,0 +1,20 @@
+@model ServisniZahtjev
+
+@{
+    ViewData["Title"] = "Detalji servisnog zahtjeva";
+}
+
+<section class="detail-panel">
+    <h1>Servisni zahtjev #@Model.Id</h1>
+    <ul>
+        <li><strong>Datum prijave:</strong> @Model.DatumPrijave.ToString("dd.MM.yyyy")</li>
+        <li><strong>Opis kvara:</strong> @Model.OpisKvara</li>
+        <li><strong>Hitno:</strong> @(Model.Hitno ? "Da" : "Ne")</li>
+        <li><strong>Oprema:</strong> @Model.Oprema.Naziv (@Model.Oprema.InventarniBroj)</li>
+        <li><strong>Komentar:</strong> @Model.Komentar</li>
+    </ul>
+</section>
+
+<p>
+    <a asp-controller="ServisniZahtjev" asp-action="Index">Povratak na popis zahtjeva</a>
+</p>

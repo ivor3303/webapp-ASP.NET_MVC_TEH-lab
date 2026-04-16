@@ -1,0 +1,21 @@
+@model IEnumerable<KategorijaOpreme>
+
+@{
+    ViewData["Title"] = "Kategorije opreme";
+}
+
+<section>
+    <h1>Kategorije opreme</h1>
+    <p>Vrste opreme koje se koriste u zastiti na radu.</p>
+</section>
+
+<div class="list-stack">
+@foreach (var item in Model)
+{
+    <article class="list-item">
+        <h2>@item.Naziv</h2>
+        <p>@item.Opis</p>
+        <a asp-controller="KategorijaOpreme" asp-action="Details" asp-route-id="@item.Id">Detalji kategorije</a>
+    </article>
+}
+</div>

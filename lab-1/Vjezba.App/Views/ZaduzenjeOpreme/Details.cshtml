@@ -1,0 +1,19 @@
+@model ZaduzenjeOpreme
+
+@{
+    ViewData["Title"] = "Detalji zaduzenja";
+}
+
+<section class="detail-panel">
+    <h1>Zaduzenje #@Model.Id</h1>
+    <ul>
+        <li><strong>Radnik:</strong> @Model.Radnik.Ime @Model.Radnik.Prezime</li>
+        <li><strong>Oprema:</strong> @Model.RadnaOprema.Naziv (@Model.RadnaOprema.InventarniBroj)</li>
+        <li><strong>Datum zaduzenja:</strong> @Model.DatumZaduzenja.ToString("dd.MM.yyyy")</li>
+        <li><strong>Datum razduzenja:</strong> @(Model.DatumRazduzenja.HasValue ? Model.DatumRazduzenja.Value.ToString("dd.MM.yyyy") : "nije")</li>
+    </ul>
+</section>
+
+<p>
+    <a asp-controller="ZaduzenjeOpreme" asp-action="Index">Povratak na popis zaduzenja</a>
+</p>

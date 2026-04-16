@@ -1,0 +1,43 @@
+@model Radnik
+
+@{
+    ViewData["Title"] = "Detalji radnika";
+}
+
+<section class="detail-panel">
+    <h1>@Model.Ime @Model.Prezime</h1>
+    <ul>
+        <li><strong>ID:</strong> @Model.Id</li>
+        <li><strong>Radno mjesto:</strong> @Model.RadnoMjesto</li>
+        <li><strong>Email:</strong> @Model.Email</li>
+        <li><strong>Telefon:</strong> @Model.Telefon</li>
+        <li><strong>Datum zaposlenja:</strong> @Model.DatumZaposlenja.ToString("dd.MM.yyyy")</li>
+        <li><strong>Status:</strong> @(Model.Aktivan ? "Aktivan" : "Neaktivan")</li>
+    </ul>
+</section>
+
+<section class="detail-panel">
+    <h2>Zaduzenja opreme</h2>
+@if (Model.Zaduzenja.Any())
+{
+    <ul class="list-stack">
+    @foreach (var zaduzenje in Model.Zaduzenja.OrderByDescending(x => x.DatumZaduzenja))
+    {
+        <li class="list-item">
+            <strong>@zaduzenje.RadnaOprema.Naziv</strong> (@zaduzenje.RadnaOprema.InventarniBroj)
+            <p>Zaduzena od @zaduzenje.DatumZaduzenja.ToString("dd.MM.yyyy")</p>
+            <p>Razduzena: @(zaduzenje.DatumRazduzenja.HasValue ? zaduzenje.DatumRazduzenja.Value.ToString("dd.MM.yyyy") : "nije")</p>
+            <a asp-controller="ZaduzenjeOpreme" asp-action="Details" asp-route-id="@zaduzenje.Id">Detalji zaduzenja</a>
+        </li>
+    }
+    </ul>
+}
+else
+{
+    <p>Radnik nema evidentiranih zaduzenja.</p>
+}
+</section>
+
+<p>
+    <a asp-controller="Radnik" asp-action="Index">Povratak na popis radnika</a>
+</p>

@@ -1,0 +1,37 @@
+@model Lokacija
+
+@{
+    ViewData["Title"] = "Detalji lokacije";
+}
+
+<section class="detail-panel">
+    <h1>@Model.Naziv</h1>
+    <p><strong>ID:</strong> @Model.Id</p>
+    <p><strong>Adresa:</strong> @Model.Adresa</p>
+</section>
+
+<section class="detail-panel">
+    <h2>Oprema na lokaciji</h2>
+@if (Model.Oprema.Any())
+{
+    <ul class="list-stack">
+    @foreach (var oprema in Model.Oprema)
+    {
+        <li class="list-item">
+            <strong>@oprema.Naziv</strong> (@oprema.InventarniBroj)
+            <div>
+                <a asp-controller="RadnaOprema" asp-action="Details" asp-route-id="@oprema.Id">Detalji opreme</a>
+            </div>
+        </li>
+    }
+    </ul>
+}
+else
+{
+    <p>Na lokaciji trenutno nema evidentirane opreme.</p>
+}
+</section>
+
+<p>
+    <a asp-controller="Lokacija" asp-action="Index">Povratak na popis lokacija</a>
+</p>

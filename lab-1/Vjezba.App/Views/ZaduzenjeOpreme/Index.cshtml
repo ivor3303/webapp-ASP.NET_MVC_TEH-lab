@@ -1,0 +1,36 @@
+@model IEnumerable<ZaduzenjeOpreme>
+
+@{
+    ViewData["Title"] = "Zaduzenja opreme";
+}
+
+<section>
+    <h1>Zaduzenja opreme</h1>
+    <p>Pregled zaduzenja i razduzenja radne opreme.</p>
+</section>
+
+<table class="data-table">
+    <thead>
+        <tr>
+            <th>Radnik</th>
+            <th>Oprema</th>
+            <th>Datum zaduzenja</th>
+            <th>Datum razduzenja</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+    @foreach (var item in Model.OrderByDescending(x => x.DatumZaduzenja))
+    {
+        <tr>
+            <td>@item.Radnik.Ime @item.Radnik.Prezime</td>
+            <td>@item.RadnaOprema.Naziv</td>
+            <td>@item.DatumZaduzenja.ToString("dd.MM.yyyy")</td>
+            <td>@(item.DatumRazduzenja.HasValue ? item.DatumRazduzenja.Value.ToString("dd.MM.yyyy") : "nije")</td>
+            <td>
+                <a asp-controller="ZaduzenjeOpreme" asp-action="Details" asp-route-id="@item.Id">Detalji</a>
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>

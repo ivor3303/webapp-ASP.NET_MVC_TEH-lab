@@ -1,0 +1,23 @@
+@model IEnumerable<RadnaOprema>
+
+@{
+    ViewData["Title"] = "Radna oprema";
+}
+
+<section>
+    <h1>Radna oprema</h1>
+    <p>Pregled sve evidentirane opreme.</p>
+</section>
+
+<section class="panel-grid">
+@foreach (var item in Model)
+{
+    <article class="panel-card">
+        <h2>@item.Naziv</h2>
+        <p><strong>Inventarni broj:</strong> @item.InventarniBroj</p>
+        <p><strong>Status:</strong> @item.Status</p>
+        <p><strong>Lokacija:</strong> @item.Lokacija.Naziv</p>
+        <a asp-controller="RadnaOprema" asp-action="Details" asp-route-id="@item.Id">Detalji opreme</a>
+    </article>
+}
+</section>

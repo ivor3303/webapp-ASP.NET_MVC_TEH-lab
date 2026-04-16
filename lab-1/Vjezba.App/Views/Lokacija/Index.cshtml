@@ -1,0 +1,22 @@
+@model IEnumerable<Lokacija>
+
+@{
+    ViewData["Title"] = "Lokacije";
+}
+
+<section>
+    <h1>Lokacije opreme</h1>
+    <p>Pregled svih lokacija na kojima se oprema koristi ili skladisti.</p>
+</section>
+
+<div class="panel-grid">
+@foreach (var item in Model)
+{
+    <article class="panel-card">
+        <h2>@item.Naziv</h2>
+        <p><strong>Adresa:</strong> @item.Adresa</p>
+        <p><strong>Broj komada opreme:</strong> @item.Oprema.Count</p>
+        <a asp-controller="Lokacija" asp-action="Details" asp-route-id="@item.Id">Detalji lokacije</a>
+    </article>
+}
+</div>

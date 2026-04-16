@@ -1,0 +1,22 @@
+@model Odrzavanje
+
+@{
+    ViewData["Title"] = "Detalji odrzavanja";
+}
+
+<section class="detail-panel">
+    <h1>Odrzavanje #@Model.Id</h1>
+    <ul>
+        <li><strong>Datum:</strong> @Model.Datum.ToString("dd.MM.yyyy")</li>
+        <li><strong>Opis:</strong> @Model.Opis</li>
+        <li><strong>Cijena:</strong> @Model.Cijena.ToString("0.00") EUR</li>
+        <li><strong>Trajanje:</strong> @Model.Trajanje</li>
+        <li><strong>Izvrsio:</strong> @Model.Izvrsio.Ime @Model.Izvrsio.Prezime</li>
+        <li><strong>Oprema:</strong> @Model.Oprema.Naziv (@Model.Oprema.InventarniBroj)</li>
+        <li><strong>Napomena:</strong> @Model.Napomena</li>
+    </ul>
+</section>
+
+<p>
+    <a asp-controller="Odrzavanje" asp-action="Index">Povratak na popis odrzavanja</a>
+</p>
