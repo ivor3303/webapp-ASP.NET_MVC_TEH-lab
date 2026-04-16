@@ -105,6 +105,14 @@ h3 {
     gap: 0.45rem;
 }
 
+.nav-section-title {
+    margin: 0 0 0.5rem;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    font-size: 0.68rem;
+    color: #92a9c2;
+}
+
 .nav-item {
     border: 1px solid transparent;
     border-radius: 12px;
@@ -388,6 +396,42 @@ h3 {
     padding: 0.2rem 0.55rem;
     border: 1px solid #4e6077;
     color: #d8e8f9;
+}
+
+.status-chip {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.16rem 0.5rem;
+    border-radius: 999px;
+    border: 1px solid #4e6077;
+    background: rgba(78, 96, 119, 0.16);
+    color: #d8e8f9;
+    font-size: 0.78rem;
+    font-weight: 600;
+}
+
+.status-chip.status-ok {
+    border-color: rgba(0, 208, 184, 0.45);
+    background: rgba(0, 208, 184, 0.12);
+    color: #9ff6ea;
+}
+
+.status-chip.status-danger {
+    border-color: rgba(255, 107, 107, 0.5);
+    background: rgba(255, 107, 107, 0.14);
+    color: #ffc1c1;
+}
+
+.status-chip.status-muted {
+    border-color: rgba(157, 176, 198, 0.45);
+    background: rgba(157, 176, 198, 0.14);
+    color: #d4dfeb;
+}
+
+.status-chip.status-info {
+    border-color: rgba(110, 163, 212, 0.5);
+    background: rgba(110, 163, 212, 0.16);
+    color: #cce7ff;
 }
 
 .severity-badge {

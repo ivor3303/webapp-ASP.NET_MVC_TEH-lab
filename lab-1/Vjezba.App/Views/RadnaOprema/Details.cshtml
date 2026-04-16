@@ -2,6 +2,15 @@
 
 @{
     ViewData["Title"] = "Detalji opreme";
+
+    var statusClass = Model.Status switch
+    {
+        StatusOpreme.Ispravna => "status-chip status-ok",
+        StatusOpreme.Neispravna => "status-chip status-danger",
+        StatusOpreme.Otpisana => "status-chip status-muted",
+        StatusOpreme.UServisu => "status-chip status-info",
+        _ => "status-chip"
+    };
 }
 
 <section>
@@ -17,7 +26,7 @@
             <li><strong>Inventarni broj:</strong> @Model.InventarniBroj</li>
             <li><strong>Serijski broj:</strong> @Model.SerijskiBroj</li>
             <li><strong>Datum nabave:</strong> @Model.DatumNabave.ToString("dd.MM.yyyy")</li>
-            <li><strong>Status:</strong> @Model.Status</li>
+            <li><strong>Status:</strong> <span class="@statusClass">@Model.Status</span></li>
         </ul>
     </article>
 
