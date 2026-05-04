@@ -45,74 +45,41 @@ public static class MockDataStore
 
         var radnaOprema = new List<RadnaOprema>
         {
-            new()
-            {
-                Id = 1,
-                Naziv = "Busilica-01",
-                InventarniBroj = "INV-001",
-                SerijskiBroj = "SN-ABC-001",
-                DatumNabave = DateTime.Today.AddYears(-4),
-                Status = StatusOpreme.Neispravna,
-                Lokacija = lokacije[0],
-                Proizvodac = proizvodaci[0],
-                Kategorija = kategorije[0]
-            },
-            new()
-            {
-                Id = 2,
-                Naziv = "Kompresor-01",
-                InventarniBroj = "INV-002",
-                SerijskiBroj = "SN-PR-001",
-                DatumNabave = DateTime.Today.AddYears(-1),
-                Status = StatusOpreme.Ispravna,
-                Lokacija = lokacije[1],
-                Proizvodac = proizvodaci[1],
-                Kategorija = kategorije[1]
-            },
-            new()
-            {
-                Id = 3,
-                Naziv = "Brusilica-01",
-                InventarniBroj = "INV-003",
-                SerijskiBroj = "SN-DW-009",
-                DatumNabave = DateTime.Today.AddYears(-5),
-                Status = StatusOpreme.UServisu,
-                Lokacija = lokacije[2],
-                Proizvodac = proizvodaci[2],
-                Kategorija = kategorije[2]
-            }
+            new() { Id = 1, Naziv = "Busilica-01", InventarniBroj = "INV-001", SerijskiBroj = "SN-ABC-001", DatumNabave = DateTime.Today.AddYears(-4), Status = StatusOpreme.Neispravna, LokacijaId = 1, ProizvodacId = 1, KategorijaOpremeId = 1 },
+            new() { Id = 2, Naziv = "Kompresor-01", InventarniBroj = "INV-002", SerijskiBroj = "SN-PR-001", DatumNabave = DateTime.Today.AddYears(-1), Status = StatusOpreme.Ispravna, LokacijaId = 2, ProizvodacId = 2, KategorijaOpremeId = 2 },
+            new() { Id = 3, Naziv = "Brusilica-01", InventarniBroj = "INV-003", SerijskiBroj = "SN-DW-009", DatumNabave = DateTime.Today.AddYears(-5), Status = StatusOpreme.UServisu, LokacijaId = 3, ProizvodacId = 3, KategorijaOpremeId = 3 }
         };
 
         var odrzavanja = new List<Odrzavanje>
         {
-            new() { Id = 1, Datum = DateTime.Today.AddYears(-2), Opis = "Servis motora", Cijena = 150m, Izvrsio = radnici[0], Oprema = radnaOprema[0], Napomena = "Zamijenjen lezaj", Trajanje = TimeSpan.FromHours(2) },
-            new() { Id = 2, Datum = DateTime.Today.AddYears(-1), Opis = "Zamjena vretena", Cijena = 80m, Izvrsio = radnici[1], Oprema = radnaOprema[0], Napomena = "Preventivni zahvat", Trajanje = TimeSpan.FromHours(1.5) },
-            new() { Id = 3, Datum = DateTime.Today.AddMonths(-10), Opis = "Pregled sigurnosnih ventila", Cijena = 60m, Izvrsio = radnici[1], Oprema = radnaOprema[1], Napomena = "Svi ventili ispravni", Trajanje = TimeSpan.FromHours(1) },
-            new() { Id = 4, Datum = DateTime.Today.AddMonths(-2), Opis = "Kalibracija zastitnog stitnika", Cijena = 95m, Izvrsio = radnici[0], Oprema = radnaOprema[2], Napomena = "Pusteno u servisni test", Trajanje = TimeSpan.FromHours(2.5) }
+            new() { Id = 1, Datum = DateTime.Today.AddYears(-2), Opis = "Servis motora", Cijena = 150m, IzvrsioId = 1, OpremaId = 1, Napomena = "Zamijenjen lezaj", TrajanjeTicks = TimeSpan.FromHours(2).Ticks },
+            new() { Id = 2, Datum = DateTime.Today.AddYears(-1), Opis = "Zamjena vretena", Cijena = 80m, IzvrsioId = 2, OpremaId = 1, Napomena = "Preventivni zahvat", TrajanjeTicks = TimeSpan.FromHours(1).Ticks },
+            new() { Id = 3, Datum = DateTime.Today.AddMonths(-10), Opis = "Pregled sigurnosnih ventila", Cijena = 60m, IzvrsioId = 2, OpremaId = 2, Napomena = "Svi ventili ispravni", TrajanjeTicks = TimeSpan.FromHours(1).Ticks },
+            new() { Id = 4, Datum = DateTime.Today.AddMonths(-2), Opis = "Kalibracija zastitnog stitnika", Cijena = 95m, IzvrsioId = 1, OpremaId = 3, Napomena = "Pusteno u servisni test", TrajanjeTicks = TimeSpan.FromHours(2).Ticks }
         };
 
         var servisniZahtjevi = new List<ServisniZahtjev>
         {
-            new() { Id = 1, DatumPrijave = DateTime.Today.AddMonths(-2), OpisKvara = "Povremeni zastoj brusilice", Hitno = true, Oprema = radnaOprema[2], Komentar = "Prijavio Marko Maric" },
-            new() { Id = 2, DatumPrijave = DateTime.Today.AddDays(-20), OpisKvara = "Neuobicajen zvuk kompresora", Hitno = false, Oprema = radnaOprema[1], Komentar = "Planiran redovni pregled" }
+            new() { Id = 1, DatumPrijave = DateTime.Today.AddMonths(-2), OpisKvara = "Povremeni zastoj brusilice", Hitno = true, OpremaId = 3, Komentar = "Prijavio Marko Maric" },
+            new() { Id = 2, DatumPrijave = DateTime.Today.AddDays(-20), OpisKvara = "Neuobicajen zvuk kompresora", Hitno = false, OpremaId = 2, Komentar = "Planiran redovni pregled" }
         };
 
         var zaduzenja = new List<ZaduzenjeOpreme>
         {
-            new() { Id = 1, Radnik = radnici[0], RadnaOprema = radnaOprema[0], DatumZaduzenja = DateTime.Today.AddMonths(-6), DatumRazduzenja = null },
-            new() { Id = 2, Radnik = radnici[1], RadnaOprema = radnaOprema[1], DatumZaduzenja = DateTime.Today.AddMonths(-3), DatumRazduzenja = DateTime.Today.AddMonths(-1) },
-            new() { Id = 3, Radnik = radnici[2], RadnaOprema = radnaOprema[2], DatumZaduzenja = DateTime.Today.AddMonths(-2), DatumRazduzenja = null }
+            new() { Id = 1, RadnikId = 1, RadnaOpremaId = 1, DatumZaduzenja = DateTime.Today.AddMonths(-6), DatumRazduzenja = null },
+            new() { Id = 2, RadnikId = 2, RadnaOpremaId = 2, DatumZaduzenja = DateTime.Today.AddMonths(-3), DatumRazduzenja = DateTime.Today.AddMonths(-1) },
+            new() { Id = 3, RadnikId = 3, RadnaOpremaId = 3, DatumZaduzenja = DateTime.Today.AddMonths(-2), DatumRazduzenja = null }
         };
 
         foreach (var lokacija in lokacije)
         {
-            lokacija.Oprema = radnaOprema.Where(o => o.Lokacija.Id == lokacija.Id).ToList();
+            lokacija.Oprema = radnaOprema.Where(o => o.LokacijaId == lokacija.Id).ToList();
         }
 
         foreach (var oprema in radnaOprema)
         {
-            oprema.Odrzavanja = odrzavanja.Where(o => o.Oprema.Id == oprema.Id).ToList();
-            oprema.Zaduzenja = zaduzenja.Where(z => z.RadnaOprema.Id == oprema.Id).ToList();
+            oprema.Odrzavanja = odrzavanja.Where(o => o.OpremaId == oprema.Id).ToList();
+            oprema.Zaduzenja = zaduzenja.Where(z => z.RadnaOpremaId == oprema.Id).ToList();
         }
 
         foreach (var radnik in radnici)
@@ -120,7 +87,7 @@ public static class MockDataStore
             radnik.ServisniZahtjevi = servisniZahtjevi
                 .Where(sz => sz.Komentar.Contains(radnik.Ime, StringComparison.OrdinalIgnoreCase))
                 .ToList();
-            radnik.Zaduzenja = zaduzenja.Where(z => z.Radnik.Id == radnik.Id).ToList();
+            radnik.Zaduzenja = zaduzenja.Where(z => z.RadnikId == radnik.Id).ToList();
         }
 
         Radnici = radnici;

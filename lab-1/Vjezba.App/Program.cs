@@ -1,8 +1,12 @@
-﻿using Vjezba.App.Repositories;
+﻿using Microsoft.EntityFrameworkCore;
+using Vjezba.App.Data;
+using Vjezba.App.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllersWithViews();
+builder.Services.AddDbContext<VjezbaDbContext>(options =>
+    options.UseSqlite(builder.Configuration.GetConnectionString("VjezbaDbContext")));
 builder.Services.AddSingleton<RadnaOpremaRepository>();
 builder.Services.AddSingleton<ProizvodacRepository>();
 builder.Services.AddSingleton<KategorijaOpremeRepository>();
