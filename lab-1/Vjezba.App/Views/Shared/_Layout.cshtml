@@ -43,22 +43,36 @@
                 <p class="brand-subtitle">Evidencija radne opreme i servisnih aktivnosti</p>
             </div>
 
-            <div class="nav-group">
+            <div class="nav-group nav-group-overview">
                 <p class="nav-section-title">Pregled</p>
                 <nav class="nav-stack">
-                    <a class="@ActiveClass("Home")" asp-controller="Home" asp-action="Index">Home</a>
+                    <a class="@ActiveClass("Home")" asp-controller="Home" asp-action="Index">Dashboard</a>
                 </nav>
             </div>
 
-            <div class="nav-group">
-                <p class="nav-section-title">Operativni moduli</p>
+            <div class="nav-divider"></div>
+
+            <div class="nav-group nav-group-primary">
+                <p class="nav-section-title">Oprema i resursi</p>
                 <nav class="nav-stack">
                     <a class="@ActiveClass("RadnaOprema")" asp-controller="RadnaOprema" asp-action="Index">Radna oprema</a>
-                    <a class="@ActiveClass("Proizvodac")" asp-controller="Proizvodac" asp-action="Index">Proizvodaci</a>
                     <a class="@ActiveClass("KategorijaOpreme")" asp-controller="KategorijaOpreme" asp-action="Index">Kategorije</a>
+                    <a class="@ActiveClass("Proizvodac")" asp-controller="Proizvodac" asp-action="Index">Proizvodaci</a>
+                </nav>
+            </div>
+
+            <div class="nav-group nav-group-secondary">
+                <p class="nav-section-title">Lokacije i timovi</p>
+                <nav class="nav-stack">
                     <a class="@ActiveClass("Lokacija")" asp-controller="Lokacija" asp-action="Index">Lokacije</a>
-                    <a class="@ActiveClass("Odrzavanje")" asp-controller="Odrzavanje" asp-action="Index">Odrzavanja</a>
                     <a class="@ActiveClass("Radnik")" asp-controller="Radnik" asp-action="Index">Radnici</a>
+                </nav>
+            </div>
+
+            <div class="nav-group nav-group-tertiary">
+                <p class="nav-section-title">Odrzavanje i zahtjevi</p>
+                <nav class="nav-stack">
+                    <a class="@ActiveClass("Odrzavanje")" asp-controller="Odrzavanje" asp-action="Index">Odrzavanja</a>
                     <a class="@ActiveClass("ServisniZahtjev")" asp-controller="ServisniZahtjev" asp-action="Index">Servisni zahtjevi</a>
                     <a class="@ActiveClass("ZaduzenjeOpreme")" asp-controller="ZaduzenjeOpreme" asp-action="Index">Zaduzenja opreme</a>
                 </nav>
