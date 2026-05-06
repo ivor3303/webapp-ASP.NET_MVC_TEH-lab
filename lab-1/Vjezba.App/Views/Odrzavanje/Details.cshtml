@@ -10,9 +10,9 @@
         <li><strong>Datum:</strong> @Model.Datum.ToString("dd.MM.yyyy")</li>
         <li><strong>Opis:</strong> @Model.Opis</li>
         <li><strong>Cijena:</strong> @Model.Cijena.ToString("0.00") EUR</li>
-        <li><strong>Trajanje:</strong> @Model.Trajanje</li>
-        <li><strong>Izvrsio:</strong> @Model.Izvrsio.Ime @Model.Izvrsio.Prezime</li>
-        <li><strong>Oprema:</strong> @Model.Oprema.Naziv (@Model.Oprema.InventarniBroj)</li>
+        <li><strong>Trajanje:</strong> @TimeSpan.FromTicks(Model.TrajanjeTicks).ToString(@"hh\:mm")</li>
+        <li><strong>Izvrsio:</strong> @Model.Izvrsio?.Ime @Model.Izvrsio?.Prezime</li>
+        <li><strong>Oprema:</strong> @Model.Oprema?.Naziv (@Model.Oprema?.InventarniBroj)</li>
         <li><strong>Napomena:</strong> @Model.Napomena</li>
     </ul>
 </section>
