@@ -1,13 +1,13 @@
 using Microsoft.AspNetCore.Mvc;
-using Vjezba.App.Repositories;
+using Vjezba.App.Repositories.EF;
 
 namespace Vjezba.App.Controllers;
 
 public class KategorijaOpremeController : Controller
 {
-    private readonly KategorijaOpremeRepository _repository;
+    private readonly EFKategorijaOpremeRepository _repository;
 
-    public KategorijaOpremeController(KategorijaOpremeRepository repository)
+    public KategorijaOpremeController(EFKategorijaOpremeRepository repository)
     {
         _repository = repository;
     }

@@ -1,13 +1,13 @@
 using Microsoft.AspNetCore.Mvc;
-using Vjezba.App.Repositories;
+using Vjezba.App.Repositories.EF;
 
 namespace Vjezba.App.Controllers;
 
 public class ServisniZahtjevController : Controller
 {
-    private readonly ServisniZahtjevRepository _repository;
+    private readonly EFServisniZahtjevRepository _repository;
 
-    public ServisniZahtjevController(ServisniZahtjevRepository repository)
+    public ServisniZahtjevController(EFServisniZahtjevRepository repository)
     {
         _repository = repository;
     }

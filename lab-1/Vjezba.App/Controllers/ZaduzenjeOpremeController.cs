@@ -1,13 +1,13 @@
 using Microsoft.AspNetCore.Mvc;
-using Vjezba.App.Repositories;
+using Vjezba.App.Repositories.EF;
 
 namespace Vjezba.App.Controllers;
 
 public class ZaduzenjeOpremeController : Controller
 {
-    private readonly ZaduzenjeOpremeRepository _repository;
+    private readonly EFZaduzenjeOpremeRepository _repository;
 
-    public ZaduzenjeOpremeController(ZaduzenjeOpremeRepository repository)
+    public ZaduzenjeOpremeController(EFZaduzenjeOpremeRepository repository)
     {
         _repository = repository;
     }

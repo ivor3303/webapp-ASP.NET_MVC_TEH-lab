@@ -1,20 +1,20 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Vjezba.App.Data;
-using Vjezba.App.Repositories;
+using Vjezba.App.Repositories.EF;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllersWithViews();
 builder.Services.AddDbContext<VjezbaDbContext>(options =>
     options.UseSqlite(builder.Configuration.GetConnectionString("VjezbaDbContext")));
-builder.Services.AddSingleton<RadnaOpremaRepository>();
-builder.Services.AddSingleton<ProizvodacRepository>();
-builder.Services.AddSingleton<KategorijaOpremeRepository>();
-builder.Services.AddSingleton<LokacijaRepository>();
-builder.Services.AddSingleton<OdrzavanjeRepository>();
-builder.Services.AddSingleton<RadnikRepository>();
-builder.Services.AddSingleton<ServisniZahtjevRepository>();
-builder.Services.AddSingleton<ZaduzenjeOpremeRepository>();
+builder.Services.AddScoped<EFRadnaOpremaRepository>();
+builder.Services.AddScoped<EFRadnikRepository>();
+builder.Services.AddScoped<EFLokacijaRepository>();
+builder.Services.AddScoped<EFProizvodacRepository>();
+builder.Services.AddScoped<EFKategorijaOpremeRepository>();
+builder.Services.AddScoped<EFOdrzavanjeRepository>();
+builder.Services.AddScoped<EFServisniZahtjevRepository>();
+builder.Services.AddScoped<EFZaduzenjeOpremeRepository>();
 
 var app = builder.Build();
 
@@ -28,6 +28,7 @@ app.UseHttpsRedirection();
 app.UseRouting();
 app.UseStaticFiles();
 
+app.MapControllers();
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");

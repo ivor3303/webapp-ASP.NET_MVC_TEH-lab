@@ -1,5 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
-using Vjezba.App.Repositories;
+using Vjezba.App.Repositories.EF;
 using Vjezba.App.ViewModels;
 using Vjezba.Model;
 
@@ -7,18 +7,18 @@ namespace Vjezba.App.Controllers;
 
 public class HomeController : Controller
 {
-    private readonly RadnaOpremaRepository _radnaOpremaRepository;
-    private readonly RadnikRepository _radnikRepository;
-    private readonly OdrzavanjeRepository _odrzavanjeRepository;
-    private readonly ServisniZahtjevRepository _servisniZahtjevRepository;
-    private readonly LokacijaRepository _lokacijaRepository;
+    private readonly EFRadnaOpremaRepository _radnaOpremaRepository;
+    private readonly EFRadnikRepository _radnikRepository;
+    private readonly EFOdrzavanjeRepository _odrzavanjeRepository;
+    private readonly EFServisniZahtjevRepository _servisniZahtjevRepository;
+    private readonly EFLokacijaRepository _lokacijaRepository;
 
     public HomeController(
-        RadnaOpremaRepository radnaOpremaRepository,
-        RadnikRepository radnikRepository,
-        OdrzavanjeRepository odrzavanjeRepository,
-        ServisniZahtjevRepository servisniZahtjevRepository,
-        LokacijaRepository lokacijaRepository)
+        EFRadnaOpremaRepository radnaOpremaRepository,
+        EFRadnikRepository radnikRepository,
+        EFOdrzavanjeRepository odrzavanjeRepository,
+        EFServisniZahtjevRepository servisniZahtjevRepository,
+        EFLokacijaRepository lokacijaRepository)
     {
         _radnaOpremaRepository = radnaOpremaRepository;
         _radnikRepository = radnikRepository;

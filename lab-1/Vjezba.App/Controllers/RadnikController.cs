@@ -1,23 +1,26 @@
 using Microsoft.AspNetCore.Mvc;
-using Vjezba.App.Repositories;
+using Vjezba.App.Repositories.EF;
 
 namespace Vjezba.App.Controllers;
 
+[Route("radnici")]
 public class RadnikController : Controller
 {
-    private readonly RadnikRepository _repository;
+    private readonly EFRadnikRepository _repository;
 
-    public RadnikController(RadnikRepository repository)
+    public RadnikController(EFRadnikRepository repository)
     {
         _repository = repository;
     }
 
+    [Route("")]
     public IActionResult Index()
     {
         var items = _repository.GetAll();
         return View(items);
     }
 
+    [Route("profil/{id:int}")]
     public IActionResult Details(int id)
     {
         var item = _repository.GetById(id);

@@ -1,15 +1,15 @@
 using Microsoft.AspNetCore.Mvc;
-using Vjezba.App.Repositories;
+using Vjezba.App.Repositories.EF;
 using Vjezba.App.ViewModels;
 
 namespace Vjezba.App.Controllers;
 
 public class ProizvodacController : Controller
 {
-    private readonly ProizvodacRepository _repository;
-    private readonly RadnaOpremaRepository _radnaOpremaRepository;
+    private readonly EFProizvodacRepository _repository;
+    private readonly EFRadnaOpremaRepository _radnaOpremaRepository;
 
-    public ProizvodacController(ProizvodacRepository repository, RadnaOpremaRepository radnaOpremaRepository)
+    public ProizvodacController(EFProizvodacRepository repository, EFRadnaOpremaRepository radnaOpremaRepository)
     {
         _repository = repository;
         _radnaOpremaRepository = radnaOpremaRepository;
