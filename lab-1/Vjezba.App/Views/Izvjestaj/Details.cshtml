@@ -1,0 +1,19 @@
+@model Izvjestaj
+
+@{
+    ViewData["Title"] = "Detalji izvjestaja";
+}
+
+<section class="detail-panel">
+    <h1>@Model.Naziv</h1>
+    <ul>
+        <li><strong>ID:</strong> @Model.Id</li>
+        <li><strong>Datum izrade:</strong> @Model.DatumIzrade.ToString("dd.MM.yyyy")</li>
+        <li><strong>Opis:</strong> @Model.Opis</li>
+        <li><strong>Radnik:</strong> @(Model.Radnik is null ? "-" : $"{Model.Radnik.Ime} {Model.Radnik.Prezime}")</li>
+    </ul>
+</section>
+
+<p>
+    <a asp-controller="Izvjestaj" asp-action="Index">Povratak na popis izvjestaja</a>
+</p>

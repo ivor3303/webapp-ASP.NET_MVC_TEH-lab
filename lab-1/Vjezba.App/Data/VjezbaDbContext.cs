@@ -18,6 +18,7 @@ public class VjezbaDbContext : DbContext
     public DbSet<Odrzavanje> Odrzavanja { get; set; } = default!;
     public DbSet<ServisniZahtjev> ServisniZahtjevi { get; set; } = default!;
     public DbSet<ZaduzenjeOpreme> ZaduzenjaOpreme { get; set; } = default!;
+    public DbSet<Izvjestaj> Izvjestaji { get; set; } = default!;
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -62,5 +63,10 @@ public class VjezbaDbContext : DbContext
             .HasOne(z => z.RadnaOprema)
             .WithMany(o => o.Zaduzenja)
             .HasForeignKey(z => z.RadnaOpremaId);
+
+        modelBuilder.Entity<Izvjestaj>()
+            .HasOne(i => i.Radnik)
+            .WithMany()
+            .HasForeignKey(i => i.RadnikId);
     }
 }

@@ -16,6 +16,7 @@ builder.Services.AddScoped<EFKategorijaOpremeRepository>();
 builder.Services.AddScoped<EFOdrzavanjeRepository>();
 builder.Services.AddScoped<EFServisniZahtjevRepository>();
 builder.Services.AddScoped<EFZaduzenjeOpremeRepository>();
+builder.Services.AddScoped<EFIzvjestajRepository>();
 
 var app = builder.Build();
 

@@ -1,0 +1,38 @@
+@model IEnumerable<Izvjestaj>
+
+@{
+    ViewData["Title"] = "Izvjestaji";
+}
+
+<section>
+    <h1>Izvjestaji</h1>
+    <p>Pregled svih izvjestaja u sustavu.</p>
+</section>
+
+<p>
+    <a asp-controller="Izvjestaj" asp-action="Create">Novi izvjestaj</a>
+</p>
+
+<table class="data-table">
+    <thead>
+        <tr>
+            <th>Naziv</th>
+            <th>Datum izrade</th>
+            <th>Radnik</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>@item.Naziv</td>
+            <td>@item.DatumIzrade.ToString("dd.MM.yyyy")</td>
+            <td>@(item.Radnik is null ? "-" : $"{item.Radnik.Ime} {item.Radnik.Prezime}")</td>
+            <td>
+                <a asp-controller="Izvjestaj" asp-action="Details" asp-route-id="@item.Id">Detalji</a>
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>

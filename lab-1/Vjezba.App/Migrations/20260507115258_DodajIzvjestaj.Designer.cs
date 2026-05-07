@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Vjezba.App.Data;
 
@@ -10,9 +11,11 @@ using Vjezba.App.Data;
 namespace Vjezba.App.Migrations
 {
     [DbContext(typeof(VjezbaDbContext))]
-    partial class VjezbaDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260507115258_DodajIzvjestaj")]
+    partial class DodajIzvjestaj
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "9.0.5");
