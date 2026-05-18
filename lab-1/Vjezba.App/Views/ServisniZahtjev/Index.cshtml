@@ -6,18 +6,150 @@
 
 <section>
     <h1>Servisni zahtjevi</h1>
-    <p>Prijave kvarova i servisnih potreba za opremu.</p>
+    <p>Pregled zapisa servisnih zahtjeva.</p>
+    <p>
+        <a class="action-button action-button-primary" asp-action="Create">Dodaj</a>
+    </p>
+
+    <div class="search-panel">
+        <label class="search-label" for="search-input">Pretraga servisnih zahtjeva</label>
+        <div class="search-toolbar">
+            <div class="search-spinner" id="search-spinner" aria-hidden="true"></div>
+            <span class="search-status" id="search-status" hidden></span>
+        </div>
+        <input id="search-input" class="search-input" type="search" placeholder="Opis kvara, komentar ili oprema" autocomplete="off" />
+    </div>
 </section>
 
-<div class="list-stack">
-@foreach (var item in Model.OrderByDescending(x => x.DatumPrijave))
-{
-    <article class="list-item">
-        <h2>Zahtjev #@item.Id</h2>
-        <p><strong>Datum prijave:</strong> @item.DatumPrijave.ToString("dd.MM.yyyy")</p>
-        <p><strong>Oprema:</strong> @item.Oprema.Naziv</p>
-        <p><strong>Hitno:</strong> @(item.Hitno ? "Da" : "Ne")</p>
-        <a asp-controller="ServisniZahtjev" asp-action="Details" asp-route-id="@item.Id">Detalji zahtjeva</a>
-    </article>
-}
+<div id="results-container" class="results-container">
+    <partial name="_ServisniZahtjevList" model="Model" />
 </div>
+
+<div class="delete-modal-backdrop" id="delete-modal" hidden>
+    <div class="delete-modal" role="dialog" aria-modal="true" aria-labelledby="delete-modal-title">
+        <h2 id="delete-modal-title">Potvrda brisanja</h2>
+        <p>Jeste li sigurni da želite obrisati ovaj servisni zahtjev?</p>
+        <div class="delete-modal-actions">
+            <button type="button" class="action-button action-button-secondary" id="delete-cancel">Odustani</button>
+            <button type="button" class="action-button action-button-danger" id="delete-confirm">Potvrdi brisanje</button>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const searchInput = document.getElementById('search-input');
+            const resultsContainer = document.getElementById('results-container');
+            const searchSpinner = document.getElementById('search-spinner');
+            const searchStatus = document.getElementById('search-status');
+            const deleteModal = document.getElementById('delete-modal');
+            const deleteCancel = document.getElementById('delete-cancel');
+            const deleteConfirm = document.getElementById('delete-confirm');
+
+            if (!searchInput || !resultsContainer || !searchSpinner || !searchStatus || !deleteModal || !deleteCancel || !deleteConfirm) {
+                return;
+            }
+
+            let pendingDeleteForm = null;
+            let debounceTimer = null;
+            let abortController = null;
+
+            const animateCards = () => {
+                const cards = resultsContainer.querySelectorAll('.servisni-zahtjev-card');
+                cards.forEach((card, index) => {
+                    card.style.setProperty('--card-delay', `${index * 70}ms`);
+                    card.classList.remove('is-visible');
+                    void card.offsetWidth;
+                    card.classList.add('is-visible');
+                });
+            };
+
+            const setLoading = (isLoading) => {
+                searchSpinner.classList.toggle('is-visible', isLoading);
+                searchStatus.hidden = !isLoading;
+                searchStatus.textContent = isLoading ? 'Pretraga u tijeku...' : '';
+                searchInput.setAttribute('aria-busy', String(isLoading));
+            };
+
+            const loadResults = async (query) => {
+                if (abortController) {
+                    abortController.abort();
+                }
+
+                abortController = new AbortController();
+                setLoading(true);
+
+                try {
+                    const response = await fetch(`/servisnizahtjevi/search?query=${encodeURIComponent(query)}`, {
+                        method: 'GET',
+                        headers: { 'X-Requested-With': 'XMLHttpRequest' },
+                        signal: abortController.signal
+                    });
+
+                    if (!response.ok) {
+                        return;
+                    }
+
+                    resultsContainer.innerHTML = await response.text();
+                    animateCards();
+                } catch (error) {
+                    if (error.name !== 'AbortError') {
+                        console.error('Search request failed', error);
+                    }
+                } finally {
+                    setLoading(false);
+                }
+            };
+
+            const openDeleteModal = (form) => {
+                pendingDeleteForm = form;
+                deleteModal.hidden = false;
+                deleteModal.classList.add('is-visible');
+                document.body.classList.add('modal-open');
+            };
+
+            const closeDeleteModal = () => {
+                deleteModal.classList.remove('is-visible');
+                document.body.classList.remove('modal-open');
+                window.setTimeout(() => {
+                    deleteModal.hidden = true;
+                    pendingDeleteForm = null;
+                }, 180);
+            };
+
+            const confirmDelete = () => {
+                if (pendingDeleteForm) {
+                    pendingDeleteForm.submit();
+                }
+            };
+
+            searchInput.addEventListener('input', (event) => {
+                const query = event.target.value;
+                window.clearTimeout(debounceTimer);
+                debounceTimer = window.setTimeout(() => loadResults(query), 300);
+            });
+
+            resultsContainer.addEventListener('submit', (event) => {
+                const form = event.target.closest('form[data-delete-form]');
+                if (!form) {
+                    return;
+                }
+
+                event.preventDefault();
+                openDeleteModal(form);
+            });
+
+            deleteCancel.addEventListener('click', closeDeleteModal);
+            deleteConfirm.addEventListener('click', confirmDelete);
+
+            deleteModal.addEventListener('click', (event) => {
+                if (event.target === deleteModal) {
+                    closeDeleteModal();
+                }
+            });
+
+            animateCards();
+        });
+    </script>
+}

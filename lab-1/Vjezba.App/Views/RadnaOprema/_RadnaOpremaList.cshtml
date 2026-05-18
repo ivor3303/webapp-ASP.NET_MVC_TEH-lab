@@ -1,0 +1,38 @@
+@model IEnumerable<RadnaOprema>
+
+@{
+    string StatusClass(StatusOpreme status) => status switch
+    {
+        StatusOpreme.Ispravna => "status-chip status-ok",
+        StatusOpreme.Neispravna => "status-chip status-danger",
+        StatusOpreme.Otpisana => "status-chip status-muted",
+        StatusOpreme.UServisu => "status-chip status-info",
+        _ => "status-chip"
+    };
+}
+
+@if (!Model.Any())
+{
+    <div class="empty-state">Nema rezultata</div>
+}
+else
+{
+    <section class="panel-grid">
+    @foreach (var item in Model)
+    {
+        <article class="panel-card radna-oprema-card">
+            <h2>@item.Naziv</h2>
+            <p><strong>Inventarni broj:</strong> @item.InventarniBroj</p>
+            <p><strong>Status:</strong> <span class="@StatusClass(item.Status)">@item.Status</span></p>
+            <p><strong>Lokacija:</strong> @item.Lokacija?.Naziv</p>
+            <div class="action-group">
+                <a class="action-button action-button-primary" asp-controller="RadnaOprema" asp-action="Details" asp-route-id="@item.Id">Detalji opreme</a>
+                <a class="action-button action-button-secondary" asp-controller="RadnaOprema" asp-action="Edit" asp-route-id="@item.Id">Uredi</a>
+                <form asp-controller="RadnaOprema" asp-action="Delete" asp-route-id="@item.Id" method="post" class="action-form" data-delete-form>
+                    <button type="submit" class="action-button action-button-danger">Obriši</button>
+                </form>
+            </div>
+        </article>
+    }
+    </section>
+}

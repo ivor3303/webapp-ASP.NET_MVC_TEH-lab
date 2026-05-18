@@ -1,0 +1,59 @@
+@model ZaduzenjeOpreme
+
+@{
+    ViewData["Title"] = "Novo zaduženje opreme";
+}
+
+<section class="detail-panel form-panel">
+    <h1>Novo zaduženje opreme</h1>
+
+    <form asp-action="Create" method="post" class="entity-form" autocomplete="off">
+        <div asp-validation-summary="ModelOnly" class="validation-summary"></div>
+
+        <div class="form-field">
+            <label class="form-label" for="RadnikId-autocomplete-text">Radnik</label>
+            <partial name="_AutocompleteDropdown" model='new {
+                FieldName = "RadnikId",
+                Placeholder = "Pretražite radnike...",
+                SearchUrl = "/radnici/autocomplete",
+                ValidationTargetId = "RadnikId-error",
+                ValidationMessage = "Molimo odaberite radnika"
+            }' />
+            <span asp-validation-for="RadnikId" id="RadnikId-error" class="field-error"></span>
+        </div>
+
+        <div class="form-field">
+            <label class="form-label" for="RadnaOpremaId-autocomplete-text">Radna oprema</label>
+            <partial name="_AutocompleteDropdown" model='new {
+                FieldName = "RadnaOpremaId",
+                Placeholder = "Pretražite opremu...",
+                SearchUrl = "/oprema/autocomplete",
+                ValidationTargetId = "RadnaOpremaId-error",
+                ValidationMessage = "Molimo odaberite radnu opremu"
+            }' />
+            <span asp-validation-for="RadnaOpremaId" id="RadnaOpremaId-error" class="field-error"></span>
+        </div>
+
+        <div class="form-field">
+            <partial name="_DatePicker" model='new {
+                FieldName = "DatumZaduzenja",
+                Label = "Datum zaduženja",
+                Value = (DateTime?)null,
+                Placeholder = "Odaberite datum..."
+            }' />
+        </div>
+
+        <div class="form-field">
+            <partial name="_DatePicker" model='new {
+                FieldName = "DatumRazduzenja",
+                Label = "Datum razduženja",
+                Value = (DateTime?)null,
+                Placeholder = "Odaberite datum..."
+            }' />
+        </div>
+
+        <div class="form-actions">
+            <button type="submit" class="action-button action-button-primary">Spremi</button>
+        </div>
+    </form>
+</section>

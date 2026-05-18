@@ -1,0 +1,99 @@
+@model Radnik
+
+@{
+    ViewData["Title"] = "Novi radnik";
+}
+
+<section class="detail-panel form-panel">
+    <h1>Novi radnik</h1>
+
+    <form asp-action="Create" method="post" class="entity-form" autocomplete="off">
+        <div asp-validation-summary="ModelOnly" class="validation-summary"></div>
+
+        <div class="form-field">
+            <label class="form-label" for="Ime">Ime</label>
+            <input asp-for="Ime" class="form-input" autocomplete="off" />
+            <span asp-validation-for="Ime" class="field-error"></span>
+        </div>
+
+        <div class="form-field">
+            <label class="form-label" for="Prezime">Prezime</label>
+            <input asp-for="Prezime" class="form-input" autocomplete="off" />
+            <span asp-validation-for="Prezime" class="field-error"></span>
+        </div>
+
+        <div class="form-field">
+            <label class="form-label" for="RadnoMjesto">Radno mjesto</label>
+            <input asp-for="RadnoMjesto" class="form-input" autocomplete="off" />
+            <span asp-validation-for="RadnoMjesto" class="field-error"></span>
+        </div>
+
+        <div class="form-field">
+            <label class="form-label" for="Email">Email</label>
+            <input asp-for="Email" class="form-input" autocomplete="off" />
+            <span asp-validation-for="Email" class="field-error"></span>
+        </div>
+
+        <div class="form-field">
+            <label class="form-label" for="Telefon">Telefon</label>
+            <input asp-for="Telefon" class="form-input" autocomplete="off" />
+            <span asp-validation-for="Telefon" class="field-error"></span>
+        </div>
+
+        <div class="form-field">
+            <partial name="_DatePicker" model='new {
+                FieldName = "DatumZaposlenja",
+                Label = "Datum zaposlenja",
+                Value = (DateTime?)null,
+                Placeholder = "Odaberite datum..."
+            }' />
+        </div>
+
+        <div class="form-field status-selector-field">
+            <span class="form-label">Aktivan</span>
+            <input asp-for="Aktivan" type="hidden" id="Aktivan" value="true" />
+            <div class="status-selector" data-boolean-selector data-target="#Aktivan" data-default="true">
+                <button type="button" class="status-selector-button status-selector-button-true is-active" data-value="true">Aktivan</button>
+                <button type="button" class="status-selector-button status-selector-button-false" data-value="false">Neaktivan</button>
+            </div>
+            <span asp-validation-for="Aktivan" class="field-error"></span>
+        </div>
+
+        <div class="form-actions">
+            <button type="submit" class="action-button action-button-primary">Spremi</button>
+        </div>
+    </form>
+</section>
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('[data-boolean-selector]').forEach((selector) => {
+                const targetSelector = selector.getAttribute('data-target');
+                const hiddenInput = targetSelector ? document.querySelector(targetSelector) : null;
+                const buttons = Array.from(selector.querySelectorAll('[data-value]'));
+
+                if (!hiddenInput || buttons.length === 0) {
+                    return;
+                }
+
+                const syncState = (value) => {
+                    hiddenInput.value = value ? 'true' : 'false';
+                    buttons.forEach((button) => {
+                        const isActive = button.getAttribute('data-value') === String(value);
+                        button.classList.toggle('is-active', isActive);
+                        button.setAttribute('aria-pressed', String(isActive));
+                    });
+                };
+
+                buttons.forEach((button) => {
+                    button.addEventListener('click', () => {
+                        syncState(button.getAttribute('data-value') === 'true');
+                    });
+                });
+
+                syncState(hiddenInput.value === 'true' || selector.getAttribute('data-default') === 'true');
+            });
+        });
+    </script>
+}

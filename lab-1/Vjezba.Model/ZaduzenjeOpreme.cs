@@ -17,5 +17,7 @@ namespace Vjezba.Model
         public DateTime DatumZaduzenja { get; set; }
 
         public DateTime? DatumRazduzenja { get; set; }
+
+        public DateTime? DeletedAt { get; set; }
     }
 }

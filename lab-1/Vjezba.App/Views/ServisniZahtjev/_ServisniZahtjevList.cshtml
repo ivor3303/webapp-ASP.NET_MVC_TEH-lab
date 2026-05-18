@@ -1,0 +1,28 @@
+@model IEnumerable<ServisniZahtjev>
+
+@if (!Model.Any())
+{
+    <div class="empty-state">Nema rezultata</div>
+}
+else
+{
+    <section class="panel-grid">
+        @foreach (var item in Model)
+        {
+            <article class="panel-card servisni-zahtjev-card">
+                <h2>@item.DatumPrijave.ToString("dd.MM.yyyy")</h2>
+                <p><strong>Oprema:</strong> @item.Oprema?.Naziv</p>
+                <p><strong>Opis kvara:</strong> @item.OpisKvara</p>
+                <p><strong>Hitno:</strong> @(item.Hitno ? "Da" : "Ne")</p>
+                <p><strong>Komentar:</strong> @item.Komentar</p>
+                <div class="action-group">
+                    <a class="action-button action-button-primary" asp-action="Details" asp-route-id="@item.Id">Detalji</a>
+                    <a class="action-button action-button-secondary" asp-action="Edit" asp-route-id="@item.Id">Uredi</a>
+                    <form asp-action="Delete" asp-route-id="@item.Id" method="post" class="action-form" data-delete-form>
+                        <button type="submit" class="action-button action-button-danger">Obriši</button>
+                    </form>
+                </div>
+            </article>
+        }
+    </section>
+}

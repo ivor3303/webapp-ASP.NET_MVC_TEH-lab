@@ -1,3 +1,4 @@
+using System;
 using Vjezba.App.Data;
 using Vjezba.Model;
 
@@ -14,11 +15,37 @@ public class EFKategorijaOpremeRepository
 
     public IReadOnlyList<KategorijaOpreme> GetAll()
     {
-        return _context.KategorijeOpreme.ToList();
+        return _context.KategorijeOpreme
+            .Where(x => x.DeletedAt == null)
+            .ToList();
     }
 
     public KategorijaOpreme? GetById(int id)
     {
-        return _context.KategorijeOpreme.FirstOrDefault(x => x.Id == id);
+        return _context.KategorijeOpreme.FirstOrDefault(x => x.Id == id && x.DeletedAt == null);
+    }
+
+    public void Create(KategorijaOpreme entity)
+    {
+        _context.KategorijeOpreme.Add(entity);
+        _context.SaveChanges();
+    }
+
+    public void Update(KategorijaOpreme entity)
+    {
+        _context.KategorijeOpreme.Update(entity);
+        _context.SaveChanges();
+    }
+
+    public void Delete(int id)
+    {
+        var entity = _context.KategorijeOpreme.FirstOrDefault(x => x.Id == id && x.DeletedAt == null);
+        if (entity is null)
+        {
+            return;
+        }
+
+        entity.DeletedAt = DateTime.UtcNow;
+        _context.SaveChanges();
     }
 }

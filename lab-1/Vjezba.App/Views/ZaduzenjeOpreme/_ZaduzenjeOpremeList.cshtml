@@ -1,0 +1,27 @@
+@model IEnumerable<ZaduzenjeOpreme>
+
+@if (!Model.Any())
+{
+    <div class="empty-state">Nema rezultata</div>
+}
+else
+{
+    <section class="panel-grid">
+        @foreach (var item in Model)
+        {
+            <article class="panel-card zaduzenje-opreme-card">
+                <h2>@item.DatumZaduzenja.ToString("dd.MM.yyyy")</h2>
+                <p><strong>Radnik:</strong> @item.Radnik is null ? string.Empty : $"{item.Radnik.Ime} {item.Radnik.Prezime}"</p>
+                <p><strong>Oprema:</strong> @item.RadnaOprema?.Naziv</p>
+                <p><strong>Razduženo:</strong> @(item.DatumRazduzenja.HasValue ? item.DatumRazduzenja.Value.ToString("dd.MM.yyyy") : "Nije razduženo")</p>
+                <div class="action-group">
+                    <a class="action-button action-button-primary" asp-action="Details" asp-route-id="@item.Id">Detalji</a>
+                    <a class="action-button action-button-secondary" asp-action="Edit" asp-route-id="@item.Id">Uredi</a>
+                    <form asp-action="Delete" asp-route-id="@item.Id" method="post" class="action-form" data-delete-form>
+                        <button type="submit" class="action-button action-button-danger">Obriši</button>
+                    </form>
+                </div>
+            </article>
+        }
+    </section>
+}

@@ -16,6 +16,7 @@ public class EFServisniZahtjevRepository
     public IReadOnlyList<ServisniZahtjev> GetAll()
     {
         return _context.ServisniZahtjevi
+            .Where(x => x.DeletedAt == null)
             .Include(x => x.Oprema)
             .ToList();
     }
@@ -23,7 +24,32 @@ public class EFServisniZahtjevRepository
     public ServisniZahtjev? GetById(int id)
     {
         return _context.ServisniZahtjevi
+            .Where(x => x.DeletedAt == null)
             .Include(x => x.Oprema)
             .FirstOrDefault(x => x.Id == id);
+    }
+
+    public void Create(ServisniZahtjev entity)
+    {
+        _context.ServisniZahtjevi.Add(entity);
+        _context.SaveChanges();
+    }
+
+    public void Update(ServisniZahtjev entity)
+    {
+        _context.ServisniZahtjevi.Update(entity);
+        _context.SaveChanges();
+    }
+
+    public void Delete(int id)
+    {
+        var entity = _context.ServisniZahtjevi.FirstOrDefault(x => x.Id == id && x.DeletedAt == null);
+        if (entity is null)
+        {
+            return;
+        }
+
+        entity.DeletedAt = DateTime.UtcNow;
+        _context.SaveChanges();
     }
 }

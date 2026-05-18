@@ -40,14 +40,13 @@
         <aside class="side-nav">
             <div class="brand-block">
                 <p class="brand-kicker">TEH LAB</p>
-                <a class="brand" asp-controller="Home" asp-action="Index">Safety Maintenance Portal</a>
-                <p class="brand-subtitle">Evidencija radne opreme i servisnih aktivnosti</p>
+                <a class="brand" asp-controller="Home" asp-action="Index">Evidencija opreme</a>
             </div>
 
             <div class="nav-group nav-group-overview">
                 <p class="nav-section-title">Pregled</p>
                 <nav class="nav-stack">
-                    <a class="@ActiveClass("Home")" asp-controller="Home" asp-action="Index">Dashboard</a>
+                    <a class="@ActiveClass("Home")" asp-controller="Home" asp-action="Index">Home</a>
                 </nav>
             </div>
 
@@ -74,16 +73,11 @@
                 <p class="nav-section-title">Odrzavanje i zahtjevi</p>
                 <nav class="nav-stack">
                     <a class="@ActiveClass("Odrzavanje")" asp-controller="Odrzavanje" asp-action="Index">Odrzavanja</a>
-                    <a class="@ActiveClass("Izvjestaj")" asp-controller="Izvjestaj" asp-action="Index">Izvjestaji</a>
                     <a class="@ActiveClass("ServisniZahtjev")" asp-controller="ServisniZahtjev" asp-action="Index">Servisni zahtjevi</a>
                     <a class="@ActiveClass("ZaduzenjeOpreme")" asp-controller="ZaduzenjeOpreme" asp-action="Index">Zaduzenja opreme</a>
                 </nav>
             </div>
 
-            <div class="nav-footnote">
-                <p>Sustav aktivan</p>
-                <strong>Interni maintenance dashboard</strong>
-            </div>
         </aside>
 
         <div class="content-area">
@@ -120,5 +114,31 @@
             </footer>
         </div>
     </div>
+
+    @if (TempData["Success"] is string successMessage && !string.IsNullOrWhiteSpace(successMessage))
+    {
+        <div class="toast toast-success is-visible" id="success-toast" role="status" aria-live="polite">
+            <span class="toast-title">Uspjeh</span>
+            <span class="toast-message">@successMessage</span>
+        </div>
+    }
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.21.0/jquery.validate.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation-unobtrusive/3.2.12/jquery.validate.unobtrusive.min.js"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+    <script>
+        (() => {
+            const toast = document.getElementById('success-toast');
+            if (!toast) {
+                return;
+            }
+
+            window.setTimeout(() => {
+                toast.classList.add('toast-hiding');
+                window.setTimeout(() => toast.remove(), 220);
+            }, 3000);
+        })();
+    </script>
 </body>
 </html>

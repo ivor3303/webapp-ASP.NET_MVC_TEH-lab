@@ -1,0 +1,31 @@
+@model Lokacija
+
+@{
+    ViewData["Title"] = "Uredi lokaciju";
+}
+
+<section class="detail-panel form-panel">
+    <h1>Uredi lokaciju</h1>
+
+    <form asp-action="Edit" asp-route-id="@Model.Id" method="post" class="entity-form" autocomplete="off">
+        <div asp-validation-summary="ModelOnly" class="validation-summary"></div>
+
+        <input asp-for="Id" type="hidden" />
+
+        <div class="form-field">
+            <label class="form-label" for="Naziv">Naziv</label>
+            <input asp-for="Naziv" class="form-input" autocomplete="off" />
+            <span asp-validation-for="Naziv" class="field-error"></span>
+        </div>
+
+        <div class="form-field">
+            <label class="form-label" for="Adresa">Adresa</label>
+            <input asp-for="Adresa" class="form-input" autocomplete="off" />
+            <span asp-validation-for="Adresa" class="field-error"></span>
+        </div>
+
+        <div class="form-actions">
+            <button type="submit" class="action-button action-button-primary">Spremi promjene</button>
+        </div>
+    </form>
+</section>

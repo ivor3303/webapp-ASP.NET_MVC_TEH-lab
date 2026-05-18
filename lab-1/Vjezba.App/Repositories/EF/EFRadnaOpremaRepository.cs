@@ -16,6 +16,7 @@ public class EFRadnaOpremaRepository
     public IReadOnlyList<RadnaOprema> GetAll()
     {
         return _context.RadnaOprema
+            .Where(x => x.DeletedAt == null)
             .Include(x => x.Lokacija)
             .Include(x => x.Proizvodac)
             .Include(x => x.Kategorija)
@@ -29,6 +30,7 @@ public class EFRadnaOpremaRepository
     public RadnaOprema? GetById(int id)
     {
         return _context.RadnaOprema
+            .Where(x => x.DeletedAt == null)
             .Include(x => x.Lokacija)
             .Include(x => x.Proizvodac)
             .Include(x => x.Kategorija)
@@ -37,5 +39,29 @@ public class EFRadnaOpremaRepository
             .Include(x => x.Zaduzenja)
                 .ThenInclude(x => x.Radnik)
             .FirstOrDefault(x => x.Id == id);
+    }
+
+    public void Create(RadnaOprema entity)
+    {
+        _context.RadnaOprema.Add(entity);
+        _context.SaveChanges();
+    }
+
+    public void Update(RadnaOprema entity)
+    {
+        _context.RadnaOprema.Update(entity);
+        _context.SaveChanges();
+    }
+
+    public void Delete(int id)
+    {
+        var entity = _context.RadnaOprema.FirstOrDefault(x => x.Id == id && x.DeletedAt == null);
+        if (entity is null)
+        {
+            return;
+        }
+
+        entity.DeletedAt = DateTime.UtcNow;
+        _context.SaveChanges();
     }
 }

@@ -1,0 +1,29 @@
+@model KategorijaOpreme
+
+@{
+    ViewData["Title"] = "Nova kategorija opreme";
+}
+
+<section class="detail-panel form-panel">
+    <h1>Nova kategorija opreme</h1>
+
+    <form asp-action="Create" method="post" class="entity-form" autocomplete="off">
+        <div asp-validation-summary="ModelOnly" class="validation-summary"></div>
+
+        <div class="form-field">
+            <label class="form-label" for="Naziv">Naziv</label>
+            <input asp-for="Naziv" class="form-input" autocomplete="off" />
+            <span asp-validation-for="Naziv" class="field-error"></span>
+        </div>
+
+        <div class="form-field">
+            <label class="form-label" for="Opis">Opis</label>
+            <input asp-for="Opis" class="form-input" autocomplete="off" />
+            <span asp-validation-for="Opis" class="field-error"></span>
+        </div>
+
+        <div class="form-actions">
+            <button type="submit" class="action-button action-button-primary">Spremi</button>
+        </div>
+    </form>
+</section>

@@ -27,5 +27,7 @@ namespace Vjezba.Model
         [Required]
         [MaxLength(500)]
         public string Napomena { get; set; } = string.Empty;
+
+        public DateTime? DeletedAt { get; set; }
     }
 }

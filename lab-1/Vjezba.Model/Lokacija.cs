@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
@@ -15,6 +16,8 @@ namespace Vjezba.Model
 		[Required]
 		[MaxLength(300)]
 		public string Adresa { get; set; } = string.Empty;
+
+		public DateTime? DeletedAt { get; set; }
 
 		public virtual ICollection<RadnaOprema> Oprema { get; set; } = new List<RadnaOprema>();
 	

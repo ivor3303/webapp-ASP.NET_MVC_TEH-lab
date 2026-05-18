@@ -1,0 +1,35 @@
+@model Proizvodac
+
+@{
+    ViewData["Title"] = "Novi proizvođač";
+}
+
+<section class="detail-panel form-panel">
+    <h1>Novi proizvođač</h1>
+
+    <form asp-action="Create" method="post" class="entity-form" autocomplete="off">
+        <div asp-validation-summary="ModelOnly" class="validation-summary"></div>
+
+        <div class="form-field">
+            <label class="form-label" for="Naziv">Naziv</label>
+            <input asp-for="Naziv" class="form-input" autocomplete="off" />
+            <span asp-validation-for="Naziv" class="field-error"></span>
+        </div>
+
+        <div class="form-field">
+            <label class="form-label" for="Drzava">Država</label>
+            <input asp-for="Drzava" class="form-input" autocomplete="off" />
+            <span asp-validation-for="Drzava" class="field-error"></span>
+        </div>
+
+        <div class="form-field">
+            <label class="form-label" for="KontaktEmail">Kontakt email</label>
+            <input asp-for="KontaktEmail" class="form-input" autocomplete="off" />
+            <span asp-validation-for="KontaktEmail" class="field-error"></span>
+        </div>
+
+        <div class="form-actions">
+            <button type="submit" class="action-button action-button-primary">Spremi</button>
+        </div>
+    </form>
+</section>

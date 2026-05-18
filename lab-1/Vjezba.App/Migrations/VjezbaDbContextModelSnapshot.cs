@@ -52,6 +52,9 @@ namespace Vjezba.App.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("TEXT");
+
                     b.Property<string>("Naziv")
                         .IsRequired()
                         .HasMaxLength(100)
@@ -78,6 +81,9 @@ namespace Vjezba.App.Migrations
                         .HasMaxLength(300)
                         .HasColumnType("TEXT");
 
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("TEXT");
+
                     b.Property<string>("Naziv")
                         .IsRequired()
                         .HasMaxLength(100)
@@ -98,6 +104,9 @@ namespace Vjezba.App.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<DateTime>("Datum")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime?>("DeletedAt")
                         .HasColumnType("TEXT");
 
                     b.Property<int>("IzvrsioId")
@@ -134,6 +143,9 @@ namespace Vjezba.App.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("TEXT");
+
                     b.Property<string>("Drzava")
                         .IsRequired()
                         .HasMaxLength(100)
@@ -161,6 +173,9 @@ namespace Vjezba.App.Migrations
                         .HasColumnType("INTEGER");
 
                     b.Property<DateTime>("DatumNabave")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime?>("DeletedAt")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("InventarniBroj")
@@ -213,6 +228,9 @@ namespace Vjezba.App.Migrations
                     b.Property<DateTime>("DatumZaposlenja")
                         .HasColumnType("TEXT");
 
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("TEXT");
+
                     b.Property<string>("Email")
                         .IsRequired()
                         .HasMaxLength(200)
@@ -250,6 +268,9 @@ namespace Vjezba.App.Migrations
                         .HasColumnType("INTEGER");
 
                     b.Property<DateTime>("DatumPrijave")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime?>("DeletedAt")
                         .HasColumnType("TEXT");
 
                     b.Property<bool>("Hitno")
@@ -290,6 +311,9 @@ namespace Vjezba.App.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<DateTime>("DatumZaduzenja")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime?>("DeletedAt")
                         .HasColumnType("TEXT");
 
                     b.Property<int>("RadnaOpremaId")

@@ -1,3 +1,4 @@
+using System;
 using System.ComponentModel.DataAnnotations;
 
 namespace Vjezba.Model
@@ -14,6 +15,8 @@ namespace Vjezba.Model
 		[Required]
 		[MaxLength(500)]
 		public string Opis { get; set; } = string.Empty;
+
+		public DateTime? DeletedAt { get; set; }
 		
 	}
 }

@@ -1,0 +1,287 @@
+@using System.Globalization
+@model dynamic
+
+@{
+    var fieldName = (string)Model.FieldName;
+    var label = (string)Model.Label;
+    var placeholder = (string?)Model.Placeholder ?? string.Empty;
+    DateTime? value = Model.Value is DateTime dateTimeValue
+        ? dateTimeValue
+        : Model.Value as DateTime?;
+    var displayValue = value.HasValue ? value.Value.ToString("dd.MM.yyyy", CultureInfo.GetCultureInfo("hr-HR")) : string.Empty;
+    var isoValue = value.HasValue ? value.Value.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture) : string.Empty;
+    var inputId = $"{fieldName}-display";
+    var hiddenId = $"{fieldName}-hidden";
+    var popupId = $"{fieldName}-popup";
+    var errorMessage = ViewData.ModelState[fieldName]?.Errors.Count > 0
+        ? ViewData.ModelState[fieldName]!.Errors[0].ErrorMessage
+        : string.Empty;
+}
+
+<div class="date-picker-widget" data-date-picker data-field-name="@fieldName" data-popup-id="@popupId">
+    <label class="form-label" for="@inputId">@label</label>
+    <div class="date-picker-control">
+        <input type="text"
+               id="@inputId"
+               class="form-input date-picker-input"
+               value="@displayValue"
+               placeholder="@placeholder"
+               autocomplete="off"
+               readonly
+               aria-haspopup="dialog"
+               aria-expanded="false"
+               aria-controls="@popupId"
+               data-date-picker-input />
+        <input type="hidden" id="@hiddenId" name="@fieldName" value="@isoValue" data-date-picker-hidden />
+        <button type="button" class="date-picker-toggle" aria-label="Otvori kalendar" data-date-picker-toggle>
+            <span aria-hidden="true">▾</span>
+        </button>
+    </div>
+    <div class="date-picker-popup" id="@popupId" hidden data-date-picker-popup></div>
+    <span class="field-error date-picker-error" data-valmsg-for="@fieldName" data-valmsg-replace="true">@errorMessage</span>
+</div>
+
+<script>
+    (() => {
+        window.datePickerWidget = window.datePickerWidget || (() => {
+            const locale = ((document.documentElement.lang || navigator.language || 'hr-HR').toLowerCase().startsWith('hr')) ? 'hr-HR' : 'en-US';
+            const weekdayLabels = locale.startsWith('hr')
+                ? ['Pon', 'Uto', 'Sri', 'Čet', 'Pet', 'Sub', 'Ned']
+                : ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+            const monthFormatter = new Intl.DateTimeFormat(locale, { month: 'long', year: 'numeric' });
+
+            const createDate = (year, month, day) => new Date(year, month, day, 12, 0, 0, 0);
+
+            const parseIsoDate = (value) => {
+                if (!value) {
+                    return null;
+                }
+
+                const [year, month, day] = value.split('-').map((part) => Number(part));
+                if (!year || !month || !day) {
+                    return null;
+                }
+
+                return createDate(year, month - 1, day);
+            };
+
+            const toIsoDate = (date) => {
+                const year = date.getFullYear();
+                const month = String(date.getMonth() + 1).padStart(2, '0');
+                const day = String(date.getDate()).padStart(2, '0');
+                return `${year}-${month}-${day}`;
+            };
+
+            const toDisplayDate = (date) => {
+                const day = String(date.getDate()).padStart(2, '0');
+                const month = String(date.getMonth() + 1).padStart(2, '0');
+                const year = date.getFullYear();
+                return `${day}.${month}.${year}`;
+            };
+
+            const sameDay = (left, right) => !!left && !!right
+                && left.getFullYear() === right.getFullYear()
+                && left.getMonth() === right.getMonth()
+                && left.getDate() === right.getDate();
+
+            const isMondayFirst = locale.startsWith('hr');
+
+            const getWeekStartOffset = () => isMondayFirst ? 0 : 0;
+
+            const initializeWidget = (widget) => {
+            const input = widget.querySelector('[data-date-picker-input]');
+            const hidden = widget.querySelector('[data-date-picker-hidden]');
+            const toggle = widget.querySelector('[data-date-picker-toggle]');
+            const popup = widget.querySelector('[data-date-picker-popup]');
+            const form = widget.closest('form');
+            const fieldName = widget.dataset.fieldName || hidden.name;
+            const errorMessage = fieldName === 'DatumNabave' ? 'Datum nabave je obavezan' : 'Molimo odaberite datum';
+            const validationTarget = widget.querySelector('[data-valmsg-for]');
+            const today = createDate(new Date().getFullYear(), new Date().getMonth(), new Date().getDate());
+            let selectedDate = parseIsoDate(hidden.value);
+            let viewDate = selectedDate ? createDate(selectedDate.getFullYear(), selectedDate.getMonth(), 1) : createDate(today.getFullYear(), today.getMonth(), 1);
+            let isOpen = false;
+
+            const setError = (message) => {
+                if (validationTarget) {
+                    validationTarget.textContent = message || '';
+                }
+
+                input.classList.toggle('is-invalid', !!message);
+                widget.classList.toggle('is-invalid', !!message);
+            };
+
+            const syncValue = (date) => {
+                selectedDate = date;
+                hidden.value = date ? toIsoDate(date) : '';
+                input.value = date ? toDisplayDate(date) : '';
+                setError('');
+            };
+
+            const renderCalendar = () => {
+                const firstOfMonth = createDate(viewDate.getFullYear(), viewDate.getMonth(), 1);
+                const daysInMonth = createDate(viewDate.getFullYear(), viewDate.getMonth() + 1, 0).getDate();
+                const offset = isMondayFirst ? (firstOfMonth.getDay() + 6) % 7 : firstOfMonth.getDay();
+                const monthLabel = monthFormatter.format(viewDate).replace(/^\s+|\s+$/g, '');
+
+                popup.innerHTML = '';
+
+                const header = document.createElement('div');
+                header.className = 'date-picker-header';
+
+                const previousButton = document.createElement('button');
+                previousButton.type = 'button';
+                previousButton.className = 'date-picker-nav';
+                previousButton.setAttribute('aria-label', 'Prethodni mjesec');
+                previousButton.textContent = '‹';
+                previousButton.addEventListener('click', () => {
+                    viewDate = createDate(viewDate.getFullYear(), viewDate.getMonth() - 1, 1);
+                    renderCalendar();
+                });
+
+                const title = document.createElement('div');
+                title.className = 'date-picker-title';
+                title.textContent = monthLabel.charAt(0).toUpperCase() + monthLabel.slice(1);
+
+                const nextButton = document.createElement('button');
+                nextButton.type = 'button';
+                nextButton.className = 'date-picker-nav';
+                nextButton.setAttribute('aria-label', 'Sljedeći mjesec');
+                nextButton.textContent = '›';
+                nextButton.addEventListener('click', () => {
+                    viewDate = createDate(viewDate.getFullYear(), viewDate.getMonth() + 1, 1);
+                    renderCalendar();
+                });
+
+                header.append(previousButton, title, nextButton);
+
+                const weekdayRow = document.createElement('div');
+                weekdayRow.className = 'date-picker-weekdays';
+                weekdayLabels.forEach((weekday) => {
+                    const cell = document.createElement('span');
+                    cell.className = 'date-picker-weekday';
+                    cell.textContent = weekday;
+                    weekdayRow.append(cell);
+                });
+
+                const grid = document.createElement('div');
+                grid.className = 'date-picker-grid';
+
+                for (let index = 0; index < offset; index += 1) {
+                    const emptyCell = document.createElement('span');
+                    emptyCell.className = 'date-picker-day date-picker-day-empty';
+                    grid.append(emptyCell);
+                }
+
+                for (let day = 1; day <= daysInMonth; day += 1) {
+                    const currentDate = createDate(viewDate.getFullYear(), viewDate.getMonth(), day);
+                    const dayButton = document.createElement('button');
+                    dayButton.type = 'button';
+                    dayButton.className = 'date-picker-day';
+                    dayButton.textContent = String(day);
+                    dayButton.dataset.isoDate = toIsoDate(currentDate);
+                    dayButton.setAttribute('aria-label', toDisplayDate(currentDate));
+
+                    if (sameDay(currentDate, today)) {
+                        dayButton.classList.add('is-today');
+                    }
+
+                    if (sameDay(currentDate, selectedDate)) {
+                        dayButton.classList.add('is-selected');
+                    }
+
+                    dayButton.addEventListener('click', () => {
+                        syncValue(currentDate);
+                        closePopup();
+                    });
+
+                    grid.append(dayButton);
+                }
+
+                popup.append(header, weekdayRow, grid);
+            };
+
+            const openPopup = () => {
+                if (isOpen) {
+                    return;
+                }
+
+                isOpen = true;
+                popup.hidden = false;
+                widget.classList.add('is-open');
+                input.setAttribute('aria-expanded', 'true');
+                renderCalendar();
+            };
+
+            const closePopup = () => {
+                if (!isOpen) {
+                    return;
+                }
+
+                isOpen = false;
+                widget.classList.remove('is-open');
+                popup.hidden = true;
+                input.setAttribute('aria-expanded', 'false');
+            };
+
+            const validate = () => {
+                if (!hidden.value) {
+                    setError(errorMessage);
+                    return false;
+                }
+
+                setError('');
+                return true;
+            };
+
+            input.addEventListener('click', openPopup);
+            input.addEventListener('focus', openPopup);
+            toggle.addEventListener('click', openPopup);
+            input.addEventListener('blur', () => {
+                window.setTimeout(() => {
+                    if (!widget.contains(document.activeElement)) {
+                        validate();
+                    }
+                }, 0);
+            });
+
+            if (form) {
+                form.addEventListener('submit', (event) => {
+                    if (!validate()) {
+                        event.preventDefault();
+                        openPopup();
+                    }
+                });
+            }
+
+            document.addEventListener('pointerdown', (event) => {
+                if (isOpen && !widget.contains(event.target)) {
+                    closePopup();
+                    validate();
+                }
+            });
+
+            document.addEventListener('keydown', (event) => {
+                if (event.key === 'Escape') {
+                    closePopup();
+                }
+            });
+
+            if (selectedDate) {
+                input.value = toDisplayDate(selectedDate);
+            }
+
+            if (!hidden.value) {
+                input.value = '';
+            }
+        };
+
+            return {
+                init: initializeWidget
+            };
+        })();
+
+        const widgets = document.querySelectorAll('[data-date-picker]');
+        widgets.forEach((widget) => window.datePickerWidget.init(widget));
+    })();
+</script>

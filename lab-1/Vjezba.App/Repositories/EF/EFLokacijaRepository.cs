@@ -16,6 +16,7 @@ public class EFLokacijaRepository
     public IReadOnlyList<Lokacija> GetAll()
     {
         return _context.Lokacije
+            .Where(x => x.DeletedAt == null)
             .Include(x => x.Oprema)
             .ToList();
     }
@@ -23,7 +24,32 @@ public class EFLokacijaRepository
     public Lokacija? GetById(int id)
     {
         return _context.Lokacije
+            .Where(x => x.DeletedAt == null)
             .Include(x => x.Oprema)
             .FirstOrDefault(x => x.Id == id);
+    }
+
+    public void Create(Lokacija entity)
+    {
+        _context.Lokacije.Add(entity);
+        _context.SaveChanges();
+    }
+
+    public void Update(Lokacija entity)
+    {
+        _context.Lokacije.Update(entity);
+        _context.SaveChanges();
+    }
+
+    public void Delete(int id)
+    {
+        var entity = _context.Lokacije.FirstOrDefault(x => x.Id == id && x.DeletedAt == null);
+        if (entity is null)
+        {
+            return;
+        }
+
+        entity.DeletedAt = DateTime.UtcNow;
+        _context.SaveChanges();
     }
 }

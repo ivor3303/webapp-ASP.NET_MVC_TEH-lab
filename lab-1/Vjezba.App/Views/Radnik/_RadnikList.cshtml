@@ -1,0 +1,28 @@
+@model IEnumerable<Radnik>
+
+@if (!Model.Any())
+{
+    <div class="empty-state">Nema rezultata</div>
+}
+else
+{
+    <section class="panel-grid">
+        @foreach (var item in Model)
+        {
+            <article class="panel-card radnik-card">
+                <h2>@item.Ime @item.Prezime</h2>
+                <p><strong>Radno mjesto:</strong> @item.RadnoMjesto</p>
+                <p><strong>Email:</strong> @item.Email</p>
+                <p><strong>Telefon:</strong> @item.Telefon</p>
+                <p><strong>Status:</strong> @(item.Aktivan ? "Aktivan" : "Neaktivan")</p>
+                <div class="action-group">
+                    <a class="action-button action-button-primary" asp-action="Details" asp-route-id="@item.Id">Detalji</a>
+                    <a class="action-button action-button-secondary" asp-action="Edit" asp-route-id="@item.Id">Uredi</a>
+                    <form asp-action="Delete" asp-route-id="@item.Id" method="post" class="action-form" data-delete-form>
+                        <button type="submit" class="action-button action-button-danger">Obriši</button>
+                    </form>
+                </div>
+            </article>
+        }
+    </section>
+}

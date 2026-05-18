@@ -2,31 +2,159 @@
 
 @{
     ViewData["Title"] = "Radna oprema";
-
-    string StatusClass(StatusOpreme status) => status switch
-    {
-        StatusOpreme.Ispravna => "status-chip status-ok",
-        StatusOpreme.Neispravna => "status-chip status-danger",
-        StatusOpreme.Otpisana => "status-chip status-muted",
-        StatusOpreme.UServisu => "status-chip status-info",
-        _ => "status-chip"
-    };
 }
 
 <section>
     <h1>Radna oprema</h1>
     <p>Pregled sve evidentirane opreme.</p>
+    <p>
+        <a class="action-button action-button-primary" asp-controller="RadnaOprema" asp-action="Create">Dodaj</a>
+    </p>
+
+    <div class="search-panel">
+        <label class="search-label" for="search-input">Pretraga opreme</label>
+        <div class="search-toolbar">
+            <div class="search-spinner" id="search-spinner" aria-hidden="true"></div>
+            <span class="search-status" id="search-status" hidden></span>
+        </div>
+        <input id="search-input" class="search-input" type="search" placeholder="Naziv, inventarni ili serijski broj" autocomplete="off" />
+    </div>
 </section>
 
-<section class="panel-grid">
-@foreach (var item in Model)
-{
-    <article class="panel-card">
-        <h2>@item.Naziv</h2>
-        <p><strong>Inventarni broj:</strong> @item.InventarniBroj</p>
-        <p><strong>Status:</strong> <span class="@StatusClass(item.Status)">@item.Status</span></p>
-        <p><strong>Lokacija:</strong> @item.Lokacija.Naziv</p>
-        <a asp-controller="RadnaOprema" asp-action="Details" asp-route-id="@item.Id">Detalji opreme</a>
-    </article>
+<div id="results-container" class="results-container">
+    <partial name="_RadnaOpremaList" model="Model" />
+</div>
+
+<div class="delete-modal-backdrop" id="delete-modal" hidden>
+    <div class="delete-modal" role="dialog" aria-modal="true" aria-labelledby="delete-modal-title">
+        <h2 id="delete-modal-title">Potvrda brisanja</h2>
+        <p>Jeste li sigurni da želite obrisati ovu radnu opremu?</p>
+        <div class="delete-modal-actions">
+            <button type="button" class="action-button action-button-secondary" id="delete-cancel">Odustani</button>
+            <button type="button" class="action-button action-button-danger" id="delete-confirm">Potvrdi brisanje</button>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const searchInput = document.getElementById('search-input');
+            const resultsContainer = document.getElementById('results-container');
+            const searchSpinner = document.getElementById('search-spinner');
+            const searchStatus = document.getElementById('search-status');
+            const deleteModal = document.getElementById('delete-modal');
+            const deleteCancel = document.getElementById('delete-cancel');
+            const deleteConfirm = document.getElementById('delete-confirm');
+
+            if (!searchInput || !resultsContainer || !searchSpinner || !searchStatus || !deleteModal || !deleteCancel || !deleteConfirm) {
+                return;
+            }
+
+            let pendingDeleteForm = null;
+            let debounceTimer = null;
+            let abortController = null;
+
+            const animateCards = () => {
+                const cards = resultsContainer.querySelectorAll('.radna-oprema-card');
+                cards.forEach((card, index) => {
+                    card.style.setProperty('--card-delay', `${index * 70}ms`);
+                    card.classList.remove('is-visible');
+                    void card.offsetWidth;
+                    card.classList.add('is-visible');
+                });
+            };
+
+            const setLoading = (isLoading) => {
+                searchSpinner.classList.toggle('is-visible', isLoading);
+                searchStatus.hidden = !isLoading;
+                searchStatus.textContent = isLoading ? 'Pretraga u tijeku...' : '';
+                searchInput.setAttribute('aria-busy', String(isLoading));
+            };
+
+            const loadResults = async (query) => {
+                if (abortController) {
+                    abortController.abort();
+                }
+
+                abortController = new AbortController();
+                setLoading(true);
+
+                try {
+                    const response = await fetch(`/oprema/search?query=${encodeURIComponent(query)}`, {
+                        method: 'GET',
+                        headers: {
+                            'X-Requested-With': 'XMLHttpRequest'
+                        },
+                        signal: abortController.signal
+                    });
+
+                    if (!response.ok) {
+                        return;
+                    }
+
+                    resultsContainer.innerHTML = await response.text();
+                    animateCards();
+                } catch (error) {
+                    if (error.name !== 'AbortError') {
+                        console.error('Search request failed', error);
+                    }
+                } finally {
+                    setLoading(false);
+                }
+            };
+
+            const openDeleteModal = (form) => {
+                pendingDeleteForm = form;
+                deleteModal.hidden = false;
+                deleteModal.classList.add('is-visible');
+                document.body.classList.add('modal-open');
+            };
+
+            const closeDeleteModal = () => {
+                deleteModal.classList.remove('is-visible');
+                document.body.classList.remove('modal-open');
+                window.setTimeout(() => {
+                    deleteModal.hidden = true;
+                    pendingDeleteForm = null;
+                }, 180);
+            };
+
+            const confirmDelete = () => {
+                if (pendingDeleteForm) {
+                    pendingDeleteForm.submit();
+                }
+            };
+
+            searchInput.addEventListener('input', (event) => {
+                const query = event.target.value;
+
+                window.clearTimeout(debounceTimer);
+                debounceTimer = window.setTimeout(() => {
+                    loadResults(query);
+                }, 300);
+            });
+
+            resultsContainer.addEventListener('submit', (event) => {
+                const form = event.target.closest('form[data-delete-form]');
+                if (!form) {
+                    return;
+                }
+
+                event.preventDefault();
+                openDeleteModal(form);
+            });
+
+            deleteCancel.addEventListener('click', closeDeleteModal);
+            deleteConfirm.addEventListener('click', confirmDelete);
+
+            deleteModal.addEventListener('click', (event) => {
+                if (event.target === deleteModal) {
+                    closeDeleteModal();
+                }
+            });
+
+            animateCards();
+        });
+    </script>
 }
-</section>

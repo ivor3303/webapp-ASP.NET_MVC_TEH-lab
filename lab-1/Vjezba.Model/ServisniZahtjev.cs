@@ -22,5 +22,7 @@ namespace Vjezba.Model
         [Required]
         [MaxLength(500)]
         public string Komentar { get; set; } = string.Empty;
+
+        public DateTime? DeletedAt { get; set; }
     }
 }

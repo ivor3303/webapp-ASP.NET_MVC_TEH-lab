@@ -1,0 +1,60 @@
+@model ServisniZahtjev
+
+@{
+    ViewData["Title"] = "Uredi servisni zahtjev";
+}
+
+<section class="detail-panel form-panel">
+    <h1>Uredi servisni zahtjev</h1>
+
+    <form asp-action="Edit" asp-route-id="@Model.Id" method="post" class="entity-form" autocomplete="off">
+        <div asp-validation-summary="ModelOnly" class="validation-summary"></div>
+
+        <input asp-for="Id" type="hidden" />
+
+        <div class="form-field">
+            <partial name="_DatePicker" model='new {
+                FieldName = "DatumPrijave",
+                Label = "Datum prijave",
+                Value = Model.DatumPrijave,
+                Placeholder = "Odaberite datum..."
+            }' />
+        </div>
+
+        <div class="form-field">
+            <label class="form-label" for="OpisKvara">Opis kvara</label>
+            <input asp-for="OpisKvara" class="form-input" autocomplete="off" />
+            <span asp-validation-for="OpisKvara" class="field-error"></span>
+        </div>
+
+        <div class="form-field">
+            <label class="form-label" for="Hitno">Hitno</label>
+            <input asp-for="Hitno" id="Hitno" />
+            <span asp-validation-for="Hitno" class="field-error"></span>
+        </div>
+
+        <div class="form-field">
+            <label class="form-label" for="Komentar">Komentar</label>
+            <input asp-for="Komentar" class="form-input" autocomplete="off" />
+            <span asp-validation-for="Komentar" class="field-error"></span>
+        </div>
+
+        <div class="form-field">
+            <label class="form-label" for="OpremaId-autocomplete-text">Oprema</label>
+            <partial name="_AutocompleteDropdown" model='new {
+                FieldName = "OpremaId",
+                Placeholder = "Pretražite opremu...",
+                SearchUrl = "/oprema/autocomplete",
+                SelectedId = Model.OpremaId,
+                SelectedText = Model.Oprema?.Naziv,
+                ValidationTargetId = "OpremaId-error",
+                ValidationMessage = "Molimo odaberite opremu"
+            }' />
+            <span asp-validation-for="OpremaId" id="OpremaId-error" class="field-error"></span>
+        </div>
+
+        <div class="form-actions">
+            <button type="submit" class="action-button action-button-primary">Spremi promjene</button>
+        </div>
+    </form>
+</section>

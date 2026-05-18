@@ -1,0 +1,145 @@
+@model RadnaOprema
+
+@{
+    ViewData["Title"] = "Nova radna oprema";
+}
+
+<section class="detail-panel form-panel">
+    <h1>Nova radna oprema</h1>
+
+    <form asp-action="Create" method="post" class="entity-form" autocomplete="off">
+        <div asp-validation-summary="ModelOnly" class="validation-summary"></div>
+
+        <div class="form-field">
+            <label class="form-label" for="Naziv">Naziv</label>
+            <input asp-for="Naziv" class="form-input" autocomplete="off" />
+            <span asp-validation-for="Naziv" class="field-error"></span>
+        </div>
+
+        <div class="form-field">
+            <label class="form-label" for="InventarniBroj">Inventarni broj</label>
+            <input asp-for="InventarniBroj" class="form-input" autocomplete="off" />
+            <span asp-validation-for="InventarniBroj" class="field-error"></span>
+        </div>
+
+        <div class="form-field">
+            <label class="form-label" for="SerijskiBroj">Serijski broj</label>
+            <input asp-for="SerijskiBroj" class="form-input" autocomplete="off" />
+            <span asp-validation-for="SerijskiBroj" class="field-error"></span>
+        </div>
+
+        <div class="form-field">
+            <partial name="_DatePicker" model='new {
+                FieldName = "DatumNabave",
+                Label = "Datum nabave",
+                Value = (DateTime?)null,
+                Placeholder = "Odaberite datum..."
+            }' />
+        </div>
+
+        <div class="form-field">
+            <label class="form-label" for="Status">Status</label>
+            <select asp-for="Status" class="form-input" asp-items="Html.GetEnumSelectList<StatusOpreme>()" autocomplete="off"></select>
+            <span asp-validation-for="Status" class="field-error"></span>
+        </div>
+
+        <div class="form-field">
+            <label class="form-label" for="LokacijaId-autocomplete-text">Lokacija</label>
+            <partial name="_AutocompleteDropdown" model='new {
+                FieldName = "LokacijaId",
+                Placeholder = "Pretražite lokacije...",
+                SearchUrl = "/lokacije/autocomplete",
+                ValidationTargetId = "LokacijaId-error",
+                ValidationMessage = "Molimo odaberite lokaciju"
+            }' />
+            <span asp-validation-for="LokacijaId" id="LokacijaId-error" class="field-error"></span>
+        </div>
+
+        <div class="form-field">
+            <label class="form-label" for="ProizvodacId-autocomplete-text">Proizvođač</label>
+            <partial name="_AutocompleteDropdown" model='new {
+                FieldName = "ProizvodacId",
+                Placeholder = "Pretražite proizvodace...",
+                SearchUrl = "/proizvodac/autocomplete",
+                ValidationTargetId = "ProizvodacId-error",
+                ValidationMessage = "Molimo odaberite lokaciju"
+            }' />
+            <span asp-validation-for="ProizvodacId" id="ProizvodacId-error" class="field-error"></span>
+        </div>
+
+        <div class="form-field">
+            <label class="form-label" for="KategorijaOpremeId-autocomplete-text">Kategorija opreme</label>
+            <partial name="_AutocompleteDropdown" model='new {
+                FieldName = "KategorijaOpremeId",
+                Placeholder = "Pretražite kategorije opreme...",
+                SearchUrl = "/kategorijaopreme/autocomplete",
+                ValidationTargetId = "KategorijaOpremeId-error",
+                ValidationMessage = "Molimo odaberite lokaciju"
+            }' />
+            <span asp-validation-for="KategorijaOpremeId" id="KategorijaOpremeId-error" class="field-error"></span>
+        </div>
+
+        <div class="form-actions">
+            <button type="submit" class="action-button action-button-primary">Spremi</button>
+        </div>
+    </form>
+</section>
+
+<script>
+    (() => {
+        const form = document.querySelector('.entity-form');
+        if (!form) {
+            return;
+        }
+
+        const setFieldState = (field, isValid) => {
+            field.classList.toggle('is-invalid', !isValid);
+        };
+
+        const validateStandardField = (field) => {
+            if (window.jQuery && window.jQuery.fn && window.jQuery.fn.valid) {
+                window.jQuery(field).valid();
+            }
+
+            const isValid = !field.checkValidity || field.checkValidity();
+            setFieldState(field, isValid);
+        };
+
+        const validateAutocomplete = (widget) => {
+            const textInput = widget.querySelector('.autocomplete-input');
+            const hiddenInput = widget.querySelector('input[type="hidden"]');
+            const validationTargetId = widget.dataset.validationTargetId;
+            const validationTarget = validationTargetId ? document.getElementById(validationTargetId) : null;
+            const message = widget.dataset.validationMessage || 'Molimo odaberite lokaciju';
+            const isValid = !!hiddenInput.value && Number(hiddenInput.value) > 0;
+
+            textInput.classList.toggle('is-invalid', !isValid);
+            widget.classList.toggle('is-invalid', !isValid);
+
+            if (validationTarget) {
+                validationTarget.textContent = isValid ? '' : message;
+            }
+        };
+
+        form.querySelectorAll('.form-input').forEach((field) => {
+            field.addEventListener('blur', () => validateStandardField(field));
+            field.addEventListener('input', () => field.classList.remove('is-invalid'));
+        });
+
+        form.querySelectorAll('.autocomplete-widget').forEach((widget) => {
+            const textInput = widget.querySelector('.autocomplete-input');
+            const hiddenInput = widget.querySelector('input[type="hidden"]');
+
+            widget.dataset.validationTargetId = widget.dataset.validationTargetId || widget.querySelector('.field-error')?.id || '';
+
+            textInput.addEventListener('blur', () => {
+                validateAutocomplete(widget);
+            });
+
+            textInput.addEventListener('input', () => {
+                hiddenInput.value = '';
+                validateAutocomplete(widget);
+            });
+        });
+    })();
+</script>

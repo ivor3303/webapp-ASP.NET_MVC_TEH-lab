@@ -1,3 +1,4 @@
+using System;
 using System.ComponentModel.DataAnnotations;
 
 namespace Vjezba.Model
@@ -18,6 +19,8 @@ namespace Vjezba.Model
 		[Required]
 		[MaxLength(200)]
 		public string KontaktEmail { get; set; } = string.Empty;
+
+		public DateTime? DeletedAt { get; set; }
 		
 	}
 }

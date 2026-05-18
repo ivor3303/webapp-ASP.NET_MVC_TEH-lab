@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
@@ -31,6 +32,8 @@ namespace Vjezba.Model
 		public DateTime DatumZaposlenja { get; set; }
 
 		public bool Aktivan { get; set; } = true;
+
+		public DateTime? DeletedAt { get; set; }
 
 		public virtual ICollection<ServisniZahtjev> ServisniZahtjevi { get; set; } = new List<ServisniZahtjev>();
 		public virtual ICollection<ZaduzenjeOpreme> Zaduzenja { get; set; } = new List<ZaduzenjeOpreme>();
