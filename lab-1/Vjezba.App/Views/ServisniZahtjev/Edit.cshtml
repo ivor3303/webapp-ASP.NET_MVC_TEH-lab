@@ -50,7 +50,8 @@
                 Placeholder = "Pretražite opremu...",
                 SearchUrl = "/oprema/autocomplete",
                 SelectedId = Model.OpremaId,
-                SelectedText = Model.Oprema?.Naziv,
+                InitialText = ViewBag.OpremaText as string ?? string.Empty,
+                SelectedText = ViewBag.OpremaText as string ?? string.Empty,
                 ValidationTargetId = "OpremaId-error",
                 ValidationMessage = "Molimo odaberite opremu"
             }' />

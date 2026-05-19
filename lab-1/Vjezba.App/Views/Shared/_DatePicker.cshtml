@@ -8,8 +8,8 @@
     DateTime? value = Model.Value is DateTime dateTimeValue
         ? dateTimeValue
         : Model.Value as DateTime?;
-    var displayValue = value.HasValue ? value.Value.ToString("dd.MM.yyyy", CultureInfo.GetCultureInfo("hr-HR")) : string.Empty;
-    var isoValue = value.HasValue ? value.Value.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture) : string.Empty;
+    var displayValue = value.HasValue ? value.Value.ToString("dd.MM.yyyy HH:mm", CultureInfo.GetCultureInfo("hr-HR")) : string.Empty;
+    var isoValue = value.HasValue ? value.Value.ToString("yyyy-MM-ddTHH:mm", CultureInfo.InvariantCulture) : string.Empty;
     var inputId = $"{fieldName}-display";
     var hiddenId = $"{fieldName}-hidden";
     var popupId = $"{fieldName}-popup";
@@ -44,39 +44,71 @@
 <script>
     (() => {
         window.datePickerWidget = window.datePickerWidget || (() => {
-            const locale = ((document.documentElement.lang || navigator.language || 'hr-HR').toLowerCase().startsWith('hr')) ? 'hr-HR' : 'en-US';
-            const weekdayLabels = locale.startsWith('hr')
+            const lang = navigator.language || 'hr';
+            const isHR = lang.startsWith('hr');
+            const locale = isHR ? 'hr-HR' : 'en-US';
+            const weekdayLabels = isHR
                 ? ['Pon', 'Uto', 'Sri', 'Čet', 'Pet', 'Sub', 'Ned']
                 : ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
             const monthFormatter = new Intl.DateTimeFormat(locale, { month: 'long', year: 'numeric' });
+            const yearStart = 1990;
+            const yearEnd = 2035;
 
-            const createDate = (year, month, day) => new Date(year, month, day, 12, 0, 0, 0);
+            const createDate = (year, month, day, hour = 0, minute = 0) => new Date(year, month, day, hour, minute, 0, 0);
+            const pad2 = (value) => String(value).padStart(2, '0');
+            const clamp = (value, min, max) => Math.min(max, Math.max(min, value));
 
-            const parseIsoDate = (value) => {
+            const parseIsoDateTime = (value) => {
                 if (!value) {
                     return null;
                 }
 
-                const [year, month, day] = value.split('-').map((part) => Number(part));
-                if (!year || !month || !day) {
+                const trimmed = String(value).trim();
+                if (!trimmed) {
                     return null;
                 }
 
-                return createDate(year, month - 1, day);
+                const [datePart, rawTimePart = '00:00'] = trimmed.split('T');
+                const [yearPart, monthPart, dayPart] = datePart.split('-').map((part) => Number(part));
+
+                if (!yearPart || !monthPart || !dayPart) {
+                    return null;
+                }
+
+                const timePart = rawTimePart.split('.')[0];
+                const [hourPart = '0', minutePart = '0'] = timePart.split(':');
+                const hour = Number.parseInt(hourPart, 10);
+                const minute = Number.parseInt(minutePart, 10);
+
+                return createDate(
+                    yearPart,
+                    monthPart - 1,
+                    dayPart,
+                    Number.isFinite(hour) ? clamp(hour, 0, 23) : 0,
+                    Number.isFinite(minute) ? clamp(minute, 0, 59) : 0
+                );
             };
 
-            const toIsoDate = (date) => {
+            const toIsoDateTime = (date) => {
                 const year = date.getFullYear();
-                const month = String(date.getMonth() + 1).padStart(2, '0');
-                const day = String(date.getDate()).padStart(2, '0');
-                return `${year}-${month}-${day}`;
+                const month = pad2(date.getMonth() + 1);
+                const day = pad2(date.getDate());
+                const hour = pad2(date.getHours());
+                const minute = pad2(date.getMinutes());
+
+                return `${year}-${month}-${day}T${hour}:${minute}`;
             };
 
-            const toDisplayDate = (date) => {
-                const day = String(date.getDate()).padStart(2, '0');
-                const month = String(date.getMonth() + 1).padStart(2, '0');
+            const toDisplayDateTime = (date) => {
+                const day = pad2(date.getDate());
+                const month = pad2(date.getMonth() + 1);
                 const year = date.getFullYear();
-                return `${day}.${month}.${year}`;
+                const hour = pad2(date.getHours());
+                const minute = pad2(date.getMinutes());
+
+                return isHR
+                    ? `${day}.${month}.${year} ${hour}:${minute}`
+                    : `${month}/${day}/${year} ${hour}:${minute}`;
             };
 
             const sameDay = (left, right) => !!left && !!right
@@ -84,197 +116,410 @@
                 && left.getMonth() === right.getMonth()
                 && left.getDate() === right.getDate();
 
-            const isMondayFirst = locale.startsWith('hr');
+            const normalizeTimeValue = (value, max) => {
+                const digits = String(value ?? '').replace(/\D/g, '');
+                if (!digits) {
+                    return 0;
+                }
 
-            const getWeekStartOffset = () => isMondayFirst ? 0 : 0;
+                return clamp(Number.parseInt(digits, 10), 0, max);
+            };
 
             const initializeWidget = (widget) => {
-            const input = widget.querySelector('[data-date-picker-input]');
-            const hidden = widget.querySelector('[data-date-picker-hidden]');
-            const toggle = widget.querySelector('[data-date-picker-toggle]');
-            const popup = widget.querySelector('[data-date-picker-popup]');
-            const form = widget.closest('form');
-            const fieldName = widget.dataset.fieldName || hidden.name;
-            const errorMessage = fieldName === 'DatumNabave' ? 'Datum nabave je obavezan' : 'Molimo odaberite datum';
-            const validationTarget = widget.querySelector('[data-valmsg-for]');
-            const today = createDate(new Date().getFullYear(), new Date().getMonth(), new Date().getDate());
-            let selectedDate = parseIsoDate(hidden.value);
-            let viewDate = selectedDate ? createDate(selectedDate.getFullYear(), selectedDate.getMonth(), 1) : createDate(today.getFullYear(), today.getMonth(), 1);
-            let isOpen = false;
+                const input = widget.querySelector('[data-date-picker-input]');
+                const hidden = widget.querySelector('[data-date-picker-hidden]');
+                const toggle = widget.querySelector('[data-date-picker-toggle]');
+                const popup = widget.querySelector('[data-date-picker-popup]');
+                const form = widget.closest('form');
+                const fieldName = widget.dataset.fieldName || hidden.name;
+                const errorMessage = fieldName === 'DatumNabave' ? 'Datum nabave je obavezan' : 'Molimo odaberite datum';
+                const validationTarget = widget.querySelector('[data-valmsg-for]');
+                const today = createDate(new Date().getFullYear(), new Date().getMonth(), new Date().getDate());
+                const minuteOptionsId = `${fieldName}-minute-options`;
+                let selectedDateTime = parseIsoDateTime(hidden.value);
+                let viewDate = selectedDateTime
+                    ? createDate(selectedDateTime.getFullYear(), selectedDateTime.getMonth(), 1)
+                    : createDate(today.getFullYear(), today.getMonth(), 1);
+                let isOpen = false;
+                let viewMode = 'calendar';
+                let hoursInput = null;
+                let minutesInput = null;
 
-            const setError = (message) => {
-                if (validationTarget) {
-                    validationTarget.textContent = message || '';
-                }
-
-                input.classList.toggle('is-invalid', !!message);
-                widget.classList.toggle('is-invalid', !!message);
-            };
-
-            const syncValue = (date) => {
-                selectedDate = date;
-                hidden.value = date ? toIsoDate(date) : '';
-                input.value = date ? toDisplayDate(date) : '';
-                setError('');
-            };
-
-            const renderCalendar = () => {
-                const firstOfMonth = createDate(viewDate.getFullYear(), viewDate.getMonth(), 1);
-                const daysInMonth = createDate(viewDate.getFullYear(), viewDate.getMonth() + 1, 0).getDate();
-                const offset = isMondayFirst ? (firstOfMonth.getDay() + 6) % 7 : firstOfMonth.getDay();
-                const monthLabel = monthFormatter.format(viewDate).replace(/^\s+|\s+$/g, '');
-
-                popup.innerHTML = '';
-
-                const header = document.createElement('div');
-                header.className = 'date-picker-header';
-
-                const previousButton = document.createElement('button');
-                previousButton.type = 'button';
-                previousButton.className = 'date-picker-nav';
-                previousButton.setAttribute('aria-label', 'Prethodni mjesec');
-                previousButton.textContent = '‹';
-                previousButton.addEventListener('click', () => {
-                    viewDate = createDate(viewDate.getFullYear(), viewDate.getMonth() - 1, 1);
-                    renderCalendar();
-                });
-
-                const title = document.createElement('div');
-                title.className = 'date-picker-title';
-                title.textContent = monthLabel.charAt(0).toUpperCase() + monthLabel.slice(1);
-
-                const nextButton = document.createElement('button');
-                nextButton.type = 'button';
-                nextButton.className = 'date-picker-nav';
-                nextButton.setAttribute('aria-label', 'Sljedeći mjesec');
-                nextButton.textContent = '›';
-                nextButton.addEventListener('click', () => {
-                    viewDate = createDate(viewDate.getFullYear(), viewDate.getMonth() + 1, 1);
-                    renderCalendar();
-                });
-
-                header.append(previousButton, title, nextButton);
-
-                const weekdayRow = document.createElement('div');
-                weekdayRow.className = 'date-picker-weekdays';
-                weekdayLabels.forEach((weekday) => {
-                    const cell = document.createElement('span');
-                    cell.className = 'date-picker-weekday';
-                    cell.textContent = weekday;
-                    weekdayRow.append(cell);
-                });
-
-                const grid = document.createElement('div');
-                grid.className = 'date-picker-grid';
-
-                for (let index = 0; index < offset; index += 1) {
-                    const emptyCell = document.createElement('span');
-                    emptyCell.className = 'date-picker-day date-picker-day-empty';
-                    grid.append(emptyCell);
-                }
-
-                for (let day = 1; day <= daysInMonth; day += 1) {
-                    const currentDate = createDate(viewDate.getFullYear(), viewDate.getMonth(), day);
-                    const dayButton = document.createElement('button');
-                    dayButton.type = 'button';
-                    dayButton.className = 'date-picker-day';
-                    dayButton.textContent = String(day);
-                    dayButton.dataset.isoDate = toIsoDate(currentDate);
-                    dayButton.setAttribute('aria-label', toDisplayDate(currentDate));
-
-                    if (sameDay(currentDate, today)) {
-                        dayButton.classList.add('is-today');
+                const setError = (message) => {
+                    if (validationTarget) {
+                        validationTarget.textContent = message || '';
                     }
 
-                    if (sameDay(currentDate, selectedDate)) {
-                        dayButton.classList.add('is-selected');
+                    input.classList.toggle('is-invalid', !!message);
+                    widget.classList.toggle('is-invalid', !!message);
+                };
+
+                const syncInputsFromSelection = () => {
+                    if (selectedDateTime) {
+                        hidden.value = toIsoDateTime(selectedDateTime);
+                        input.value = toDisplayDateTime(selectedDateTime);
+
+                        if (hoursInput) {
+                            hoursInput.value = pad2(selectedDateTime.getHours());
+                        }
+
+                        if (minutesInput) {
+                            minutesInput.value = pad2(selectedDateTime.getMinutes());
+                        }
+                    } else {
+                        hidden.value = '';
+                        input.value = '';
+
+                        if (hoursInput) {
+                            hoursInput.value = '00';
+                        }
+
+                        if (minutesInput) {
+                            minutesInput.value = '00';
+                        }
                     }
 
-                    dayButton.addEventListener('click', () => {
-                        syncValue(currentDate);
-                        closePopup();
+                    setError('');
+                };
+
+                const readTimeInputs = () => {
+                    const hour = hoursInput ? normalizeTimeValue(hoursInput.value, 23) : 0;
+                    const minute = minutesInput ? normalizeTimeValue(minutesInput.value, 59) : 0;
+
+                    if (hoursInput) {
+                        hoursInput.value = pad2(hour);
+                    }
+
+                    if (minutesInput) {
+                        minutesInput.value = pad2(minute);
+                    }
+
+                    return { hour, minute };
+                };
+
+                const commitSelectionTime = () => {
+                    const { hour, minute } = readTimeInputs();
+
+                    if (!selectedDateTime) {
+                        return;
+                    }
+
+                    selectedDateTime = createDate(
+                        selectedDateTime.getFullYear(),
+                        selectedDateTime.getMonth(),
+                        selectedDateTime.getDate(),
+                        hour,
+                        minute
+                    );
+
+                    syncInputsFromSelection();
+                };
+
+                const renderMonthView = () => {
+                    popup.innerHTML = '';
+
+                    const firstOfMonth = createDate(viewDate.getFullYear(), viewDate.getMonth(), 1);
+                    const daysInMonth = createDate(viewDate.getFullYear(), viewDate.getMonth() + 1, 0).getDate();
+                    const offset = isHR ? (firstOfMonth.getDay() + 6) % 7 : firstOfMonth.getDay();
+                    const monthLabel = monthFormatter.format(viewDate);
+
+                    const header = document.createElement('div');
+                    header.className = 'date-picker-header';
+
+                    const previousButton = document.createElement('button');
+                    previousButton.type = 'button';
+                    previousButton.className = 'date-picker-nav';
+                    previousButton.setAttribute('aria-label', 'Prethodni mjesec');
+                    previousButton.textContent = '‹';
+                    previousButton.addEventListener('click', () => {
+                        viewDate = createDate(viewDate.getFullYear(), viewDate.getMonth() - 1, 1);
+                        renderMonthView();
                     });
 
-                    grid.append(dayButton);
+                    const titleButton = document.createElement('button');
+                    titleButton.type = 'button';
+                    titleButton.className = 'date-picker-title-button';
+                    titleButton.textContent = monthLabel.charAt(0).toUpperCase() + monthLabel.slice(1);
+                    titleButton.setAttribute('aria-label', 'Odabir godine');
+                    titleButton.addEventListener('click', () => {
+                        viewMode = 'year';
+                        renderYearView();
+                    });
+
+                    const nextButton = document.createElement('button');
+                    nextButton.type = 'button';
+                    nextButton.className = 'date-picker-nav';
+                    nextButton.setAttribute('aria-label', 'Sljedeći mjesec');
+                    nextButton.textContent = '›';
+                    nextButton.addEventListener('click', () => {
+                        viewDate = createDate(viewDate.getFullYear(), viewDate.getMonth() + 1, 1);
+                        renderMonthView();
+                    });
+
+                    header.append(previousButton, titleButton, nextButton);
+
+                    const weekdayRow = document.createElement('div');
+                    weekdayRow.className = 'date-picker-weekdays';
+                    weekdayLabels.forEach((weekday) => {
+                        const cell = document.createElement('span');
+                        cell.className = 'date-picker-weekday';
+                        cell.textContent = weekday;
+                        weekdayRow.append(cell);
+                    });
+
+                    const grid = document.createElement('div');
+                    grid.className = 'date-picker-grid';
+
+                    for (let index = 0; index < offset; index += 1) {
+                        const emptyCell = document.createElement('span');
+                        emptyCell.className = 'date-picker-day date-picker-day-empty';
+                        grid.append(emptyCell);
+                    }
+
+                    for (let day = 1; day <= daysInMonth; day += 1) {
+                        const currentDate = createDate(viewDate.getFullYear(), viewDate.getMonth(), day);
+                        const dayButton = document.createElement('button');
+                        dayButton.type = 'button';
+                        dayButton.className = 'date-picker-day';
+                        dayButton.textContent = String(day);
+                        dayButton.setAttribute('aria-label', toDisplayDateTime(currentDate));
+
+                        if (sameDay(currentDate, today)) {
+                            dayButton.classList.add('is-today');
+                        }
+
+                        if (sameDay(currentDate, selectedDateTime)) {
+                            dayButton.classList.add('is-selected');
+                        }
+
+                        dayButton.addEventListener('click', () => {
+                            const { hour, minute } = readTimeInputs();
+                            selectedDateTime = createDate(
+                                currentDate.getFullYear(),
+                                currentDate.getMonth(),
+                                currentDate.getDate(),
+                                hour,
+                                minute
+                            );
+                            syncInputsFromSelection();
+                            closePopup();
+                        });
+
+                        grid.append(dayButton);
+                    }
+
+                    const timeSection = document.createElement('div');
+                    timeSection.className = 'date-picker-time-section';
+
+                    const timeLabel = document.createElement('div');
+                    timeLabel.className = 'date-picker-time-label';
+                    timeLabel.textContent = 'Vrijeme';
+
+                    const timeGrid = document.createElement('div');
+                    timeGrid.className = 'date-picker-time-grid';
+
+                    const hourField = document.createElement('input');
+                    hourField.type = 'text';
+                    hourField.inputMode = 'numeric';
+                    hourField.autocomplete = 'off';
+                    hourField.placeholder = '00';
+                    hourField.className = 'form-input date-picker-time-input';
+                    hourField.maxLength = 2;
+                    hourField.value = selectedDateTime ? pad2(selectedDateTime.getHours()) : '00';
+
+                    const minuteField = document.createElement('input');
+                    minuteField.type = 'text';
+                    minuteField.inputMode = 'numeric';
+                    minuteField.autocomplete = 'off';
+                    minuteField.placeholder = '00';
+                    minuteField.className = 'form-input date-picker-time-input';
+                    minuteField.maxLength = 2;
+                    minuteField.value = selectedDateTime ? pad2(selectedDateTime.getMinutes()) : '00';
+
+                    const minuteOptions = document.createElement('datalist');
+                    minuteOptions.id = minuteOptionsId;
+                    ['00', '15', '30', '45'].forEach((minute) => {
+                        const option = document.createElement('option');
+                        option.value = minute;
+                        minuteOptions.append(option);
+                    });
+
+                    minuteField.setAttribute('list', minuteOptionsId);
+
+                    hourField.addEventListener('input', () => {
+                        hourField.value = hourField.value.replace(/\D/g, '').slice(0, 2);
+                    });
+                    minuteField.addEventListener('input', () => {
+                        minuteField.value = minuteField.value.replace(/\D/g, '').slice(0, 2);
+                    });
+
+                    hourField.addEventListener('blur', () => {
+                        hoursInput = hourField;
+                        minutesInput = minuteField;
+                        commitSelectionTime();
+                    });
+                    minuteField.addEventListener('blur', () => {
+                        hoursInput = hourField;
+                        minutesInput = minuteField;
+                        commitSelectionTime();
+                    });
+                    hourField.addEventListener('change', () => {
+                        hoursInput = hourField;
+                        minutesInput = minuteField;
+                        commitSelectionTime();
+                    });
+                    minuteField.addEventListener('change', () => {
+                        hoursInput = hourField;
+                        minutesInput = minuteField;
+                        commitSelectionTime();
+                    });
+
+                    timeGrid.append(hourField, minuteField);
+                    timeSection.append(timeLabel, timeGrid, minuteOptions);
+
+                    popup.append(header, weekdayRow, grid, timeSection);
+
+                    hoursInput = hourField;
+                    minutesInput = minuteField;
+                };
+
+                const renderYearView = () => {
+                    popup.innerHTML = '';
+
+                    const header = document.createElement('div');
+                    header.className = 'date-picker-header';
+
+                    const previousButton = document.createElement('button');
+                    previousButton.type = 'button';
+                    previousButton.className = 'date-picker-nav';
+                    previousButton.textContent = '‹';
+                    previousButton.setAttribute('aria-label', 'Povratak na mjesec');
+                    previousButton.disabled = true;
+
+                    const titleButton = document.createElement('button');
+                    titleButton.type = 'button';
+                    titleButton.className = 'date-picker-title-button';
+                    titleButton.textContent = `${yearStart} - ${yearEnd}`;
+                    titleButton.setAttribute('aria-label', 'Povratak na prikaz mjeseca');
+                    titleButton.addEventListener('click', () => {
+                        viewMode = 'calendar';
+                        renderMonthView();
+                    });
+
+                    const nextButton = document.createElement('button');
+                    nextButton.type = 'button';
+                    nextButton.className = 'date-picker-nav';
+                    nextButton.textContent = '›';
+                    nextButton.setAttribute('aria-label', 'Povratak na mjesec');
+                    nextButton.disabled = true;
+
+                    header.append(previousButton, titleButton, nextButton);
+
+                    const grid = document.createElement('div');
+                    grid.className = 'date-picker-year-grid';
+
+                    for (let year = yearStart; year <= yearEnd; year += 1) {
+                        const yearButton = document.createElement('button');
+                        yearButton.type = 'button';
+                        yearButton.className = 'date-picker-year-button';
+                        yearButton.textContent = String(year);
+
+                        if (viewDate.getFullYear() === year) {
+                            yearButton.classList.add('is-selected');
+                        }
+
+                        yearButton.addEventListener('click', () => {
+                            viewDate = createDate(year, viewDate.getMonth(), 1);
+                            viewMode = 'calendar';
+                            renderMonthView();
+                        });
+
+                        grid.append(yearButton);
+                    }
+
+                    popup.append(header, grid);
+                };
+
+                const renderPopup = () => {
+                    if (viewMode === 'year') {
+                        renderYearView();
+                        return;
+                    }
+
+                    renderMonthView();
+                };
+
+                const openPopup = () => {
+                    if (isOpen) {
+                        return;
+                    }
+
+                    isOpen = true;
+                    viewMode = 'calendar';
+                    popup.hidden = false;
+                    widget.classList.add('is-open');
+                    input.setAttribute('aria-expanded', 'true');
+                    renderPopup();
+                };
+
+                const closePopup = () => {
+                    if (!isOpen) {
+                        return;
+                    }
+
+                    isOpen = false;
+                    viewMode = 'calendar';
+                    widget.classList.remove('is-open');
+                    popup.hidden = true;
+                    input.setAttribute('aria-expanded', 'false');
+                };
+
+                const validate = () => {
+                    if (!hidden.value) {
+                        setError(errorMessage);
+                        return false;
+                    }
+
+                    setError('');
+                    return true;
+                };
+
+                selectedDateTime = parseIsoDateTime(hidden.value);
+                syncInputsFromSelection();
+
+                input.addEventListener('click', openPopup);
+                input.addEventListener('focus', openPopup);
+                toggle.addEventListener('click', openPopup);
+                input.addEventListener('blur', () => {
+                    window.setTimeout(() => {
+                        if (!widget.contains(document.activeElement)) {
+                            validate();
+                        }
+                    }, 0);
+                });
+
+                if (form) {
+                    form.addEventListener('submit', (event) => {
+                        if (!validate()) {
+                            event.preventDefault();
+                            openPopup();
+                        }
+                    });
                 }
 
-                popup.append(header, weekdayRow, grid);
-            };
-
-            const openPopup = () => {
-                if (isOpen) {
-                    return;
-                }
-
-                isOpen = true;
-                popup.hidden = false;
-                widget.classList.add('is-open');
-                input.setAttribute('aria-expanded', 'true');
-                renderCalendar();
-            };
-
-            const closePopup = () => {
-                if (!isOpen) {
-                    return;
-                }
-
-                isOpen = false;
-                widget.classList.remove('is-open');
-                popup.hidden = true;
-                input.setAttribute('aria-expanded', 'false');
-            };
-
-            const validate = () => {
-                if (!hidden.value) {
-                    setError(errorMessage);
-                    return false;
-                }
-
-                setError('');
-                return true;
-            };
-
-            input.addEventListener('click', openPopup);
-            input.addEventListener('focus', openPopup);
-            toggle.addEventListener('click', openPopup);
-            input.addEventListener('blur', () => {
-                window.setTimeout(() => {
-                    if (!widget.contains(document.activeElement)) {
+                document.addEventListener('pointerdown', (event) => {
+                    if (isOpen && !widget.contains(event.target)) {
+                        closePopup();
                         validate();
                     }
-                }, 0);
-            });
+                });
 
-            if (form) {
-                form.addEventListener('submit', (event) => {
-                    if (!validate()) {
-                        event.preventDefault();
-                        openPopup();
+                document.addEventListener('keydown', (event) => {
+                    if (event.key === 'Escape') {
+                        closePopup();
                     }
                 });
-            }
-
-            document.addEventListener('pointerdown', (event) => {
-                if (isOpen && !widget.contains(event.target)) {
-                    closePopup();
-                    validate();
-                }
-            });
-
-            document.addEventListener('keydown', (event) => {
-                if (event.key === 'Escape') {
-                    closePopup();
-                }
-            });
-
-            if (selectedDate) {
-                input.value = toDisplayDate(selectedDate);
-            }
-
-            if (!hidden.value) {
-                input.value = '';
-            }
-        };
+            };
 
             return {
                 init: initializeWidget

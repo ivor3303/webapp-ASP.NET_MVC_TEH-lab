@@ -19,7 +19,8 @@
                 Placeholder = "Pretražite radnike...",
                 SearchUrl = "/radnici/autocomplete",
                 SelectedId = Model.RadnikId,
-                SelectedText = Model.Radnik is null ? string.Empty : $"{Model.Radnik.Ime} {Model.Radnik.Prezime}",
+                InitialText = ViewBag.RadnikText as string ?? string.Empty,
+                SelectedText = ViewBag.RadnikText as string ?? string.Empty,
                 ValidationTargetId = "RadnikId-error",
                 ValidationMessage = "Molimo odaberite radnika"
             }' />
@@ -33,7 +34,8 @@
                 Placeholder = "Pretražite opremu...",
                 SearchUrl = "/oprema/autocomplete",
                 SelectedId = Model.RadnaOpremaId,
-                SelectedText = Model.RadnaOprema?.Naziv,
+                InitialText = ViewBag.RadnaOpremaText as string ?? string.Empty,
+                SelectedText = ViewBag.RadnaOpremaText as string ?? string.Empty,
                 ValidationTargetId = "RadnaOpremaId-error",
                 ValidationMessage = "Molimo odaberite radnu opremu"
             }' />

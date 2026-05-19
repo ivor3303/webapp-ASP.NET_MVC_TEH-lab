@@ -12,7 +12,7 @@ else
             <article class="panel-card odrzavanje-card">
                 <h2>@item.Datum.ToString("dd.MM.yyyy")</h2>
                 <p><strong>Oprema:</strong> @item.Oprema?.Naziv</p>
-                <p><strong>Izvršio:</strong> @(item.Izvrsio != null ? $"{item.Izvrsio.Ime} {item.Izvrsio.Prezime}" : "Nije assigned")</p>
+                <p><strong>Izvršio:</strong> @(item.Izvrsio != null ? $"{item.Izvrsio.Ime} {item.Izvrsio.Prezime}" : "Nije dodijeljeno")</p>
                 <p><strong>Opis:</strong> @item.Opis</p>
                 <p><strong>Cijena:</strong> @item.Cijena</p>
                 <div class="action-group">

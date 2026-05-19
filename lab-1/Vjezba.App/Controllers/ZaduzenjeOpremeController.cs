@@ -99,6 +99,9 @@ public class ZaduzenjeOpremeController : Controller
             return NotFound();
         }
 
+        ViewBag.RadnikText = item.Radnik is null ? string.Empty : $"{item.Radnik.Ime} {item.Radnik.Prezime}";
+        ViewBag.RadnaOpremaText = item.RadnaOprema?.Naziv ?? string.Empty;
+
         return View(item);
     }
 

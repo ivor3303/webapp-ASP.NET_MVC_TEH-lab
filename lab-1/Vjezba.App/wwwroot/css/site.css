@@ -691,6 +691,25 @@ h3 {
     transition: border-color 0.18s ease, box-shadow 0.18s ease, background 0.18s ease;
 }
 
+select.form-input,
+select {
+    background-color: #1a1f2e;
+    color: #ffffff;
+    color-scheme: dark;
+}
+
+select option {
+    background-color: #1a1f2e;
+    color: #ffffff;
+}
+
+select:focus {
+    outline: none;
+    border-color: rgba(10, 209, 183, 0.72);
+    box-shadow: 0 0 0 3px rgba(10, 209, 183, 0.12);
+    background: #1a1f2e;
+}
+
 .form-input:focus {
     outline: none;
     border-color: rgba(10, 209, 183, 0.72);
@@ -858,6 +877,26 @@ h3 {
     text-transform: capitalize;
 }
 
+.date-picker-title-button {
+    width: 100%;
+    border: 0;
+    background: transparent;
+    color: inherit;
+    font: inherit;
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+    text-transform: capitalize;
+}
+
+.date-picker-title-button:hover,
+.date-picker-title-button:focus-visible {
+    color: #ecfffd;
+    text-decoration: underline;
+    outline: none;
+}
+
 .date-picker-nav {
     width: 2.4rem;
     height: 2.4rem;
@@ -933,6 +972,80 @@ h3 {
     border-color: rgba(10, 209, 183, 0.82);
     color: #ecfffd;
     box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.06);
+}
+
+.date-picker-year-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 0.35rem;
+}
+
+.date-picker-year-button {
+    min-height: 2.45rem;
+    border-radius: 10px;
+    border: 1px solid transparent;
+    background: rgba(18, 29, 42, 0.9);
+    color: #deebf8;
+    font: inherit;
+    cursor: pointer;
+    transition: background 0.16s ease, border-color 0.16s ease, color 0.16s ease, transform 0.16s ease;
+}
+
+.date-picker-year-button:hover,
+.date-picker-year-button:focus-visible {
+    background: rgba(10, 209, 183, 0.12);
+    border-color: rgba(10, 209, 183, 0.35);
+    outline: none;
+}
+
+.date-picker-year-button.is-selected {
+    background: linear-gradient(135deg, rgba(10, 209, 183, 0.28), rgba(10, 209, 183, 0.18));
+    border-color: rgba(10, 209, 183, 0.82);
+    color: #ecfffd;
+}
+
+.date-picker-time-section {
+    margin-top: 0.9rem;
+    padding-top: 0.8rem;
+    border-top: 1px solid rgba(128, 160, 190, 0.16);
+    display: grid;
+    gap: 0.45rem;
+}
+
+.date-picker-time-label {
+    font-size: 0.72rem;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    color: #8ca4be;
+}
+
+.date-picker-time-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.45rem;
+}
+
+.date-picker-time-input {
+    min-width: 0;
+    text-align: center;
+}
+
+.time-split-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.75rem;
+}
+
+.time-split-grid > div {
+    display: grid;
+    gap: 0.35rem;
+}
+
+.date-picker-nav:disabled {
+    opacity: 0.3;
+    cursor: default;
+    transform: none;
+    box-shadow: none;
 }
 
 .date-picker-error {

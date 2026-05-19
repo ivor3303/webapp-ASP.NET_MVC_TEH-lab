@@ -101,6 +101,9 @@ public class OdrzavanjeController : Controller
             return NotFound();
         }
 
+        ViewBag.OpremaText = item.Oprema?.Naziv ?? string.Empty;
+        ViewBag.IzvrsioText = item.Izvrsio is null ? string.Empty : $"{item.Izvrsio.Ime} {item.Izvrsio.Prezime}";
+
         return View(item);
     }
 

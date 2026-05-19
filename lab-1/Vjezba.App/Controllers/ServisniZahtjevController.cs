@@ -93,6 +93,8 @@ public class ServisniZahtjevController : Controller
             return NotFound();
         }
 
+        ViewBag.OpremaText = item.Oprema?.Naziv ?? string.Empty;
+
         return View(item);
     }
 

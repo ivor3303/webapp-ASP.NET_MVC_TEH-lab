@@ -22,6 +22,7 @@
     var selectedText = GetString("SelectedText");
     var validationTargetId = GetString("ValidationTargetId");
     var validationMessage = GetString("ValidationMessage");
+    var initialText = GetString("InitialText");
     var rootId = $"{fieldName}-autocomplete-root";
     var textId = $"{fieldName}-autocomplete-text";
     var hiddenId = $"{fieldName}-autocomplete-id";
@@ -32,7 +33,7 @@
     <input type="text"
            class="autocomplete-input"
            id="@textId"
-           value="@selectedText"
+           value="@(string.IsNullOrWhiteSpace(initialText) ? selectedText : initialText)"
            placeholder="@placeholder"
             autocomplete="off"
            aria-autocomplete="list"

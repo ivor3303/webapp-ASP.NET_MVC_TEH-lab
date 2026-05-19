@@ -1,6 +1,15 @@
 @model RadnaOprema
 
 @{
+    string GetStatusName(StatusOpreme status) => status switch
+    {
+        StatusOpreme.UServisu => "U servisu",
+        StatusOpreme.Neispravna => "Neispravna",
+        StatusOpreme.Ispravna => "Ispravna",
+        StatusOpreme.Otpisana => "Otpisana",
+        _ => status.ToString()
+    };
+
     ViewData["Title"] = "Detalji opreme";
 
     var statusClass = Model.Status switch
@@ -26,7 +35,7 @@
             <li><strong>Inventarni broj:</strong> @Model.InventarniBroj</li>
             <li><strong>Serijski broj:</strong> @Model.SerijskiBroj</li>
             <li><strong>Datum nabave:</strong> @Model.DatumNabave.ToString("dd.MM.yyyy")</li>
-            <li><strong>Status:</strong> <span class="@statusClass">@Model.Status</span></li>
+            <li><strong>Status:</strong> <span class="@statusClass">@GetStatusName(Model.Status)</span></li>
         </ul>
     </article>
 

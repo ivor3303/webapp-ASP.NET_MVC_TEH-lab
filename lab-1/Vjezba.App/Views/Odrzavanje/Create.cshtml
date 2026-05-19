@@ -37,9 +37,20 @@
             <span asp-validation-for="Napomena" class="field-error"></span>
         </div>
 
+        <input asp-for="TrajanjeTicks" type="hidden" id="TrajanjeTicks" />
+
         <div class="form-field">
-            <label class="form-label" for="TrajanjeTicks">Trajanje (ticks)</label>
-            <input asp-for="TrajanjeTicks" class="form-input" autocomplete="off" />
+            <label class="form-label">Trajanje</label>
+            <div class="time-split-grid" data-duration-picker>
+                <div>
+                    <label class="form-label" for="TrajanjeSati">Sati</label>
+                    <input type="number" id="TrajanjeSati" class="form-input" min="0" max="23" step="1" value="0" />
+                </div>
+                <div>
+                    <label class="form-label" for="TrajanjeMinute">Minute</label>
+                    <input type="number" id="TrajanjeMinute" class="form-input" min="0" max="59" step="1" value="0" />
+                </div>
+            </div>
             <span asp-validation-for="TrajanjeTicks" class="field-error"></span>
         </div>
 
@@ -77,6 +88,39 @@
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const cijenaInput = document.querySelector('[name="Cijena"]');
+            const durationPicker = document.querySelector('[data-duration-picker]');
+            const trajanjeTicksInput = document.getElementById('TrajanjeTicks');
+            const satiInput = document.getElementById('TrajanjeSati');
+            const minuteInput = document.getElementById('TrajanjeMinute');
+
+            const updateTicks = () => {
+                if (!trajanjeTicksInput || !satiInput || !minuteInput) {
+                    return;
+                }
+
+                const sati = Math.max(0, Math.min(23, Number.parseInt(satiInput.value || '0', 10) || 0));
+                const minute = Math.max(0, Math.min(59, Number.parseInt(minuteInput.value || '0', 10) || 0));
+                const ticks = ((sati * 3600) + (minute * 60)) * 10000000;
+
+                satiInput.value = String(sati);
+                minuteInput.value = String(minute);
+                trajanjeTicksInput.value = String(ticks);
+            };
+
+            if (durationPicker && trajanjeTicksInput && satiInput && minuteInput) {
+                updateTicks();
+
+                satiInput.addEventListener('input', updateTicks);
+                minuteInput.addEventListener('input', updateTicks);
+                satiInput.addEventListener('blur', updateTicks);
+                minuteInput.addEventListener('blur', updateTicks);
+
+                const form = durationPicker.closest('form');
+                if (form) {
+                    form.addEventListener('submit', updateTicks);
+                }
+            }
+
             if (!cijenaInput) {
                 return;
             }
