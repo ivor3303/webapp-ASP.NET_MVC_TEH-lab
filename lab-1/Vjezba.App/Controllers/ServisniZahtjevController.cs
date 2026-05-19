@@ -66,6 +66,11 @@ public class ServisniZahtjevController : Controller
     [Route("novi")]
     public IActionResult Create(ServisniZahtjev model)
     {
+        if (model.OpremaId == 0)
+        {
+            ModelState.AddModelError(nameof(model.OpremaId), "Molimo odaberite opremu");
+        }
+
         if (!ModelState.IsValid)
         {
             HydrateSelections(model);
@@ -102,6 +107,11 @@ public class ServisniZahtjevController : Controller
             return NotFound();
         }
 
+        if (model.OpremaId == 0)
+        {
+            ModelState.AddModelError(nameof(model.OpremaId), "Molimo odaberite opremu");
+        }
+
         if (!ModelState.IsValid)
         {
             model.Id = id;
@@ -128,24 +138,6 @@ public class ServisniZahtjevController : Controller
         _repository.Delete(id);
         TempData["Success"] = "Servisni zahtjev je uspješno obrisan.";
         return RedirectToAction(nameof(Index));
-    }
-
-    [HttpGet("/oprema/autocomplete")]
-    public IActionResult Autocomplete(string? query)
-    {
-        var results = _radnaOpremaRepository.GetAll();
-
-        if (!string.IsNullOrWhiteSpace(query))
-        {
-            var normalizedQuery = query.Trim();
-            results = results
-                .Where(x => x.Naziv.Contains(normalizedQuery, StringComparison.OrdinalIgnoreCase)
-                    || x.InventarniBroj.Contains(normalizedQuery, StringComparison.OrdinalIgnoreCase)
-                    || x.SerijskiBroj.Contains(normalizedQuery, StringComparison.OrdinalIgnoreCase))
-                .ToList();
-        }
-
-        return Json(results.Select(x => new { id = x.Id, text = $"{x.Naziv} ({x.InventarniBroj})" }));
     }
 
     private void HydrateSelections(ServisniZahtjev model)

@@ -64,21 +64,20 @@ public class RadnaOpremaController : Controller
 
     [HttpGet]
     [Route("autocomplete")]
-    public IActionResult Autocomplete(string? query)
+    public IActionResult SearchAutocomplete(string? query)
     {
-        var results = _repository.GetAll();
+        var results = _repository.GetAll()
+            .Where(x => x.DeletedAt == null);
 
         if (!string.IsNullOrWhiteSpace(query))
         {
             var normalizedQuery = query.Trim();
             results = results
-                .Where(x => x.Naziv.Contains(normalizedQuery, StringComparison.OrdinalIgnoreCase)
-                    || x.InventarniBroj.Contains(normalizedQuery, StringComparison.OrdinalIgnoreCase)
-                    || x.SerijskiBroj.Contains(normalizedQuery, StringComparison.OrdinalIgnoreCase))
+                .Where(x => x.Naziv.Contains(normalizedQuery, StringComparison.OrdinalIgnoreCase))
                 .ToList();
         }
 
-        return Json(results.Select(x => new { id = x.Id, text = $"{x.Naziv} ({x.InventarniBroj})" }));
+        return Json(results.Select(x => new { id = x.Id, text = x.Naziv }));
     }
 
     [HttpGet]

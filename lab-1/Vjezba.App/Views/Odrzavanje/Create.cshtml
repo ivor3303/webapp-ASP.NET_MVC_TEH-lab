@@ -72,3 +72,18 @@
         </div>
     </form>
 </section>
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const cijenaInput = document.querySelector('[name="Cijena"]');
+            if (!cijenaInput) {
+                return;
+            }
+
+            cijenaInput.addEventListener('blur', function () {
+                this.value = this.value.trim();
+            });
+        });
+    </script>
+}

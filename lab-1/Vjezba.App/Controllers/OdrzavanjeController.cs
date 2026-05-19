@@ -69,6 +69,16 @@ public class OdrzavanjeController : Controller
     [Route("novi")]
     public IActionResult Create(Odrzavanje model)
     {
+        if (model.OpremaId == 0)
+        {
+            ModelState.AddModelError(nameof(model.OpremaId), "Molimo odaberite opremu");
+        }
+
+        if (model.IzvrsioId == 0)
+        {
+            ModelState.AddModelError(nameof(model.IzvrsioId), "Molimo odaberite radnika");
+        }
+
         if (!ModelState.IsValid)
         {
             HydrateSelections(model);
@@ -103,6 +113,16 @@ public class OdrzavanjeController : Controller
         if (item is null)
         {
             return NotFound();
+        }
+
+        if (model.OpremaId == 0)
+        {
+            ModelState.AddModelError(nameof(model.OpremaId), "Molimo odaberite opremu");
+        }
+
+        if (model.IzvrsioId == 0)
+        {
+            ModelState.AddModelError(nameof(model.IzvrsioId), "Molimo odaberite radnika");
         }
 
         if (!ModelState.IsValid)

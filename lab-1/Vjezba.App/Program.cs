@@ -1,11 +1,20 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using System.Globalization;
 using Vjezba.App.Data;
+using Vjezba.App.ModelBinding;
 using Vjezba.App.Repositories.EF;
 using Vjezba.Model;
 
+var cultureInfo = new CultureInfo("hr-HR");
+CultureInfo.DefaultThreadCurrentCulture = cultureInfo;
+CultureInfo.DefaultThreadCurrentUICulture = cultureInfo;
+
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddControllersWithViews();
+builder.Services.AddControllersWithViews(options =>
+{
+    options.ModelBinderProviders.Insert(0, new CommaOrDotDecimalModelBinderProvider());
+});
 builder.Services.AddDbContext<VjezbaDbContext>(options =>
     options.UseSqlite(builder.Configuration.GetConnectionString("VjezbaDbContext")));
 builder.Services.AddScoped<EFRadnaOpremaRepository>();

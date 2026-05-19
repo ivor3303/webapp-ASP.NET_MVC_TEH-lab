@@ -131,15 +131,17 @@ public class RadnikController : Controller
     }
 
     [HttpGet("/radnici/autocomplete")]
-    public IActionResult Autocomplete(string? query)
+    public IActionResult SearchAutocomplete(string? query)
     {
-        var results = _repository.GetAll();
+        var results = _repository.GetAll()
+            .Where(x => x.DeletedAt == null);
 
         if (!string.IsNullOrWhiteSpace(query))
         {
             var normalizedQuery = query.Trim();
             results = results
-                .Where(x => $"{x.Ime} {x.Prezime}".Contains(normalizedQuery, StringComparison.OrdinalIgnoreCase))
+                .Where(x => x.Ime.Contains(normalizedQuery, StringComparison.OrdinalIgnoreCase)
+                    || x.Prezime.Contains(normalizedQuery, StringComparison.OrdinalIgnoreCase))
                 .ToList();
         }
 

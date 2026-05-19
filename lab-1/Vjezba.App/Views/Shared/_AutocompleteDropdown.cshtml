@@ -167,8 +167,7 @@
                 };
 
                 textInput.addEventListener('input', () => {
-                    hiddenInput.value = '';
-                    setValidationState(false);
+                    hiddenInput.value = '0';
                     window.clearTimeout(debounceTimer);
 
                     const query = textInput.value.trim();
@@ -211,9 +210,12 @@
                     }
                 });
 
-                textInput.addEventListener('blur', () => {
-                    setValidationState(!!hiddenInput.value && Number(hiddenInput.value) > 0);
-                });
+                const form = root.closest('form');
+                if (form) {
+                    form.addEventListener('submit', () => {
+                        setValidationState(!!hiddenInput.value && Number(hiddenInput.value) > 0);
+                    });
+                }
 
                 document.addEventListener('click', (event) => {
                     if (!root.contains(event.target)) {

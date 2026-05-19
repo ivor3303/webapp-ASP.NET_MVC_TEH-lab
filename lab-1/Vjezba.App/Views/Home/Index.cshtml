@@ -1,16 +1,16 @@
 @model Vjezba.App.ViewModels.HomeDashboardViewModel
 
 @{
-    ViewData["Title"] = "Landing dashboard";
+    ViewData["Title"] = "Nadzorna ploča";
 }
 
 <section class="hero-panel">
     <div>
         <p class="eyebrow">INTERNA KONTROLA OPREME</p>
-        <h1>Maintenance operativni centar</h1>
+        <h1>Operativni centar održavanja</h1>
         <p style="max-width: 58ch; line-height: 1.6;">
-            Operativna kontrolna ploca za tehnicke timove: status opreme, servisni rizici
-            i aktivnosti odrzavanja na jednom mjestu.
+            Operativna kontrolna ploča za tehničke timove: status opreme, servisni rizici
+            i aktivnosti održavanja na jednom mjestu.
         </p>
         <div class="hero-meta-grid">
             <article>
@@ -18,7 +18,7 @@
                 <strong>@Model.BrojLokacija</strong>
             </article>
             <article>
-                <span>Proizvodaci</span>
+                <span>Proizvođači</span>
                 <strong>@Model.BrojProizvodaca</strong>
             </article>
             <article>
@@ -36,7 +36,7 @@
 
 <section class="kpi-section detail-panel">
     <div class="section-heading">
-        <h2>Kljucni pokazatelji</h2>
+        <h2>Ključni pokazatelji</h2>
         <p>Status opreme i resursa za brzu dnevnu procjenu.</p>
     </div>
     <div class="stats-grid">
@@ -65,7 +65,7 @@
             <h2>@Model.BrojRadnika</h2>
         </article>
         <article class="stat-card">
-            <p>Odrzavanja</p>
+            <p>Održavanja</p>
             <h2>@Model.UkupnoOdrzavanja</h2>
         </article>
         <article class="stat-card">
@@ -78,25 +78,25 @@
 <section class="detail-panel">
     <div class="section-heading">
         <h2>Brzi ulazi u sekcije</h2>
-        <p>Najcesce koristen pristup operativnim modulima.</p>
+        <p>Najčešći pristup operativnim modulima.</p>
     </div>
     <div class="quick-links-grid">
         <a class="quick-link" asp-controller="RadnaOprema" asp-action="Index">Radna oprema</a>
-        <a class="quick-link" asp-controller="Proizvodac" asp-action="Index">Proizvodaci</a>
+        <a class="quick-link" asp-controller="Proizvodac" asp-action="Index">Proizvođači</a>
         <a class="quick-link" asp-controller="KategorijaOpreme" asp-action="Index">Kategorije</a>
         <a class="quick-link" asp-controller="Lokacija" asp-action="Index">Lokacije</a>
-        <a class="quick-link" asp-controller="Odrzavanje" asp-action="Index">Odrzavanja</a>
+        <a class="quick-link" asp-controller="Odrzavanje" asp-action="Index">Održavanja</a>
         <a class="quick-link" asp-controller="Radnik" asp-action="Index">Radnici</a>
         <a class="quick-link" asp-controller="ServisniZahtjev" asp-action="Index">Servisni zahtjevi</a>
-        <a class="quick-link" asp-controller="ZaduzenjeOpreme" asp-action="Index">Zaduzenja opreme</a>
+        <a class="quick-link" asp-controller="ZaduzenjeOpreme" asp-action="Index">Zaduženja opreme</a>
     </div>
 </section>
 
 <section class="dashboard-split">
     <article class="detail-panel">
         <div class="section-heading">
-            <h2>Najkriticnija oprema</h2>
-            <p>Oprema s vecim rizikom zbog statusa i servisnih indikatora.</p>
+            <h2>Najkritičnija oprema</h2>
+            <p>Oprema s većim rizikom zbog statusa i servisnih indikatora.</p>
         </div>
         <ul class="list-stack">
         @foreach (var item in Model.NajkriticnijaOprema)
@@ -107,7 +107,7 @@
                     <span class="severity-badge">@item.Status</span>
                 </div>
                 <p>Inv: @item.InventarniBroj | Lokacija: @item.Lokacija</p>
-                <p>Odrzavanja: @item.BrojOdrzavanja | Otvoreni zahtjevi: @item.OtvorenihZahtjeva</p>
+                <p>Održavanja: @item.BrojOdrzavanja | Otvoreni zahtjevi: @item.OtvorenihZahtjeva</p>
                 <a asp-controller="RadnaOprema" asp-action="Details" asp-route-id="@item.Id">Pogledaj opremu</a>
             </li>
         }
@@ -116,8 +116,8 @@
 
     <article class="detail-panel">
         <div class="section-heading">
-            <h2>Nedavna odrzavanja</h2>
-            <p>Zadnjih 5 izvrsenih zahvata.</p>
+            <h2>Nedavna održavanja</h2>
+            <p>Zadnjih 5 izvršenih zahvata.</p>
         </div>
         <ul class="list-stack">
         @foreach (var item in Model.NedavnaOdrzavanja)
@@ -128,8 +128,8 @@
                     <span class="metric-mini">@item.Datum.ToString("dd.MM.yyyy")</span>
                 </div>
                 <p>Oprema: @item.OpremaNaziv</p>
-                <p>Izvrsio: @item.Izvrsio | Cijena: @item.Cijena.ToString("0.00") EUR</p>
-                <a asp-controller="Odrzavanje" asp-action="Details" asp-route-id="@item.Id">Detalji odrzavanja</a>
+                <p>Izvršio: @item.Izvrsio | Cijena: @item.Cijena.ToString("0.00") EUR</p>
+                <a asp-controller="Odrzavanje" asp-action="Details" asp-route-id="@item.Id">Detalji održavanja</a>
             </li>
         }
         </ul>

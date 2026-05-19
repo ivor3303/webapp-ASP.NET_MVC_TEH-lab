@@ -11,7 +11,7 @@ else
         {
             <article class="panel-card zaduzenje-opreme-card">
                 <h2>@item.DatumZaduzenja.ToString("dd.MM.yyyy")</h2>
-                <p><strong>Radnik:</strong> @item.Radnik is null ? string.Empty : $"{item.Radnik.Ime} {item.Radnik.Prezime}"</p>
+                <p><strong>Radnik:</strong> @(item.Radnik != null ? $"{item.Radnik.Ime} {item.Radnik.Prezime}" : "Nije assigned")</p>
                 <p><strong>Oprema:</strong> @item.RadnaOprema?.Naziv</p>
                 <p><strong>Razduženo:</strong> @(item.DatumRazduzenja.HasValue ? item.DatumRazduzenja.Value.ToString("dd.MM.yyyy") : "Nije razduženo")</p>
                 <div class="action-group">

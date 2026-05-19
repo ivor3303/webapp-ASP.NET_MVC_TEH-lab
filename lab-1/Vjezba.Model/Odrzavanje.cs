@@ -14,6 +14,7 @@ namespace Vjezba.Model
         [MaxLength(500)]
         public string Opis { get; set; } = string.Empty;
 
+        [Required(ErrorMessage = "Cijena je obavezna")]
         public decimal Cijena { get; set; }
 
         public int IzvrsioId { get; set; }

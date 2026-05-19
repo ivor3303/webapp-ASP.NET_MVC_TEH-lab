@@ -27,9 +27,13 @@
             <span asp-validation-for="OpisKvara" class="field-error"></span>
         </div>
 
-        <div class="form-field">
-            <label class="form-label" for="Hitno">Hitno</label>
-            <input asp-for="Hitno" id="Hitno" />
+        <div class="form-field urgency-selector-field">
+            <span class="form-label">Hitno</span>
+            <input asp-for="Hitno" type="hidden" id="Hitno" />
+            <div class="urgency-selector" data-boolean-selector data-target="#Hitno" data-default="@(Model.Hitno ? "true" : "false")">
+                <button type="button" class="urgency-selector-button urgency-selector-button-true" data-value="true">Hitno</button>
+                <button type="button" class="urgency-selector-button urgency-selector-button-false" data-value="false">Nije hitno</button>
+            </div>
             <span asp-validation-for="Hitno" class="field-error"></span>
         </div>
 
@@ -58,3 +62,36 @@
         </div>
     </form>
 </section>
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('[data-boolean-selector]').forEach((selector) => {
+                const targetSelector = selector.getAttribute('data-target');
+                const hiddenInput = targetSelector ? document.querySelector(targetSelector) : null;
+                const buttons = Array.from(selector.querySelectorAll('[data-value]'));
+
+                if (!hiddenInput || buttons.length === 0) {
+                    return;
+                }
+
+                const syncState = (value) => {
+                    hiddenInput.value = value ? 'true' : 'false';
+                    buttons.forEach((button) => {
+                        const isActive = button.getAttribute('data-value') === String(value);
+                        button.classList.toggle('is-active', isActive);
+                        button.setAttribute('aria-pressed', String(isActive));
+                    });
+                };
+
+                buttons.forEach((button) => {
+                    button.addEventListener('click', () => {
+                        syncState(button.getAttribute('data-value') === 'true');
+                    });
+                });
+
+                syncState(hiddenInput.value === 'true' || selector.getAttribute('data-default') === 'true');
+            });
+        });
+    </script>
+}

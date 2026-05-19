@@ -59,10 +59,10 @@
             <label class="form-label" for="ProizvodacId-autocomplete-text">Proizvođač</label>
             <partial name="_AutocompleteDropdown" model='new {
                 FieldName = "ProizvodacId",
-                Placeholder = "Pretražite proizvodace...",
+                Placeholder = "Pretražite proizvođače...",
                 SearchUrl = "/proizvodac/autocomplete",
                 ValidationTargetId = "ProizvodacId-error",
-                ValidationMessage = "Molimo odaberite lokaciju"
+                ValidationMessage = "Molimo odaberite proizvođača"
             }' />
             <span asp-validation-for="ProizvodacId" id="ProizvodacId-error" class="field-error"></span>
         </div>
@@ -74,7 +74,7 @@
                 Placeholder = "Pretražite kategorije opreme...",
                 SearchUrl = "/kategorijaopreme/autocomplete",
                 ValidationTargetId = "KategorijaOpremeId-error",
-                ValidationMessage = "Molimo odaberite lokaciju"
+                ValidationMessage = "Molimo odaberite kategoriju opreme"
             }' />
             <span asp-validation-for="KategorijaOpremeId" id="KategorijaOpremeId-error" class="field-error"></span>
         </div>

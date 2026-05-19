@@ -67,6 +67,16 @@ public class ZaduzenjeOpremeController : Controller
     [Route("novi")]
     public IActionResult Create(ZaduzenjeOpreme model)
     {
+        if (model.RadnikId == 0)
+        {
+            ModelState.AddModelError(nameof(model.RadnikId), "Molimo odaberite radnika");
+        }
+
+        if (model.RadnaOpremaId == 0)
+        {
+            ModelState.AddModelError(nameof(model.RadnaOpremaId), "Molimo odaberite opremu");
+        }
+
         if (!ModelState.IsValid)
         {
             HydrateSelections(model);
@@ -103,6 +113,16 @@ public class ZaduzenjeOpremeController : Controller
             return NotFound();
         }
 
+        if (model.RadnikId == 0)
+        {
+            ModelState.AddModelError(nameof(model.RadnikId), "Molimo odaberite radnika");
+        }
+
+        if (model.RadnaOpremaId == 0)
+        {
+            ModelState.AddModelError(nameof(model.RadnaOpremaId), "Molimo odaberite opremu");
+        }
+
         if (!ModelState.IsValid)
         {
             model.Id = id;
@@ -128,40 +148,6 @@ public class ZaduzenjeOpremeController : Controller
         _repository.Delete(id);
         TempData["Success"] = "Zaduženje opreme je uspješno obrisano.";
         return RedirectToAction(nameof(Index));
-    }
-
-    [HttpGet("/radnici/autocomplete")]
-    public IActionResult RadnikAutocomplete(string? query)
-    {
-        var results = _radnikRepository.GetAll();
-
-        if (!string.IsNullOrWhiteSpace(query))
-        {
-            var normalizedQuery = query.Trim();
-            results = results
-                .Where(x => $"{x.Ime} {x.Prezime}".Contains(normalizedQuery, StringComparison.OrdinalIgnoreCase))
-                .ToList();
-        }
-
-        return Json(results.Select(x => new { id = x.Id, text = $"{x.Ime} {x.Prezime}" }));
-    }
-
-    [HttpGet("/oprema/autocomplete")]
-    public IActionResult OpremaAutocomplete(string? query)
-    {
-        var results = _radnaOpremaRepository.GetAll();
-
-        if (!string.IsNullOrWhiteSpace(query))
-        {
-            var normalizedQuery = query.Trim();
-            results = results
-                .Where(x => x.Naziv.Contains(normalizedQuery, StringComparison.OrdinalIgnoreCase)
-                    || x.InventarniBroj.Contains(normalizedQuery, StringComparison.OrdinalIgnoreCase)
-                    || x.SerijskiBroj.Contains(normalizedQuery, StringComparison.OrdinalIgnoreCase))
-                .ToList();
-        }
-
-        return Json(results.Select(x => new { id = x.Id, text = $"{x.Naziv} ({x.InventarniBroj})" }));
     }
 
     private void HydrateSelections(ZaduzenjeOpreme model)

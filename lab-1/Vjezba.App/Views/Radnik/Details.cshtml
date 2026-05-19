@@ -17,7 +17,7 @@
 </section>
 
 <section class="detail-panel">
-    <h2>Zaduzenja opreme</h2>
+    <h2>Zaduženja opreme</h2>
 @if (Model.Zaduzenja.Any())
 {
     <ul class="list-stack">
@@ -25,16 +25,16 @@
     {
         <li class="list-item">
             <strong>@zaduzenje.RadnaOprema.Naziv</strong> (@zaduzenje.RadnaOprema.InventarniBroj)
-            <p>Zaduzena od @zaduzenje.DatumZaduzenja.ToString("dd.MM.yyyy")</p>
-            <p>Razduzena: @(zaduzenje.DatumRazduzenja.HasValue ? zaduzenje.DatumRazduzenja.Value.ToString("dd.MM.yyyy") : "nije")</p>
-            <a asp-controller="ZaduzenjeOpreme" asp-action="Details" asp-route-id="@zaduzenje.Id">Detalji zaduzenja</a>
+            <p>Zadužena od @zaduzenje.DatumZaduzenja.ToString("dd.MM.yyyy")</p>
+            <p>Razdužena: @(zaduzenje.DatumRazduzenja.HasValue ? zaduzenje.DatumRazduzenja.Value.ToString("dd.MM.yyyy") : "nije")</p>
+            <a asp-controller="ZaduzenjeOpreme" asp-action="Details" asp-route-id="@zaduzenje.Id">Detalji zaduženja</a>
         </li>
     }
     </ul>
 }
 else
 {
-    <p>Radnik nema evidentiranih zaduzenja.</p>
+    <p>Radnik nema evidentiranih zaduženja.</p>
 }
 </section>
 
