@@ -1,0 +1,2 @@
+[xUnit.net 00:00:03.72]     Vjezba.Tests.ApiTests.OdrzavanjeApiTests.Put_UpdatesOdrzavanje_ReturnsOk [FAIL]
+Test Run Failed.

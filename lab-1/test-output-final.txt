@@ -1,0 +1,12 @@
+﻿  Determining projects to restore...
+  All projects are up-to-date for restore.
+  Vjezba.Model -> c:\Users\ivorz\webapp-ASP.NET_MVC_TEH-lab\lab-1\Vjezba.Model\bin\Debug\net9.0\Vjezba.Model.dll
+  Vjezba.App -> c:\Users\ivorz\webapp-ASP.NET_MVC_TEH-lab\lab-1\Vjezba.App\bin\Debug\net9.0\Vjezba.App.dll
+  Vjezba.Tests -> c:\Users\ivorz\webapp-ASP.NET_MVC_TEH-lab\lab-1\Vjezba.Tests\bin\Debug\net9.0\Vjezba.Tests.dll
+Test run for c:\Users\ivorz\webapp-ASP.NET_MVC_TEH-lab\lab-1\Vjezba.Tests\bin\Debug\net9.0\Vjezba.Tests.dll (.NETCoreApp,Version=v9.0)
+VSTest version 17.14.1 (x64)
+
+Starting test execution, please wait...
+A total of 1 test files matched the specified pattern.
+
+Passed!  - Failed:     0, Passed:    32, Skipped:     0, Total:    32, Duration: 5 s - Vjezba.Tests.dll (net9.0)

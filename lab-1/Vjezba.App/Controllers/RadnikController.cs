@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Vjezba.App.Repositories.EF;
 using Vjezba.Model;
@@ -15,6 +16,7 @@ public class RadnikController : Controller
     }
 
     [Route("")]
+    [AllowAnonymous]
     public IActionResult Index()
     {
         var items = _repository.GetAll();
@@ -22,6 +24,7 @@ public class RadnikController : Controller
     }
 
     [Route("detalji/{id:int}")]
+    [AllowAnonymous]
     public IActionResult Details(int id)
     {
         var item = _repository.GetById(id);
@@ -56,6 +59,7 @@ public class RadnikController : Controller
 
     [HttpGet]
     [Route("novi")]
+    [Authorize(Roles = "Admin,Manager")]
     public IActionResult Create()
     {
         return View(new Radnik { DatumZaposlenja = DateTime.UtcNow, Aktivan = true });
@@ -64,6 +68,7 @@ public class RadnikController : Controller
     [HttpPost]
     [ValidateAntiForgeryToken]
     [Route("novi")]
+    [Authorize(Roles = "Admin,Manager")]
     public IActionResult Create(Radnik model)
     {
         if (!ModelState.IsValid)
@@ -79,6 +84,7 @@ public class RadnikController : Controller
 
     [HttpGet]
     [Route("uredi/{id:int}")]
+    [Authorize(Roles = "Admin,Manager")]
     public IActionResult Edit(int id)
     {
         var item = _repository.GetById(id);
@@ -93,6 +99,7 @@ public class RadnikController : Controller
     [HttpPost]
     [ValidateAntiForgeryToken]
     [Route("uredi/{id:int}")]
+    [Authorize(Roles = "Admin,Manager")]
     public IActionResult Edit(int id, Radnik model)
     {
         var item = _repository.GetById(id);
@@ -123,6 +130,7 @@ public class RadnikController : Controller
     [HttpPost]
     [ValidateAntiForgeryToken]
     [Route("obrisi/{id:int}")]
+    [Authorize(Roles = "Admin")]
     public IActionResult Delete(int id)
     {
         _repository.Delete(id);

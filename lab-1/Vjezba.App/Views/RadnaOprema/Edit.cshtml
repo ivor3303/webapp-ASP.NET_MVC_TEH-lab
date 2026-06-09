@@ -7,90 +7,105 @@
 <section class="detail-panel form-panel">
     <h1>Uredi radnu opremu</h1>
 
-    <form asp-action="Edit" asp-route-id="@Model.Id" method="post" class="entity-form" autocomplete="off">
-        <div asp-validation-summary="ModelOnly" class="validation-summary"></div>
+    <div class="row">
+        <div class="col-md-6">
+            <form asp-action="Edit" asp-route-id="@Model.Id" method="post" class="entity-form" autocomplete="off">
+                <div asp-validation-summary="ModelOnly" class="validation-summary"></div>
 
-        <input asp-for="Id" type="hidden" />
+                <input asp-for="Id" type="hidden" />
 
-        <div class="form-field">
-            <label class="form-label" for="Naziv">Naziv</label>
-            <input asp-for="Naziv" class="form-input" autocomplete="off" />
-            <span asp-validation-for="Naziv" class="field-error"></span>
+                <div class="form-field">
+                    <label class="form-label" for="Naziv">Naziv</label>
+                    <input asp-for="Naziv" class="form-input" autocomplete="off" />
+                    <span asp-validation-for="Naziv" class="field-error"></span>
+                </div>
+
+                <div class="form-field">
+                    <label class="form-label" for="InventarniBroj">Inventarni broj</label>
+                    <input asp-for="InventarniBroj" class="form-input" autocomplete="off" />
+                    <span asp-validation-for="InventarniBroj" class="field-error"></span>
+                </div>
+
+                <div class="form-field">
+                    <label class="form-label" for="SerijskiBroj">Serijski broj</label>
+                    <input asp-for="SerijskiBroj" class="form-input" autocomplete="off" />
+                    <span asp-validation-for="SerijskiBroj" class="field-error"></span>
+                </div>
+
+                <div class="form-field">
+                    <partial name="_DatePicker" model='new {
+                        FieldName = "DatumNabave",
+                        Label = "Datum nabave",
+                        Value = Model.DatumNabave,
+                        Placeholder = "Odaberite datum..."
+                    }' />
+                </div>
+
+                <div class="form-field">
+                    <label class="form-label" for="Status">Status</label>
+                    <select asp-for="Status" class="form-input" asp-items="Html.GetEnumSelectList<StatusOpreme>()" autocomplete="off"></select>
+                    <span asp-validation-for="Status" class="field-error"></span>
+                </div>
+
+                <div class="form-field">
+                    <label class="form-label" for="LokacijaId-autocomplete-text">Lokacija</label>
+                    <partial name="_AutocompleteDropdown" model='new {
+                        FieldName = "LokacijaId",
+                        Placeholder = "Pretražite lokacije...",
+                        SearchUrl = "/lokacije/autocomplete",
+                        SelectedId = Model.LokacijaId,
+                        SelectedText = Model.Lokacija?.Naziv,
+                        ValidationTargetId = "LokacijaId-error",
+                        ValidationMessage = "Molimo odaberite lokaciju"
+                    }' />
+                    <span asp-validation-for="LokacijaId" id="LokacijaId-error" class="field-error"></span>
+                </div>
+
+                <div class="form-field">
+                    <label class="form-label" for="ProizvodacId-autocomplete-text">Proizvođač</label>
+                    <partial name="_AutocompleteDropdown" model='new {
+                        FieldName = "ProizvodacId",
+                        Placeholder = "Pretražite proizvođače...",
+                        SearchUrl = "/proizvodac/autocomplete",
+                        SelectedId = Model.ProizvodacId,
+                        SelectedText = Model.Proizvodac?.Naziv,
+                        ValidationTargetId = "ProizvodacId-error",
+                        ValidationMessage = "Molimo odaberite proizvođača"
+                    }' />
+                    <span asp-validation-for="ProizvodacId" id="ProizvodacId-error" class="field-error"></span>
+                </div>
+
+                <div class="form-field">
+                    <label class="form-label" for="KategorijaOpremeId-autocomplete-text">Kategorija opreme</label>
+                    <partial name="_AutocompleteDropdown" model='new {
+                        FieldName = "KategorijaOpremeId",
+                        Placeholder = "Pretražite kategorije opreme...",
+                        SearchUrl = "/kategorijaopreme/autocomplete",
+                        SelectedId = Model.KategorijaOpremeId,
+                        SelectedText = Model.Kategorija?.Naziv,
+                        ValidationTargetId = "KategorijaOpremeId-error",
+                        ValidationMessage = "Molimo odaberite kategoriju opreme"
+                    }' />
+                    <span asp-validation-for="KategorijaOpremeId" id="KategorijaOpremeId-error" class="field-error"></span>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="action-button action-button-primary">Spremi promjene</button>
+                </div>
+            </form>
         </div>
-
-        <div class="form-field">
-            <label class="form-label" for="InventarniBroj">Inventarni broj</label>
-            <input asp-for="InventarniBroj" class="form-input" autocomplete="off" />
-            <span asp-validation-for="InventarniBroj" class="field-error"></span>
+        <div class="col-md-6">
+            <label class="control-label">Dokumenti</label>
+            <form id="attachmentDz"
+                  asp-controller="RadnaOprema"
+                  asp-action="UploadAttachment"
+                  asp-route-opremaId="@Model.Id"
+                  enctype="multipart/form-data"
+                  class="dropzone">
+            </form>
+            <div id="attachmentList"></div>
         </div>
-
-        <div class="form-field">
-            <label class="form-label" for="SerijskiBroj">Serijski broj</label>
-            <input asp-for="SerijskiBroj" class="form-input" autocomplete="off" />
-            <span asp-validation-for="SerijskiBroj" class="field-error"></span>
-        </div>
-
-        <div class="form-field">
-            <partial name="_DatePicker" model='new {
-                FieldName = "DatumNabave",
-                Label = "Datum nabave",
-                Value = Model.DatumNabave,
-                Placeholder = "Odaberite datum..."
-            }' />
-        </div>
-
-        <div class="form-field">
-            <label class="form-label" for="Status">Status</label>
-            <select asp-for="Status" class="form-input" asp-items="Html.GetEnumSelectList<StatusOpreme>()" autocomplete="off"></select>
-            <span asp-validation-for="Status" class="field-error"></span>
-        </div>
-
-        <div class="form-field">
-            <label class="form-label" for="LokacijaId-autocomplete-text">Lokacija</label>
-            <partial name="_AutocompleteDropdown" model='new {
-                FieldName = "LokacijaId",
-                Placeholder = "Pretražite lokacije...",
-                SearchUrl = "/lokacije/autocomplete",
-                SelectedId = Model.LokacijaId,
-                SelectedText = Model.Lokacija?.Naziv,
-                ValidationTargetId = "LokacijaId-error",
-                ValidationMessage = "Molimo odaberite lokaciju"
-            }' />
-            <span asp-validation-for="LokacijaId" id="LokacijaId-error" class="field-error"></span>
-        </div>
-
-        <div class="form-field">
-            <label class="form-label" for="ProizvodacId-autocomplete-text">Proizvođač</label>
-            <partial name="_AutocompleteDropdown" model='new {
-                FieldName = "ProizvodacId",
-                Placeholder = "Pretražite proizvođače...",
-                SearchUrl = "/proizvodac/autocomplete",
-                SelectedId = Model.ProizvodacId,
-                SelectedText = Model.Proizvodac?.Naziv,
-                ValidationTargetId = "ProizvodacId-error",
-                ValidationMessage = "Molimo odaberite proizvođača"
-            }' />
-            <span asp-validation-for="ProizvodacId" id="ProizvodacId-error" class="field-error"></span>
-        </div>
-
-        <div class="form-field">
-            <label class="form-label" for="KategorijaOpremeId-autocomplete-text">Kategorija opreme</label>
-            <partial name="_AutocompleteDropdown" model='new {
-                FieldName = "KategorijaOpremeId",
-                Placeholder = "Pretražite kategorije opreme...",
-                SearchUrl = "/kategorijaopreme/autocomplete",
-                SelectedId = Model.KategorijaOpremeId,
-                SelectedText = Model.Kategorija?.Naziv,
-                ValidationTargetId = "KategorijaOpremeId-error",
-                ValidationMessage = "Molimo odaberite kategoriju opreme"
-            }' />
-            <span asp-validation-for="KategorijaOpremeId" id="KategorijaOpremeId-error" class="field-error"></span>
-        </div>
-
-        <div class="form-actions">
-            <button type="submit" class="action-button action-button-primary">Spremi promjene</button>
-        </div>
-    </form>
+    </div>
 </section>
 
 <script>
@@ -151,3 +166,35 @@
         });
     })();
 </script>
+
+@section Scripts {
+    <link rel="stylesheet" href="https://unpkg.com/dropzone@5/dist/min/dropzone.min.css" />
+    <script src="https://unpkg.com/dropzone@5/dist/min/dropzone.min.js"></script>
+    <script>
+        Dropzone.autoDiscover = false;
+        var myDropzone = new Dropzone("#attachmentDz", {
+            success: function(file, response) {
+                loadAttachments();
+            }
+        });
+
+        $(function() {
+            loadAttachments();
+        });
+
+        function loadAttachments() {
+            var opremaId = @Model.Id;
+            $("#attachmentList").load("/oprema/" + opremaId + "/attachments");
+        }
+
+        function deleteAttachment(id) {
+            $.ajax({
+                url: "/oprema/attachment/delete/" + id,
+                method: "POST",
+                success: function() {
+                    loadAttachments();
+                }
+            });
+        }
+    </script>
+}

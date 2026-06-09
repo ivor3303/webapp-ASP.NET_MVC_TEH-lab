@@ -1,0 +1,25 @@
+@model IEnumerable<Vjezba.Model.Attachment>
+<table class="table table-sm">
+    <thead>
+        <tr>
+            <th>Datoteka</th>
+            <th>Veličina</th>
+            <th>Akcija</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var attachment in Model)
+        {
+            <tr>
+                <td><a href="@attachment.FilePath" target="_blank">@attachment.FileName</a></td>
+                <td>@attachment.FileSize bytes</td>
+                <td>
+                    <button type="button" class="btn btn-danger btn-sm"
+                            onclick="deleteAttachment(@attachment.Id)">
+                        Obriši
+                    </button>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

@@ -1,4 +1,7 @@
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Vjezba.App.Data;
 using Vjezba.App.Repositories.EF;
 using Vjezba.Model;
 
@@ -8,23 +11,27 @@ namespace Vjezba.App.Controllers;
 public class RadnaOpremaController : Controller
 {
     private readonly EFRadnaOpremaRepository _repository;
+    private readonly VjezbaDbContext _dbContext;
     private readonly EFLokacijaRepository _lokacijaRepository;
     private readonly EFProizvodacRepository _proizvodacRepository;
     private readonly EFKategorijaOpremeRepository _kategorijaOpremeRepository;
 
     public RadnaOpremaController(
         EFRadnaOpremaRepository repository,
+        VjezbaDbContext dbContext,
         EFLokacijaRepository lokacijaRepository,
         EFProizvodacRepository proizvodacRepository,
         EFKategorijaOpremeRepository kategorijaOpremeRepository)
     {
         _repository = repository;
+        _dbContext = dbContext;
         _lokacijaRepository = lokacijaRepository;
         _proizvodacRepository = proizvodacRepository;
         _kategorijaOpremeRepository = kategorijaOpremeRepository;
     }
 
     [Route("")]
+    [AllowAnonymous]
     public IActionResult Index()
     {
         var items = _repository.GetAll();
@@ -32,6 +39,7 @@ public class RadnaOpremaController : Controller
     }
 
     [Route("detalji/{id:int}")]
+    [AllowAnonymous]
     public IActionResult Details(int id)
     {
         var item = _repository.GetById(id);
@@ -79,6 +87,7 @@ public class RadnaOpremaController : Controller
 
     [HttpGet]
     [Route("novi")]
+    [Authorize(Roles = "Admin,Manager")]
     public IActionResult Create()
     {
         return View(new RadnaOprema { DatumNabave = DateTime.UtcNow });
@@ -87,6 +96,7 @@ public class RadnaOpremaController : Controller
     [HttpPost]
     [ValidateAntiForgeryToken]
     [Route("novi")]
+    [Authorize(Roles = "Admin,Manager")]
     public IActionResult Create(RadnaOprema model)
     {
         if (!ModelState.IsValid)
@@ -103,6 +113,7 @@ public class RadnaOpremaController : Controller
 
     [HttpGet]
     [Route("uredi/{id:int}")]
+    [Authorize(Roles = "Admin,Manager")]
     public IActionResult Edit(int id)
     {
         var item = _repository.GetById(id);
@@ -117,6 +128,7 @@ public class RadnaOpremaController : Controller
     [HttpPost]
     [ValidateAntiForgeryToken]
     [Route("uredi/{id:int}")]
+    [Authorize(Roles = "Admin,Manager")]
     public IActionResult Edit(int id, RadnaOprema model)
     {
         var item = _repository.GetById(id);
@@ -149,11 +161,79 @@ public class RadnaOpremaController : Controller
     [HttpPost]
     [ValidateAntiForgeryToken]
     [Route("obrisi/{id:int}")]
+    [Authorize(Roles = "Admin")]
     public IActionResult Delete(int id)
     {
         _repository.Delete(id);
         TempData["Success"] = "Radna oprema je uspješno obrisana.";
         return RedirectToAction(nameof(Index));
+    }
+
+    [HttpPost]
+    [Authorize(Roles = "Admin,Manager")]
+    [Route("oprema/{opremaId:int}/upload")]
+    public IActionResult UploadAttachment(int opremaId, IFormFile file)
+    {
+        var oprema = _dbContext.RadnaOprema.FirstOrDefault(o => o.Id == opremaId);
+        if (oprema == null) return NotFound();
+        if (file == null || file.Length == 0) return BadRequest();
+
+        var uploadsPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads", "oprema", opremaId.ToString());
+        Directory.CreateDirectory(uploadsPath);
+
+        var fileName = Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
+        var filePath = Path.Combine(uploadsPath, fileName);
+
+        using (var stream = new FileStream(filePath, FileMode.Create))
+        {
+            file.CopyTo(stream);
+        }
+
+        var attachment = new Attachment
+        {
+            RadnaOpremaId = opremaId,
+            FileName = file.FileName,
+            FilePath = "/uploads/oprema/" + opremaId + "/" + fileName,
+            ContentType = file.ContentType,
+            FileSize = file.Length,
+            CreatedAt = DateTime.UtcNow
+        };
+
+        _dbContext.Attachments.Add(attachment);
+        _dbContext.SaveChanges();
+
+        return Json(new { success = true });
+    }
+
+    [Route("oprema/{opremaId:int}/attachments")]
+    public IActionResult GetAttachments(int opremaId)
+    {
+        var attachments = _dbContext.Attachments
+            .Where(a => a.RadnaOpremaId == opremaId)
+            .OrderByDescending(a => a.CreatedAt)
+            .ToList();
+
+        return PartialView("_AttachmentList", attachments);
+    }
+
+    [HttpPost]
+    [Authorize(Roles = "Admin,Manager")]
+    [Route("oprema/attachment/delete/{id:int}")]
+    public IActionResult DeleteAttachment(int id)
+    {
+        var attachment = _dbContext.Attachments.FirstOrDefault(a => a.Id == id);
+        if (attachment == null) return NotFound();
+
+        var physicalPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", attachment.FilePath.TrimStart('/'));
+        if (System.IO.File.Exists(physicalPath))
+        {
+            System.IO.File.Delete(physicalPath);
+        }
+
+        _dbContext.Attachments.Remove(attachment);
+        _dbContext.SaveChanges();
+
+        return Json(new { success = true });
     }
 
     private void HydrateAutocompleteSelections(RadnaOprema model)

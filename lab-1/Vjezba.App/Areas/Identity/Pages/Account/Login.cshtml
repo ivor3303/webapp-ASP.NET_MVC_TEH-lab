@@ -1,0 +1,19 @@
+@page
+@model LoginModel
+@{
+    ViewData["Title"] = "Log in";
+}
+
+<div class="row">
+    <div class="col-md-4">
+        <section>
+            <h1>@ViewData["Title"]</h1>
+            <hr />
+            <form method="post" asp-page-handler="ExternalLogin">
+                <button type="submit" name="provider" value="Google" class="btn btn-danger">
+                    Prijava s Google računom
+                </button>
+            </form>
+        </section>
+    </div>
+</div>

@@ -1,9 +1,10 @@
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Vjezba.Model;
 
 namespace Vjezba.App.Data;
 
-public class VjezbaDbContext : DbContext
+public class VjezbaDbContext : IdentityDbContext<AppUser>
 {
     public VjezbaDbContext(DbContextOptions<VjezbaDbContext> options)
         : base(options)
@@ -11,6 +12,7 @@ public class VjezbaDbContext : DbContext
     }
 
     public DbSet<RadnaOprema> RadnaOprema { get; set; } = default!;
+    public DbSet<Attachment> Attachments { get; set; } = default!;
     public DbSet<Radnik> Radnici { get; set; } = default!;
     public DbSet<Lokacija> Lokacije { get; set; } = default!;
     public DbSet<Proizvodac> Proizvodaci { get; set; } = default!;
@@ -38,6 +40,11 @@ public class VjezbaDbContext : DbContext
             .HasOne(o => o.Kategorija)
             .WithMany()
             .HasForeignKey(o => o.KategorijaOpremeId);
+
+        modelBuilder.Entity<Attachment>()
+            .HasOne(a => a.RadnaOprema)
+            .WithMany(o => o.Attachments)
+            .HasForeignKey(a => a.RadnaOpremaId);
 
         modelBuilder.Entity<Odrzavanje>()
             .HasOne(o => o.Oprema)

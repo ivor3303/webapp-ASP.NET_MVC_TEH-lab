@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Vjezba.App.Repositories.EF;
 using Vjezba.App.ViewModels;
@@ -18,6 +19,7 @@ public class ProizvodacController : Controller
     }
 
     [Route("")]
+    [AllowAnonymous]
     public IActionResult Index()
     {
         var items = _repository.GetAll();
@@ -25,6 +27,7 @@ public class ProizvodacController : Controller
     }
 
     [Route("detalji/{id:int}")]
+    [AllowAnonymous]
     public IActionResult Details(int id)
     {
         var proizvodac = _repository.GetById(id);
@@ -66,6 +69,7 @@ public class ProizvodacController : Controller
 
     [HttpGet]
     [Route("novi")]
+    [Authorize(Roles = "Admin,Manager")]
     public IActionResult Create()
     {
         return View(new Proizvodac());
@@ -74,6 +78,7 @@ public class ProizvodacController : Controller
     [HttpPost]
     [ValidateAntiForgeryToken]
     [Route("novi")]
+    [Authorize(Roles = "Admin,Manager")]
     public IActionResult Create(Proizvodac model)
     {
         if (!ModelState.IsValid)
@@ -89,6 +94,7 @@ public class ProizvodacController : Controller
 
     [HttpGet]
     [Route("uredi/{id:int}")]
+    [Authorize(Roles = "Admin,Manager")]
     public IActionResult Edit(int id)
     {
         var item = _repository.GetById(id);
@@ -103,6 +109,7 @@ public class ProizvodacController : Controller
     [HttpPost]
     [ValidateAntiForgeryToken]
     [Route("uredi/{id:int}")]
+    [Authorize(Roles = "Admin,Manager")]
     public IActionResult Edit(int id, Proizvodac model)
     {
         var item = _repository.GetById(id);
@@ -129,6 +136,7 @@ public class ProizvodacController : Controller
     [HttpPost]
     [ValidateAntiForgeryToken]
     [Route("obrisi/{id:int}")]
+    [Authorize(Roles = "Admin")]
     public IActionResult Delete(int id)
     {
         _repository.Delete(id);

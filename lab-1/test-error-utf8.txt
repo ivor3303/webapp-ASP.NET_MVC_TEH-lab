@@ -1,0 +1,4 @@
+[xUnit.net 00:00:05.76]     Vjezba.Tests.ApiTests.OdrzavanjeApiTests.Put_UpdatesOdrzavanje_ReturnsOk [FAIL]
+[xUnit.net 00:00:06.39]     Vjezba.Tests.ApiTests.RadnaOpremaApiTests.Put_UpdatesOprema_ReturnsOk [FAIL]
+[xUnit.net 00:00:06.65]     Vjezba.Tests.ApiTests.RadnikApiTests.Delete_SoftDeletes_ReturnsOk [FAIL]
+[xUnit.net 00:00:06.65]     Vjezba.Tests.ApiTests.RadnaOpremaApiTests.Delete_SoftDeletes_ReturnsOk [FAIL]

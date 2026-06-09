@@ -40,6 +40,7 @@ namespace Vjezba.Model
 
         public DateTime? DeletedAt { get; set; }
 
+        public virtual ICollection<Attachment> Attachments { get; set; } = new List<Attachment>();
         public virtual ICollection<Odrzavanje> Odrzavanja { get; set; } = new List<Odrzavanje>();
         public virtual ICollection<ZaduzenjeOpreme> Zaduzenja { get; set; } = new List<ZaduzenjeOpreme>();
     }

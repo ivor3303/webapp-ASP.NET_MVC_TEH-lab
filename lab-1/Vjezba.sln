@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Vjezba.Model", "Vjezba.Mode
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Vjezba.App", "Vjezba.App\Vjezba.App.csproj", "{0D706FBD-A33B-4627-8865-D5EE3DB05120}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Vjezba.Tests", "Vjezba.Tests\Vjezba.Tests.csproj", "{7D5D5E78-2B2F-4AF9-96B7-8A40D8B5C01A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -41,6 +43,18 @@ Global
 		{0D706FBD-A33B-4627-8865-D5EE3DB05120}.Release|x64.Build.0 = Release|Any CPU
 		{0D706FBD-A33B-4627-8865-D5EE3DB05120}.Release|x86.ActiveCfg = Release|Any CPU
 		{0D706FBD-A33B-4627-8865-D5EE3DB05120}.Release|x86.Build.0 = Release|Any CPU
+		{7D5D5E78-2B2F-4AF9-96B7-8A40D8B5C01A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7D5D5E78-2B2F-4AF9-96B7-8A40D8B5C01A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7D5D5E78-2B2F-4AF9-96B7-8A40D8B5C01A}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{7D5D5E78-2B2F-4AF9-96B7-8A40D8B5C01A}.Debug|x64.Build.0 = Debug|Any CPU
+		{7D5D5E78-2B2F-4AF9-96B7-8A40D8B5C01A}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{7D5D5E78-2B2F-4AF9-96B7-8A40D8B5C01A}.Debug|x86.Build.0 = Debug|Any CPU
+		{7D5D5E78-2B2F-4AF9-96B7-8A40D8B5C01A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7D5D5E78-2B2F-4AF9-96B7-8A40D8B5C01A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7D5D5E78-2B2F-4AF9-96B7-8A40D8B5C01A}.Release|x64.ActiveCfg = Release|Any CPU
+		{7D5D5E78-2B2F-4AF9-96B7-8A40D8B5C01A}.Release|x64.Build.0 = Release|Any CPU
+		{7D5D5E78-2B2F-4AF9-96B7-8A40D8B5C01A}.Release|x86.ActiveCfg = Release|Any CPU
+		{7D5D5E78-2B2F-4AF9-96B7-8A40D8B5C01A}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

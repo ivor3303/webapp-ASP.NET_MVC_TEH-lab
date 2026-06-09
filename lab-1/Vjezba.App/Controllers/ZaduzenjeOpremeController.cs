@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Vjezba.App.Repositories.EF;
 using Vjezba.Model;
@@ -19,6 +20,7 @@ public class ZaduzenjeOpremeController : Controller
     }
 
     [Route("")]
+    [AllowAnonymous]
     public IActionResult Index()
     {
         var items = _repository.GetAll();
@@ -26,6 +28,7 @@ public class ZaduzenjeOpremeController : Controller
     }
 
     [Route("detalji/{id:int}")]
+    [AllowAnonymous]
     public IActionResult Details(int id)
     {
         var item = _repository.GetById(id);
@@ -57,6 +60,7 @@ public class ZaduzenjeOpremeController : Controller
 
     [HttpGet]
     [Route("novi")]
+    [Authorize(Roles = "Admin,Manager")]
     public IActionResult Create()
     {
         return View(new ZaduzenjeOpreme { DatumZaduzenja = DateTime.UtcNow });
@@ -65,6 +69,7 @@ public class ZaduzenjeOpremeController : Controller
     [HttpPost]
     [ValidateAntiForgeryToken]
     [Route("novi")]
+    [Authorize(Roles = "Admin,Manager")]
     public IActionResult Create(ZaduzenjeOpreme model)
     {
         if (model.RadnikId == 0)
@@ -91,6 +96,7 @@ public class ZaduzenjeOpremeController : Controller
 
     [HttpGet]
     [Route("uredi/{id:int}")]
+    [Authorize(Roles = "Admin,Manager")]
     public IActionResult Edit(int id)
     {
         var item = _repository.GetById(id);
@@ -108,6 +114,7 @@ public class ZaduzenjeOpremeController : Controller
     [HttpPost]
     [ValidateAntiForgeryToken]
     [Route("uredi/{id:int}")]
+    [Authorize(Roles = "Admin,Manager")]
     public IActionResult Edit(int id, ZaduzenjeOpreme model)
     {
         var item = _repository.GetById(id);
@@ -146,6 +153,7 @@ public class ZaduzenjeOpremeController : Controller
     [HttpPost]
     [ValidateAntiForgeryToken]
     [Route("obrisi/{id:int}")]
+    [Authorize(Roles = "Admin")]
     public IActionResult Delete(int id)
     {
         _repository.Delete(id);

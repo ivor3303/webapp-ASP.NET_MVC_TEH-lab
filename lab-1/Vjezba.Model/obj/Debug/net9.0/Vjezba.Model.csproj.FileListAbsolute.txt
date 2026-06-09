@@ -10,3 +10,4 @@ C:\Users\ivorz\webapp-ASP.NET_MVC_TEH-lab\lab-1\Vjezba.Model\obj\Debug\net9.0\Vj
 C:\Users\ivorz\webapp-ASP.NET_MVC_TEH-lab\lab-1\Vjezba.Model\obj\Debug\net9.0\refint\Vjezba.Model.dll
 C:\Users\ivorz\webapp-ASP.NET_MVC_TEH-lab\lab-1\Vjezba.Model\obj\Debug\net9.0\Vjezba.Model.pdb
 C:\Users\ivorz\webapp-ASP.NET_MVC_TEH-lab\lab-1\Vjezba.Model\obj\Debug\net9.0\ref\Vjezba.Model.dll
+C:\Users\ivorz\webapp-ASP.NET_MVC_TEH-lab\lab-1\Vjezba.Model\obj\Debug\net9.0\Vjezba.Model.csproj.AssemblyReference.cache
