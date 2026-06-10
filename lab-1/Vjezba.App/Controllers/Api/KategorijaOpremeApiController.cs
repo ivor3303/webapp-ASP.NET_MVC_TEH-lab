@@ -24,7 +24,7 @@ public class KategorijaOpremeApiController : ControllerBase
         if (!string.IsNullOrWhiteSpace(q))
         {
             var normalizedQuery = q.Trim();
-            query = query.Where(x => x.Naziv.Contains(normalizedQuery, StringComparison.OrdinalIgnoreCase));
+            query = query.Where(x => x.Naziv.Contains(normalizedQuery));
         }
 
         var items = await query.Where(x => x.DeletedAt == null).ToListAsync();
@@ -35,22 +35,14 @@ public class KategorijaOpremeApiController : ControllerBase
     public async Task<ActionResult<KategorijaOpremeDTO>> GetById(int id)
     {
         var item = await _context.KategorijeOpreme.FirstOrDefaultAsync(x => x.Id == id && x.DeletedAt == null);
-        if (item is null)
-        {
-            return NotFound();
-        }
-
+        if (item is null) return NotFound();
         return Ok(ToDTO(item));
     }
 
     [HttpPost]
     public async Task<ActionResult<KategorijaOpremeDTO>> Create([FromBody] KategorijaOpreme model)
     {
-        if (!ModelState.IsValid)
-        {
-            return ValidationProblem(ModelState);
-        }
-
+        if (!ModelState.IsValid) return ValidationProblem(ModelState);
         model.DeletedAt = null;
         _context.KategorijeOpreme.Add(model);
         await _context.SaveChangesAsync();
@@ -61,19 +53,10 @@ public class KategorijaOpremeApiController : ControllerBase
     public async Task<IActionResult> Update(int id, [FromBody] KategorijaOpreme model)
     {
         var item = await _context.KategorijeOpreme.FirstOrDefaultAsync(x => x.Id == id);
-        if (item is null)
-        {
-            return NotFound();
-        }
-
-        if (!ModelState.IsValid)
-        {
-            return ValidationProblem(ModelState);
-        }
-
+        if (item is null) return NotFound();
+        if (!ModelState.IsValid) return ValidationProblem(ModelState);
         item.Naziv = model.Naziv;
         item.Opis = model.Opis;
-
         await _context.SaveChangesAsync();
         return Ok();
     }
@@ -82,23 +65,16 @@ public class KategorijaOpremeApiController : ControllerBase
     public async Task<IActionResult> Delete(int id)
     {
         var item = await _context.KategorijeOpreme.FirstOrDefaultAsync(x => x.Id == id);
-        if (item is null)
-        {
-            return NotFound();
-        }
-
+        if (item is null) return NotFound();
         _context.KategorijeOpreme.Remove(item);
         await _context.SaveChangesAsync();
         return Ok();
     }
 
-    private KategorijaOpremeDTO ToDTO(KategorijaOpreme model)
+    private KategorijaOpremeDTO ToDTO(KategorijaOpreme model) => new()
     {
-        return new KategorijaOpremeDTO
-        {
-            Id = model.Id,
-            Naziv = model.Naziv,
-            Opis = model.Opis
-        };
-    }
+        Id = model.Id,
+        Naziv = model.Naziv,
+        Opis = model.Opis
+    };
 }

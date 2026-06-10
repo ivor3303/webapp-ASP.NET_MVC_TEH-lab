@@ -24,8 +24,7 @@ public class ProizvodacApiController : ControllerBase
         if (!string.IsNullOrWhiteSpace(q))
         {
             var normalizedQuery = q.Trim();
-            query = query.Where(x => x.Naziv.Contains(normalizedQuery, StringComparison.OrdinalIgnoreCase)
-                || x.Drzava.Contains(normalizedQuery, StringComparison.OrdinalIgnoreCase));
+            query = query.Where(x => x.Naziv.Contains(normalizedQuery) || x.Drzava.Contains(normalizedQuery));
         }
 
         var items = await query.Where(x => x.DeletedAt == null).ToListAsync();
@@ -36,22 +35,14 @@ public class ProizvodacApiController : ControllerBase
     public async Task<ActionResult<ProizvodacDTO>> GetById(int id)
     {
         var item = await _context.Proizvodaci.FirstOrDefaultAsync(x => x.Id == id && x.DeletedAt == null);
-        if (item is null)
-        {
-            return NotFound();
-        }
-
+        if (item is null) return NotFound();
         return Ok(ToDTO(item));
     }
 
     [HttpPost]
     public async Task<ActionResult<ProizvodacDTO>> Create([FromBody] Proizvodac model)
     {
-        if (!ModelState.IsValid)
-        {
-            return ValidationProblem(ModelState);
-        }
-
+        if (!ModelState.IsValid) return ValidationProblem(ModelState);
         model.DeletedAt = null;
         _context.Proizvodaci.Add(model);
         await _context.SaveChangesAsync();
@@ -62,20 +53,11 @@ public class ProizvodacApiController : ControllerBase
     public async Task<IActionResult> Update(int id, [FromBody] Proizvodac model)
     {
         var item = await _context.Proizvodaci.FirstOrDefaultAsync(x => x.Id == id);
-        if (item is null)
-        {
-            return NotFound();
-        }
-
-        if (!ModelState.IsValid)
-        {
-            return ValidationProblem(ModelState);
-        }
-
+        if (item is null) return NotFound();
+        if (!ModelState.IsValid) return ValidationProblem(ModelState);
         item.Naziv = model.Naziv;
         item.Drzava = model.Drzava;
         item.KontaktEmail = model.KontaktEmail;
-
         await _context.SaveChangesAsync();
         return Ok();
     }
@@ -84,24 +66,17 @@ public class ProizvodacApiController : ControllerBase
     public async Task<IActionResult> Delete(int id)
     {
         var item = await _context.Proizvodaci.FirstOrDefaultAsync(x => x.Id == id);
-        if (item is null)
-        {
-            return NotFound();
-        }
-
+        if (item is null) return NotFound();
         _context.Proizvodaci.Remove(item);
         await _context.SaveChangesAsync();
         return Ok();
     }
 
-    private ProizvodacDTO ToDTO(Proizvodac model)
+    private ProizvodacDTO ToDTO(Proizvodac model) => new()
     {
-        return new ProizvodacDTO
-        {
-            Id = model.Id,
-            Naziv = model.Naziv,
-            Drzava = model.Drzava,
-            KontaktEmail = model.KontaktEmail
-        };
-    }
+        Id = model.Id,
+        Naziv = model.Naziv,
+        Drzava = model.Drzava,
+        KontaktEmail = model.KontaktEmail
+    };
 }
