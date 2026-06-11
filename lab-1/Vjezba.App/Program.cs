@@ -235,6 +235,38 @@ using (var scope = app.Services.CreateScope())
     catch { }
 }
 
+// Role i admin seed
+using (var scope = app.Services.CreateScope())
+{
+    var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+    var userManager = scope.ServiceProvider.GetRequiredService<UserManager<AppUser>>();
+
+    // Kreiraj role ako ne postoje
+    string[] roles = { "Admin", "Manager", "Viewer" };
+    foreach (var role in roles)
+    {
+        if (!await roleManager.RoleExistsAsync(role))
+            await roleManager.CreateAsync(new IdentityRole(role));
+    }
+
+    // Kreiraj admin korisnika ako ne postoji
+    var adminEmail = "admin@tehlab.hr";
+    var adminUser = await userManager.FindByEmailAsync(adminEmail);
+    if (adminUser == null)
+    {
+        adminUser = new AppUser
+        {
+            UserName = adminEmail,
+            Email = adminEmail,
+            EmailConfirmed = true,
+            OIB = "12345678901",
+            JMBG = "0101990370001"
+        };
+        await userManager.CreateAsync(adminUser, "Admin123!");
+        await userManager.AddToRoleAsync(adminUser, "Admin");
+    }
+}
+
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");

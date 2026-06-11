@@ -51,26 +51,239 @@
 
 <section class="detail-panel">
     <h2>Održavanja</h2>
-@if (Model.Odrzavanja.Any())
-{
-    <div class="list-stack">
-    @foreach (var odrzavanje in Model.Odrzavanja.OrderByDescending(x => x.Datum))
+    @if (Model.Odrzavanja.Any())
     {
-        <article class="list-item">
-            <h3>@odrzavanje.Datum.ToString("dd.MM.yyyy") - @odrzavanje.Opis</h3>
-            <p><strong>Izvršio:</strong> @odrzavanje.Izvrsio.Ime @odrzavanje.Izvrsio.Prezime</p>
-            <p><strong>Cijena:</strong> @odrzavanje.Cijena.ToString("0.00") EUR</p>
-            <a asp-controller="Odrzavanje" asp-action="Details" asp-route-id="@odrzavanje.Id">Detalji održavanja</a>
-        </article>
+        <div class="list-stack">
+            @foreach (var odrzavanje in Model.Odrzavanja.OrderByDescending(x => x.Datum))
+            {
+                <article class="list-item">
+                    <h3>@odrzavanje.Datum.ToString("dd.MM.yyyy") - @odrzavanje.Opis</h3>
+                    <p><strong>Izvršio:</strong> @odrzavanje.Izvrsio.Ime @odrzavanje.Izvrsio.Prezime</p>
+                    <p><strong>Cijena:</strong> @odrzavanje.Cijena.ToString("0.00") EUR</p>
+                    <a asp-controller="Odrzavanje" asp-action="Details" asp-route-id="@odrzavanje.Id">Detalji održavanja</a>
+                </article>
+            }
+        </div>
     }
+    else
+    {
+        <p>Nema evidentiranih održavanja za ovu opremu.</p>
+    }
+</section>
+
+<section class="detail-panel">
+    <h2>Privici</h2>
+
+    <div id="dropzone-upload" class="dropzone-area">
+        <div class="dropzone-inner">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                <polyline points="17 8 12 3 7 8"/>
+                <line x1="12" y1="3" x2="12" y2="15"/>
+            </svg>
+            <p class="dropzone-text">Povucite datoteke ovdje ili <span class="dropzone-link">odaberite datoteku</span></p>
+            <p class="dropzone-hint">Svi formati, max 10MB po datoteci</p>
+        </div>
+        <input type="file" id="file-input" multiple style="display:none" />
     </div>
-}
-else
-{
-    <p>Nema evidentiranih održavanja za ovu opremu.</p>
-}
+
+    <div id="upload-progress" style="display:none" class="upload-progress-bar">
+        <div id="upload-progress-inner"></div>
+    </div>
+
+    <div id="attachment-list">
+        @await Html.PartialAsync("_AttachmentList", Model.Attachments ?? new List<Vjezba.Model.Attachment>())
+    </div>
 </section>
 
 <p>
     <a asp-controller="RadnaOprema" asp-action="Index">Povratak na popis opreme</a>
 </p>
+
+@section Scripts {
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.9.3/min/dropzone.min.css" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.9.3/min/dropzone.min.js"></script>
+
+<style>
+.dropzone-area {
+    border: 2px dashed rgba(255,255,255,0.15);
+    border-radius: 10px;
+    padding: 32px;
+    text-align: center;
+    cursor: pointer;
+    transition: border-color 0.2s, background 0.2s;
+    margin-bottom: 16px;
+    background: rgba(255,255,255,0.02);
+}
+.dropzone-area:hover, .dropzone-area.dragover {
+    border-color: rgba(255,255,255,0.35);
+    background: rgba(255,255,255,0.05);
+}
+.dropzone-inner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    color: rgba(255,255,255,0.5);
+}
+.dropzone-text {
+    font-size: 14px;
+    color: rgba(255,255,255,0.7);
+    margin: 0;
+}
+.dropzone-link {
+    color: #7eb8f7;
+    cursor: pointer;
+    text-decoration: underline;
+}
+.dropzone-hint {
+    font-size: 12px;
+    color: rgba(255,255,255,0.35);
+    margin: 0;
+}
+.upload-progress-bar {
+    height: 4px;
+    background: rgba(255,255,255,0.1);
+    border-radius: 2px;
+    margin-bottom: 12px;
+    overflow: hidden;
+}
+#upload-progress-inner {
+    height: 100%;
+    background: #7eb8f7;
+    width: 0%;
+    transition: width 0.3s;
+}
+#attachment-list table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 12px;
+    font-size: 13px;
+}
+#attachment-list th {
+    text-align: left;
+    padding: 8px 12px;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+    color: rgba(255,255,255,0.5);
+    font-weight: 500;
+}
+#attachment-list td {
+    padding: 8px 12px;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+    color: rgba(255,255,255,0.8);
+}
+#attachment-list a {
+    color: #7eb8f7;
+    text-decoration: none;
+}
+#attachment-list a:hover {
+    text-decoration: underline;
+}
+.btn-delete-attachment {
+    background: rgba(255, 80, 80, 0.15);
+    border: 1px solid rgba(255, 80, 80, 0.3);
+    color: #ff8080;
+    padding: 3px 10px;
+    border-radius: 4px;
+    font-size: 12px;
+    cursor: pointer;
+    transition: background 0.15s;
+}
+.btn-delete-attachment:hover {
+    background: rgba(255, 80, 80, 0.3);
+}
+</style>
+
+<script>
+    const opremaId = @Model.Id;
+    const uploadUrl = '/oprema/' + opremaId + '/upload';
+    const attachmentsUrl = '/oprema/' + opremaId + '/attachments';
+
+    // Dropzone setup — manual, not auto-discover
+    Dropzone.autoDiscover = false;
+
+    const dropzoneEl = document.getElementById('dropzone-upload');
+    const fileInput = document.getElementById('file-input');
+    const progressBar = document.getElementById('upload-progress');
+    const progressInner = document.getElementById('upload-progress-inner');
+
+    // Click on dropzone opens file picker
+    dropzoneEl.addEventListener('click', () => fileInput.click());
+
+    // Drag events
+    dropzoneEl.addEventListener('dragover', e => {
+        e.preventDefault();
+        dropzoneEl.classList.add('dragover');
+    });
+    dropzoneEl.addEventListener('dragleave', () => dropzoneEl.classList.remove('dragover'));
+    dropzoneEl.addEventListener('drop', e => {
+        e.preventDefault();
+        dropzoneEl.classList.remove('dragover');
+        uploadFiles(e.dataTransfer.files);
+    });
+
+    fileInput.addEventListener('change', () => uploadFiles(fileInput.files));
+
+    function uploadFiles(files) {
+        if (!files || files.length === 0) return;
+
+        progressBar.style.display = 'block';
+        progressInner.style.width = '0%';
+
+        let completed = 0;
+        const total = files.length;
+
+        Array.from(files).forEach(file => {
+            const formData = new FormData();
+            formData.append('file', file);
+
+            const xhr = new XMLHttpRequest();
+            xhr.open('POST', uploadUrl);
+
+            xhr.upload.onprogress = e => {
+                if (e.lengthComputable) {
+                    const pct = Math.round(((completed + e.loaded / e.total) / total) * 100);
+                    progressInner.style.width = pct + '%';
+                }
+            };
+
+            xhr.onload = () => {
+                completed++;
+                progressInner.style.width = Math.round((completed / total) * 100) + '%';
+                if (completed === total) {
+                    setTimeout(() => { progressBar.style.display = 'none'; }, 600);
+                    refreshAttachments();
+                    fileInput.value = '';
+                }
+            };
+
+            xhr.onerror = () => {
+                completed++;
+                if (completed === total) {
+                    progressBar.style.display = 'none';
+                    refreshAttachments();
+                }
+            };
+
+            xhr.send(formData);
+        });
+    }
+
+    function refreshAttachments() {
+        fetch(attachmentsUrl)
+            .then(r => r.text())
+            .then(html => {
+                document.getElementById('attachment-list').innerHTML = html;
+            });
+    }
+
+    function deleteAttachment(id) {
+        if (!confirm('Obrisati privitak?')) return;
+
+        fetch('/oprema/attachment/delete/' + id, { method: 'POST' })
+            .then(r => {
+                if (r.ok) refreshAttachments();
+            });
+    }
+</script>
+}

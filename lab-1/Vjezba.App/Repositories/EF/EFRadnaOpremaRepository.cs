@@ -24,6 +24,7 @@ public class EFRadnaOpremaRepository
                 .ThenInclude(x => x.Izvrsio)
             .Include(x => x.Zaduzenja)
                 .ThenInclude(x => x.Radnik)
+            .Include(x => x.Attachments)
             .ToList();
     }
 
@@ -38,6 +39,7 @@ public class EFRadnaOpremaRepository
                 .ThenInclude(x => x.Izvrsio)
             .Include(x => x.Zaduzenja)
                 .ThenInclude(x => x.Radnik)
+            .Include(x => x.Attachments)
             .FirstOrDefault(x => x.Id == id);
     }
 
