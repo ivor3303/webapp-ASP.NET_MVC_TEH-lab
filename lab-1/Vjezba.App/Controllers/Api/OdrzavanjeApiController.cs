@@ -11,15 +11,18 @@ namespace Vjezba.App.Controllers.Api;
 public class OdrzavanjeApiController : ControllerBase
 {
     private readonly VjezbaDbContext _context;
+    private readonly ILogger<OdrzavanjeApiController> _logger;
 
-    public OdrzavanjeApiController(VjezbaDbContext context)
+    public OdrzavanjeApiController(VjezbaDbContext context, ILogger<OdrzavanjeApiController> logger)
     {
         _context = context;
+        _logger = logger;
     }
 
     [HttpGet]
     public async Task<ActionResult<IEnumerable<OdrzavanjeDTO>>> GetAll([FromQuery] string? q = null)
     {
+        _logger.LogInformation("Fetching all Odrzavanje");
         var query = _context.Odrzavanja
             .Include(x => x.Oprema)
             .Include(x => x.Izvrsio)
@@ -38,6 +41,7 @@ public class OdrzavanjeApiController : ControllerBase
     [HttpGet("{id:int}")]
     public async Task<ActionResult<OdrzavanjeDTO>> GetById(int id)
     {
+        _logger.LogInformation("Fetching Odrzavanje with id {Id}", id);
         var item = await _context.Odrzavanja
             .Include(x => x.Oprema)
             .Include(x => x.Izvrsio)
@@ -45,6 +49,7 @@ public class OdrzavanjeApiController : ControllerBase
 
         if (item is null)
         {
+            _logger.LogWarning("Odrzavanje with id {Id} not found", id);
             return NotFound();
         }
 
@@ -54,6 +59,7 @@ public class OdrzavanjeApiController : ControllerBase
     [HttpPost]
     public async Task<ActionResult<OdrzavanjeDTO>> Create([FromBody] Odrzavanje model)
     {
+        _logger.LogInformation("Creating new Odrzavanje");
         if (!ModelState.IsValid)
         {
             return ValidationProblem(ModelState);
@@ -72,6 +78,7 @@ public class OdrzavanjeApiController : ControllerBase
     [HttpPut("{id:int}")]
     public async Task<IActionResult> Update(int id, [FromBody] Odrzavanje model)
     {
+        _logger.LogInformation("Updating Odrzavanje with id {Id}", id);
         var item = await _context.Odrzavanja.FirstOrDefaultAsync(x => x.Id == id);
         if (item is null)
         {
@@ -97,6 +104,7 @@ public class OdrzavanjeApiController : ControllerBase
     [HttpDelete("{id:int}")]
     public async Task<IActionResult> Delete(int id)
     {
+        _logger.LogInformation("Deleting Odrzavanje with id {Id}", id);
         var item = await _context.Odrzavanja.FirstOrDefaultAsync(x => x.Id == id);
         if (item is null)
         {

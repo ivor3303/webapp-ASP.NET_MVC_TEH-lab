@@ -23,7 +23,8 @@
 
         <div class="form-field">
             <label class="form-label" for="OpisKvara">Opis kvara</label>
-            <input asp-for="OpisKvara" class="form-input" autocomplete="off" />
+            <textarea asp-for="OpisKvara" class="form-input" rows="3" id="opisKvaraTextarea" autocomplete="off"></textarea>
+            <button type="button" class="action-button action-button-secondary btn-sm" onclick="generateAiOpis(this)">✨ Generiraj opis s AI</button>
             <span asp-validation-for="OpisKvara" class="field-error"></span>
         </div>
 
@@ -94,5 +95,29 @@
                 syncState(hiddenInput.value === 'true' || selector.getAttribute('data-default') === 'true');
             });
         });
+    </script>
+    <script>
+        async function generateAiOpis(btn) {
+            const opremaText = document.getElementById('OpremaId-autocomplete-text');
+            const opremaNaziv = opremaText && opremaText.value.trim() ? opremaText.value.trim() : 'oprema';
+
+            btn.disabled = true;
+            btn.textContent = 'Generiranje...';
+
+            try {
+                const response = await fetch('/api/ai/generate-service-request', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ opremaNaziv: opremaNaziv })
+                });
+                const data = await response.json();
+                document.getElementById('opisKvaraTextarea').value = data.text;
+            } catch (e) {
+                alert('Greška pri generiranju opisa.');
+            } finally {
+                btn.disabled = false;
+                btn.textContent = '✨ Generiraj opis s AI';
+            }
+        }
     </script>
 }

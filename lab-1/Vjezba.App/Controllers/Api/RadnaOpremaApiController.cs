@@ -11,15 +11,18 @@ namespace Vjezba.App.Controllers.Api;
 public class RadnaOpremaApiController : ControllerBase
 {
     private readonly VjezbaDbContext _context;
+    private readonly ILogger<RadnaOpremaApiController> _logger;
 
-    public RadnaOpremaApiController(VjezbaDbContext context)
+    public RadnaOpremaApiController(VjezbaDbContext context, ILogger<RadnaOpremaApiController> logger)
     {
         _context = context;
+        _logger = logger;
     }
 
     [HttpGet]
     public async Task<ActionResult<IEnumerable<RadnaOpremaDTO>>> GetAll([FromQuery] string? q = null)
     {
+        _logger.LogInformation("Fetching all RadnaOprema");
         var query = _context.RadnaOprema
             .Include(x => x.Lokacija)
             .Include(x => x.Proizvodac)
@@ -40,6 +43,7 @@ public class RadnaOpremaApiController : ControllerBase
     [HttpGet("{id:int}")]
     public async Task<ActionResult<RadnaOpremaDTO>> GetById(int id)
     {
+        _logger.LogInformation("Fetching RadnaOprema with id {Id}", id);
         var item = await _context.RadnaOprema
             .Include(x => x.Lokacija)
             .Include(x => x.Proizvodac)
@@ -48,6 +52,7 @@ public class RadnaOpremaApiController : ControllerBase
 
         if (item is null)
         {
+            _logger.LogWarning("RadnaOprema with id {Id} not found", id);
             return NotFound();
         }
 
@@ -57,6 +62,7 @@ public class RadnaOpremaApiController : ControllerBase
     [HttpPost]
     public async Task<ActionResult<RadnaOpremaDTO>> Create([FromBody] RadnaOprema model)
     {
+        _logger.LogInformation("Creating new RadnaOprema");
         if (!ModelState.IsValid)
         {
             return ValidationProblem(ModelState);
@@ -77,6 +83,7 @@ public class RadnaOpremaApiController : ControllerBase
     [HttpPut("{id:int}")]
     public async Task<IActionResult> Update(int id, [FromBody] RadnaOprema model)
     {
+        _logger.LogInformation("Updating RadnaOprema with id {Id}", id);
         var item = await _context.RadnaOprema.FirstOrDefaultAsync(x => x.Id == id);
         if (item is null)
         {
@@ -104,6 +111,7 @@ public class RadnaOpremaApiController : ControllerBase
     [HttpDelete("{id:int}")]
     public async Task<IActionResult> Delete(int id)
     {
+        _logger.LogInformation("Deleting RadnaOprema with id {Id}", id);
         var item = await _context.RadnaOprema.FirstOrDefaultAsync(x => x.Id == id);
         if (item is null)
         {

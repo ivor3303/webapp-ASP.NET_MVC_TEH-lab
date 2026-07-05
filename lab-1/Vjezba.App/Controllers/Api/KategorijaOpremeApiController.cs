@@ -11,15 +11,18 @@ namespace Vjezba.App.Controllers.Api;
 public class KategorijaOpremeApiController : ControllerBase
 {
     private readonly VjezbaDbContext _context;
+    private readonly ILogger<KategorijaOpremeApiController> _logger;
 
-    public KategorijaOpremeApiController(VjezbaDbContext context)
+    public KategorijaOpremeApiController(VjezbaDbContext context, ILogger<KategorijaOpremeApiController> logger)
     {
         _context = context;
+        _logger = logger;
     }
 
     [HttpGet]
     public async Task<ActionResult<IEnumerable<KategorijaOpremeDTO>>> GetAll([FromQuery] string? q = null)
     {
+        _logger.LogInformation("Fetching all KategorijaOpreme");
         var query = _context.KategorijeOpreme.AsQueryable();
         if (!string.IsNullOrWhiteSpace(q))
         {
@@ -34,14 +37,20 @@ public class KategorijaOpremeApiController : ControllerBase
     [HttpGet("{id:int}")]
     public async Task<ActionResult<KategorijaOpremeDTO>> GetById(int id)
     {
+        _logger.LogInformation("Fetching KategorijaOpreme with id {Id}", id);
         var item = await _context.KategorijeOpreme.FirstOrDefaultAsync(x => x.Id == id && x.DeletedAt == null);
-        if (item is null) return NotFound();
+        if (item is null)
+        {
+            _logger.LogWarning("KategorijaOpreme with id {Id} not found", id);
+            return NotFound();
+        }
         return Ok(ToDTO(item));
     }
 
     [HttpPost]
     public async Task<ActionResult<KategorijaOpremeDTO>> Create([FromBody] KategorijaOpreme model)
     {
+        _logger.LogInformation("Creating new KategorijaOpreme");
         if (!ModelState.IsValid) return ValidationProblem(ModelState);
         model.DeletedAt = null;
         _context.KategorijeOpreme.Add(model);
@@ -52,6 +61,7 @@ public class KategorijaOpremeApiController : ControllerBase
     [HttpPut("{id:int}")]
     public async Task<IActionResult> Update(int id, [FromBody] KategorijaOpreme model)
     {
+        _logger.LogInformation("Updating KategorijaOpreme with id {Id}", id);
         var item = await _context.KategorijeOpreme.FirstOrDefaultAsync(x => x.Id == id);
         if (item is null) return NotFound();
         if (!ModelState.IsValid) return ValidationProblem(ModelState);
@@ -64,6 +74,7 @@ public class KategorijaOpremeApiController : ControllerBase
     [HttpDelete("{id:int}")]
     public async Task<IActionResult> Delete(int id)
     {
+        _logger.LogInformation("Deleting KategorijaOpreme with id {Id}", id);
         var item = await _context.KategorijeOpreme.FirstOrDefaultAsync(x => x.Id == id);
         if (item is null) return NotFound();
         _context.KategorijeOpreme.Remove(item);

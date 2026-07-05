@@ -1,16 +1,26 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Serilog;
 using System.Globalization;
 using Vjezba.App.Data;
 using Vjezba.App.ModelBinding;
 using Vjezba.App.Repositories.EF;
+using Vjezba.App.Services;
 using Vjezba.Model;
 
 var cultureInfo = new CultureInfo("hr-HR");
 CultureInfo.DefaultThreadCurrentCulture = cultureInfo;
 CultureInfo.DefaultThreadCurrentUICulture = cultureInfo;
 
+Directory.CreateDirectory("Logs");
+Log.Logger = new LoggerConfiguration()
+    .MinimumLevel.Information()
+    .WriteTo.Console()
+    .WriteTo.File("Logs/log-.txt", rollingInterval: RollingInterval.Day)
+    .CreateLogger();
+
 var builder = WebApplication.CreateBuilder(args);
+builder.Host.UseSerilog();
 
 builder.Services.AddControllersWithViews(options =>
 {
@@ -42,6 +52,8 @@ builder.Services.AddScoped<EFOdrzavanjeRepository>();
 builder.Services.AddScoped<EFServisniZahtjevRepository>();
 builder.Services.AddScoped<EFZaduzenjeOpremeRepository>();
 builder.Services.AddScoped<EFIzvjestajRepository>();
+builder.Services.AddHttpClient();
+builder.Services.AddScoped<AiService>();
 
 var app = builder.Build();
 
@@ -233,38 +245,6 @@ using (var scope = app.Services.CreateScope())
         }
     }
     catch { }
-}
-
-// Role i admin seed
-using (var scope = app.Services.CreateScope())
-{
-    var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
-    var userManager = scope.ServiceProvider.GetRequiredService<UserManager<AppUser>>();
-
-    // Kreiraj role ako ne postoje
-    string[] roles = { "Admin", "Manager", "Viewer" };
-    foreach (var role in roles)
-    {
-        if (!await roleManager.RoleExistsAsync(role))
-            await roleManager.CreateAsync(new IdentityRole(role));
-    }
-
-    // Kreiraj admin korisnika ako ne postoji
-    var adminEmail = "admin@tehlab.hr";
-    var adminUser = await userManager.FindByEmailAsync(adminEmail);
-    if (adminUser == null)
-    {
-        adminUser = new AppUser
-        {
-            UserName = adminEmail,
-            Email = adminEmail,
-            EmailConfirmed = true,
-            OIB = "12345678901",
-            JMBG = "0101990370001"
-        };
-        await userManager.CreateAsync(adminUser, "Admin123!");
-        await userManager.AddToRoleAsync(adminUser, "Admin");
-    }
 }
 
 if (!app.Environment.IsDevelopment())

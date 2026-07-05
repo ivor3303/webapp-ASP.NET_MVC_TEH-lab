@@ -141,33 +141,35 @@
         <h2>Stanje po lokacijama</h2>
         <p>Usporedba opreme po lokaciji i trenutnom statusu.</p>
     </div>
-    <table class="data-table">
-        <thead>
-            <tr>
-                <th>Lokacija</th>
-                <th>Ukupno</th>
-                <th>Ispravna</th>
-                <th>Neispravna</th>
-                <th>Otpisana</th>
-                <th>U servisu</th>
-                <th></th>
-            </tr>
-        </thead>
-        <tbody>
-        @foreach (var lokacija in Model.StanjePoLokacijama)
-        {
-            <tr>
-                <td>@lokacija.NazivLokacije</td>
-                <td>@lokacija.Ukupno</td>
-                <td>@lokacija.Ispravna</td>
-                <td>@lokacija.Neispravna</td>
-                <td>@lokacija.Otpisana</td>
-                <td>@lokacija.UServisu</td>
-                <td>
-                    <a asp-controller="Lokacija" asp-action="Details" asp-route-id="@lokacija.Id">Detalji</a>
-                </td>
-            </tr>
-        }
-        </tbody>
-    </table>
+    <div class="table-responsive">
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>Lokacija</th>
+                    <th>Ukupno</th>
+                    <th>Ispravna</th>
+                    <th>Neispravna</th>
+                    <th>Otpisana</th>
+                    <th>U servisu</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+            @foreach (var lokacija in Model.StanjePoLokacijama)
+            {
+                <tr>
+                    <td>@lokacija.NazivLokacije</td>
+                    <td>@lokacija.Ukupno</td>
+                    <td>@lokacija.Ispravna</td>
+                    <td>@lokacija.Neispravna</td>
+                    <td>@lokacija.Otpisana</td>
+                    <td>@lokacija.UServisu</td>
+                    <td>
+                        <a asp-controller="Lokacija" asp-action="Details" asp-route-id="@lokacija.Id">Detalji</a>
+                    </td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    </div>
 </section>

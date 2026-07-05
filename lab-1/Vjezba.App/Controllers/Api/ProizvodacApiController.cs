@@ -11,15 +11,18 @@ namespace Vjezba.App.Controllers.Api;
 public class ProizvodacApiController : ControllerBase
 {
     private readonly VjezbaDbContext _context;
+    private readonly ILogger<ProizvodacApiController> _logger;
 
-    public ProizvodacApiController(VjezbaDbContext context)
+    public ProizvodacApiController(VjezbaDbContext context, ILogger<ProizvodacApiController> logger)
     {
         _context = context;
+        _logger = logger;
     }
 
     [HttpGet]
     public async Task<ActionResult<IEnumerable<ProizvodacDTO>>> GetAll([FromQuery] string? q = null)
     {
+        _logger.LogInformation("Fetching all Proizvodac");
         var query = _context.Proizvodaci.AsQueryable();
         if (!string.IsNullOrWhiteSpace(q))
         {
@@ -34,14 +37,20 @@ public class ProizvodacApiController : ControllerBase
     [HttpGet("{id:int}")]
     public async Task<ActionResult<ProizvodacDTO>> GetById(int id)
     {
+        _logger.LogInformation("Fetching Proizvodac with id {Id}", id);
         var item = await _context.Proizvodaci.FirstOrDefaultAsync(x => x.Id == id && x.DeletedAt == null);
-        if (item is null) return NotFound();
+        if (item is null)
+        {
+            _logger.LogWarning("Proizvodac with id {Id} not found", id);
+            return NotFound();
+        }
         return Ok(ToDTO(item));
     }
 
     [HttpPost]
     public async Task<ActionResult<ProizvodacDTO>> Create([FromBody] Proizvodac model)
     {
+        _logger.LogInformation("Creating new Proizvodac");
         if (!ModelState.IsValid) return ValidationProblem(ModelState);
         model.DeletedAt = null;
         _context.Proizvodaci.Add(model);
@@ -52,6 +61,7 @@ public class ProizvodacApiController : ControllerBase
     [HttpPut("{id:int}")]
     public async Task<IActionResult> Update(int id, [FromBody] Proizvodac model)
     {
+        _logger.LogInformation("Updating Proizvodac with id {Id}", id);
         var item = await _context.Proizvodaci.FirstOrDefaultAsync(x => x.Id == id);
         if (item is null) return NotFound();
         if (!ModelState.IsValid) return ValidationProblem(ModelState);
@@ -65,6 +75,7 @@ public class ProizvodacApiController : ControllerBase
     [HttpDelete("{id:int}")]
     public async Task<IActionResult> Delete(int id)
     {
+        _logger.LogInformation("Deleting Proizvodac with id {Id}", id);
         var item = await _context.Proizvodaci.FirstOrDefaultAsync(x => x.Id == id);
         if (item is null) return NotFound();
         _context.Proizvodaci.Remove(item);

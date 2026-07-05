@@ -11,15 +11,18 @@ namespace Vjezba.App.Controllers.Api;
 public class LokacijaApiController : ControllerBase
 {
     private readonly VjezbaDbContext _context;
+    private readonly ILogger<LokacijaApiController> _logger;
 
-    public LokacijaApiController(VjezbaDbContext context)
+    public LokacijaApiController(VjezbaDbContext context, ILogger<LokacijaApiController> logger)
     {
         _context = context;
+        _logger = logger;
     }
 
     [HttpGet]
     public async Task<ActionResult<IEnumerable<LokacijaDTO>>> GetAll([FromQuery] string? q = null)
     {
+        _logger.LogInformation("Fetching all Lokacija");
         var query = _context.Lokacije.AsQueryable();
         if (!string.IsNullOrWhiteSpace(q))
         {
@@ -35,9 +38,11 @@ public class LokacijaApiController : ControllerBase
     [HttpGet("{id:int}")]
     public async Task<ActionResult<LokacijaDTO>> GetById(int id)
     {
+        _logger.LogInformation("Fetching Lokacija with id {Id}", id);
         var item = await _context.Lokacije.FirstOrDefaultAsync(x => x.Id == id && x.DeletedAt == null);
         if (item is null)
         {
+            _logger.LogWarning("Lokacija with id {Id} not found", id);
             return NotFound();
         }
 
@@ -47,6 +52,7 @@ public class LokacijaApiController : ControllerBase
     [HttpPost]
     public async Task<ActionResult<LokacijaDTO>> Create([FromBody] Lokacija model)
     {
+        _logger.LogInformation("Creating new Lokacija");
         if (!ModelState.IsValid)
         {
             return ValidationProblem(ModelState);
@@ -61,6 +67,7 @@ public class LokacijaApiController : ControllerBase
     [HttpPut("{id:int}")]
     public async Task<IActionResult> Update(int id, [FromBody] Lokacija model)
     {
+        _logger.LogInformation("Updating Lokacija with id {Id}", id);
         var item = await _context.Lokacije.FirstOrDefaultAsync(x => x.Id == id);
         if (item is null)
         {
@@ -82,6 +89,7 @@ public class LokacijaApiController : ControllerBase
     [HttpDelete("{id:int}")]
     public async Task<IActionResult> Delete(int id)
     {
+        _logger.LogInformation("Deleting Lokacija with id {Id}", id);
         var item = await _context.Lokacije.FirstOrDefaultAsync(x => x.Id == id);
         if (item is null)
         {

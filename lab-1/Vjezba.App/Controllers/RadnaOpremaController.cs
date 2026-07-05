@@ -171,7 +171,7 @@ public class RadnaOpremaController : Controller
 
     [HttpPost]
     [Authorize(Roles = "Admin,Manager")]
-    [Route("{opremaId:int}/upload")]
+    [Route("oprema/{opremaId:int}/upload")]
     public IActionResult UploadAttachment(int opremaId, IFormFile file)
     {
         var oprema = _dbContext.RadnaOprema.FirstOrDefault(o => o.Id == opremaId);
@@ -205,7 +205,7 @@ public class RadnaOpremaController : Controller
         return Json(new { success = true });
     }
 
-    [Route("{opremaId:int}/attachments")]
+    [Route("oprema/{opremaId:int}/attachments")]
     public IActionResult GetAttachments(int opremaId)
     {
         var attachments = _dbContext.Attachments
@@ -218,7 +218,7 @@ public class RadnaOpremaController : Controller
 
     [HttpPost]
     [Authorize(Roles = "Admin,Manager")]
-    [Route("attachment/delete/{id:int}")]
+    [Route("oprema/attachment/delete/{id:int}")]
     public IActionResult DeleteAttachment(int id)
     {
         var attachment = _dbContext.Attachments.FirstOrDefault(a => a.Id == id);

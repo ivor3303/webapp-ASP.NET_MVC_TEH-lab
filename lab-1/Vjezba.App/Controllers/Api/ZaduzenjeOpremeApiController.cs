@@ -11,15 +11,18 @@ namespace Vjezba.App.Controllers.Api;
 public class ZaduzenjeOpremeApiController : ControllerBase
 {
     private readonly VjezbaDbContext _context;
+    private readonly ILogger<ZaduzenjeOpremeApiController> _logger;
 
-    public ZaduzenjeOpremeApiController(VjezbaDbContext context)
+    public ZaduzenjeOpremeApiController(VjezbaDbContext context, ILogger<ZaduzenjeOpremeApiController> logger)
     {
         _context = context;
+        _logger = logger;
     }
 
     [HttpGet]
     public async Task<ActionResult<IEnumerable<ZaduzenjeOpremeDTO>>> GetAll()
     {
+        _logger.LogInformation("Fetching all ZaduzenjeOpreme");
         var items = await _context.ZaduzenjaOpreme
             .Include(x => x.Radnik)
             .Include(x => x.RadnaOprema)
@@ -31,17 +34,23 @@ public class ZaduzenjeOpremeApiController : ControllerBase
     [HttpGet("{id:int}")]
     public async Task<ActionResult<ZaduzenjeOpremeDTO>> GetById(int id)
     {
+        _logger.LogInformation("Fetching ZaduzenjeOpreme with id {Id}", id);
         var item = await _context.ZaduzenjaOpreme
             .Include(x => x.Radnik)
             .Include(x => x.RadnaOprema)
             .FirstOrDefaultAsync(x => x.Id == id && x.DeletedAt == null);
-        if (item is null) return NotFound();
+        if (item is null)
+        {
+            _logger.LogWarning("ZaduzenjeOpreme with id {Id} not found", id);
+            return NotFound();
+        }
         return Ok(ToDTO(item));
     }
 
     [HttpPost]
     public async Task<ActionResult<ZaduzenjeOpremeDTO>> Create([FromBody] ZaduzenjeOpreme model)
     {
+        _logger.LogInformation("Creating new ZaduzenjeOpreme");
         if (!ModelState.IsValid) return ValidationProblem(ModelState);
         model.DeletedAt = null;
         _context.ZaduzenjaOpreme.Add(model);
@@ -54,6 +63,7 @@ public class ZaduzenjeOpremeApiController : ControllerBase
     [HttpPut("{id:int}")]
     public async Task<IActionResult> Update(int id, [FromBody] ZaduzenjeOpreme model)
     {
+        _logger.LogInformation("Updating ZaduzenjeOpreme with id {Id}", id);
         var item = await _context.ZaduzenjaOpreme.FirstOrDefaultAsync(x => x.Id == id);
         if (item is null) return NotFound();
         if (!ModelState.IsValid) return ValidationProblem(ModelState);
@@ -68,6 +78,7 @@ public class ZaduzenjeOpremeApiController : ControllerBase
     [HttpDelete("{id:int}")]
     public async Task<IActionResult> Delete(int id)
     {
+        _logger.LogInformation("Deleting ZaduzenjeOpreme with id {Id}", id);
         var item = await _context.ZaduzenjaOpreme.FirstOrDefaultAsync(x => x.Id == id);
         if (item is null) return NotFound();
         _context.ZaduzenjaOpreme.Remove(item);

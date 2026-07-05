@@ -15,10 +15,10 @@ else
                 <p><strong>Oprema:</strong> @item.RadnaOprema?.Naziv</p>
                 <p><strong>Razduženo:</strong> @(item.DatumRazduzenja.HasValue ? item.DatumRazduzenja.Value.ToString("dd.MM.yyyy") : "Nije razduženo")</p>
                 <div class="action-group">
-                    <a class="action-button action-button-primary" asp-action="Details" asp-route-id="@item.Id">Detalji</a>
-                    <a class="action-button action-button-secondary" asp-action="Edit" asp-route-id="@item.Id">Uredi</a>
+                    <a class="action-button action-button-primary btn-sm" asp-action="Details" asp-route-id="@item.Id">Detalji</a>
+                    <a class="action-button action-button-secondary btn-sm" asp-action="Edit" asp-route-id="@item.Id">Uredi</a>
                     <form asp-action="Delete" asp-route-id="@item.Id" method="post" class="action-form" data-delete-form>
-                        <button type="submit" class="action-button action-button-danger">Obriši</button>
+                        <button type="submit" class="action-button action-button-danger btn-sm">Obriši</button>
                     </form>
                 </div>
             </article>

@@ -11,15 +11,18 @@ namespace Vjezba.App.Controllers.Api;
 public class ServisniZahtjevApiController : ControllerBase
 {
     private readonly VjezbaDbContext _context;
+    private readonly ILogger<ServisniZahtjevApiController> _logger;
 
-    public ServisniZahtjevApiController(VjezbaDbContext context)
+    public ServisniZahtjevApiController(VjezbaDbContext context, ILogger<ServisniZahtjevApiController> logger)
     {
         _context = context;
+        _logger = logger;
     }
 
     [HttpGet]
     public async Task<ActionResult<IEnumerable<ServisniZahtjevDTO>>> GetAll([FromQuery] string? q = null)
     {
+        _logger.LogInformation("Fetching all ServisniZahtjev");
         var query = _context.ServisniZahtjevi.Include(x => x.Oprema).AsQueryable();
         if (!string.IsNullOrWhiteSpace(q))
         {
@@ -34,14 +37,20 @@ public class ServisniZahtjevApiController : ControllerBase
     [HttpGet("{id:int}")]
     public async Task<ActionResult<ServisniZahtjevDTO>> GetById(int id)
     {
+        _logger.LogInformation("Fetching ServisniZahtjev with id {Id}", id);
         var item = await _context.ServisniZahtjevi.Include(x => x.Oprema).FirstOrDefaultAsync(x => x.Id == id && x.DeletedAt == null);
-        if (item is null) return NotFound();
+        if (item is null)
+        {
+            _logger.LogWarning("ServisniZahtjev with id {Id} not found", id);
+            return NotFound();
+        }
         return Ok(ToDTO(item));
     }
 
     [HttpPost]
     public async Task<ActionResult<ServisniZahtjevDTO>> Create([FromBody] ServisniZahtjev model)
     {
+        _logger.LogInformation("Creating new ServisniZahtjev");
         if (!ModelState.IsValid) return ValidationProblem(ModelState);
         model.DeletedAt = null;
         _context.ServisniZahtjevi.Add(model);
@@ -53,6 +62,7 @@ public class ServisniZahtjevApiController : ControllerBase
     [HttpPut("{id:int}")]
     public async Task<IActionResult> Update(int id, [FromBody] ServisniZahtjev model)
     {
+        _logger.LogInformation("Updating ServisniZahtjev with id {Id}", id);
         var item = await _context.ServisniZahtjevi.FirstOrDefaultAsync(x => x.Id == id);
         if (item is null) return NotFound();
         if (!ModelState.IsValid) return ValidationProblem(ModelState);
@@ -68,6 +78,7 @@ public class ServisniZahtjevApiController : ControllerBase
     [HttpDelete("{id:int}")]
     public async Task<IActionResult> Delete(int id)
     {
+        _logger.LogInformation("Deleting ServisniZahtjev with id {Id}", id);
         var item = await _context.ServisniZahtjevi.FirstOrDefaultAsync(x => x.Id == id);
         if (item is null) return NotFound();
         _context.ServisniZahtjevi.Remove(item);

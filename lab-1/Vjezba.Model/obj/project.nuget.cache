@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "V/x7EJw6250=",
+  "dgSpecHash": "t9FftAkbPsA=",
   "success": true,
-  "projectFilePath": "C:\\Users\\ivorz\\webapp-ASP.NET_MVC_TEH-lab\\lab-1\\Vjezba.Model\\Vjezba.Model.csproj",
+  "projectFilePath": "c:\\Users\\ivorz\\webapp-ASP.NET_MVC_TEH-lab\\lab-1\\Vjezba.Model\\Vjezba.Model.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\ivorz\\.nuget\\packages\\microsoft.aspnetcore.cryptography.internal\\9.0.5\\microsoft.aspnetcore.cryptography.internal.9.0.5.nupkg.sha512",
     "C:\\Users\\ivorz\\.nuget\\packages\\microsoft.aspnetcore.cryptography.keyderivation\\9.0.5\\microsoft.aspnetcore.cryptography.keyderivation.9.0.5.nupkg.sha512",

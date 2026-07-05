@@ -35,10 +35,10 @@ else
             <p><strong>Status:</strong> <span class="@StatusClass(item.Status)">@GetStatusName(item.Status)</span></p>
             <p><strong>Lokacija:</strong> @item.Lokacija?.Naziv</p>
             <div class="action-group">
-                <a class="action-button action-button-primary" asp-controller="RadnaOprema" asp-action="Details" asp-route-id="@item.Id">Detalji opreme</a>
-                <a class="action-button action-button-secondary" asp-controller="RadnaOprema" asp-action="Edit" asp-route-id="@item.Id">Uredi</a>
+                <a class="action-button action-button-primary btn-sm" asp-controller="RadnaOprema" asp-action="Details" asp-route-id="@item.Id">Detalji opreme</a>
+                <a class="action-button action-button-secondary btn-sm" asp-controller="RadnaOprema" asp-action="Edit" asp-route-id="@item.Id">Uredi</a>
                 <form asp-controller="RadnaOprema" asp-action="Delete" asp-route-id="@item.Id" method="post" class="action-form" data-delete-form>
-                    <button type="submit" class="action-button action-button-danger">Obriši</button>
+                    <button type="submit" class="action-button action-button-danger btn-sm">Obriši</button>
                 </form>
             </div>
         </article>

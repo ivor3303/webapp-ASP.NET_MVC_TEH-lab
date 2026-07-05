@@ -1,0 +1,148 @@
+@model Vjezba.App.ViewModels.GlobalSearchViewModel
+
+@{
+    ViewData["Title"] = "Pretraga";
+}
+
+<section>
+    <h1>Globalna pretraga</h1>
+    <p>Pretražite svu evidentiranu opremu, radnike, lokacije i ostale zapise.</p>
+
+    <form class="search-panel" asp-controller="GlobalSearch" asp-action="Index" method="get">
+        <label class="search-label" for="global-search-input">Pojam za pretragu</label>
+        <input id="global-search-input" name="q" class="search-input" type="search" placeholder="Pretraži..." value="@Model.Query" autocomplete="off" />
+        <button type="submit" class="action-button action-button-primary">Pretraži</button>
+    </form>
+</section>
+
+@if (string.IsNullOrWhiteSpace(Model.Query))
+{
+    <div class="empty-state">Unesite pojam za pretragu kako biste pronašli opremu, radnike, lokacije i druge zapise.</div>
+}
+else if (Model.TotalResults == 0)
+{
+    <div class="empty-state">Nema rezultata za '@Model.Query'</div>
+}
+else
+{
+    <p><strong>Pronađeno rezultata: @Model.TotalResults</strong></p>
+
+    @if (Model.RadnaOprema.Any())
+    {
+        <section class="detail-panel">
+            <h2>Radna oprema (@Model.RadnaOprema.Count)</h2>
+            <div class="list-stack">
+                @foreach (var item in Model.RadnaOprema)
+                {
+                    <article class="list-item">
+                        <h3>@item.Naziv</h3>
+                        <p><strong>Inventarni broj:</strong> @item.InventarniBroj — <strong>Serijski broj:</strong> @item.SerijskiBroj</p>
+                        <a asp-controller="RadnaOprema" asp-action="Details" asp-route-id="@item.Id">Detalji</a>
+                    </article>
+                }
+            </div>
+        </section>
+    }
+
+    @if (Model.Radnici.Any())
+    {
+        <section class="detail-panel">
+            <h2>Radnici (@Model.Radnici.Count)</h2>
+            <div class="list-stack">
+                @foreach (var item in Model.Radnici)
+                {
+                    <article class="list-item">
+                        <h3>@item.Ime @item.Prezime</h3>
+                        <p><strong>Radno mjesto:</strong> @item.RadnoMjesto — <strong>Email:</strong> @item.Email</p>
+                        <a asp-controller="Radnik" asp-action="Details" asp-route-id="@item.Id">Detalji</a>
+                    </article>
+                }
+            </div>
+        </section>
+    }
+
+    @if (Model.Lokacije.Any())
+    {
+        <section class="detail-panel">
+            <h2>Lokacije (@Model.Lokacije.Count)</h2>
+            <div class="list-stack">
+                @foreach (var item in Model.Lokacije)
+                {
+                    <article class="list-item">
+                        <h3>@item.Naziv</h3>
+                        <p><strong>Adresa:</strong> @item.Adresa</p>
+                        <a asp-controller="Lokacija" asp-action="Details" asp-route-id="@item.Id">Detalji</a>
+                    </article>
+                }
+            </div>
+        </section>
+    }
+
+    @if (Model.Proizvodaci.Any())
+    {
+        <section class="detail-panel">
+            <h2>Proizvođači (@Model.Proizvodaci.Count)</h2>
+            <div class="list-stack">
+                @foreach (var item in Model.Proizvodaci)
+                {
+                    <article class="list-item">
+                        <h3>@item.Naziv</h3>
+                        <p><strong>Država:</strong> @item.Drzava — <strong>Kontakt:</strong> @item.KontaktEmail</p>
+                        <a asp-controller="Proizvodac" asp-action="Details" asp-route-id="@item.Id">Detalji</a>
+                    </article>
+                }
+            </div>
+        </section>
+    }
+
+    @if (Model.KategorijeOpreme.Any())
+    {
+        <section class="detail-panel">
+            <h2>Kategorije opreme (@Model.KategorijeOpreme.Count)</h2>
+            <div class="list-stack">
+                @foreach (var item in Model.KategorijeOpreme)
+                {
+                    <article class="list-item">
+                        <h3>@item.Naziv</h3>
+                        <p>@item.Opis</p>
+                        <a asp-controller="KategorijaOpreme" asp-action="Details" asp-route-id="@item.Id">Detalji</a>
+                    </article>
+                }
+            </div>
+        </section>
+    }
+
+    @if (Model.Odrzavanja.Any())
+    {
+        <section class="detail-panel">
+            <h2>Održavanja (@Model.Odrzavanja.Count)</h2>
+            <div class="list-stack">
+                @foreach (var item in Model.Odrzavanja)
+                {
+                    <article class="list-item">
+                        <h3>@item.Datum.ToString("dd.MM.yyyy") - @item.Opis</h3>
+                        <p><strong>Napomena:</strong> @item.Napomena</p>
+                        <a asp-controller="Odrzavanje" asp-action="Details" asp-route-id="@item.Id">Detalji</a>
+                    </article>
+                }
+            </div>
+        </section>
+    }
+
+    @if (Model.ServisniZahtjevi.Any())
+    {
+        <section class="detail-panel">
+            <h2>Servisni zahtjevi (@Model.ServisniZahtjevi.Count)</h2>
+            <div class="list-stack">
+                @foreach (var item in Model.ServisniZahtjevi)
+                {
+                    <article class="list-item">
+                        <h3>@item.OpisKvara</h3>
+                        <p><strong>Komentar:</strong> @item.Komentar</p>
+                        <a asp-controller="ServisniZahtjev" asp-action="Details" asp-route-id="@item.Id">Detalji</a>
+                    </article>
+                }
+            </div>
+        </section>
+    }
+}
