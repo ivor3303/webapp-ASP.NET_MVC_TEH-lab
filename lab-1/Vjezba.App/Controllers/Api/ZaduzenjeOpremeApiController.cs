@@ -79,9 +79,9 @@ public class ZaduzenjeOpremeApiController : ControllerBase
     public async Task<IActionResult> Delete(int id)
     {
         _logger.LogInformation("Deleting ZaduzenjeOpreme with id {Id}", id);
-        var item = await _context.ZaduzenjaOpreme.FirstOrDefaultAsync(x => x.Id == id);
+        var item = await _context.ZaduzenjaOpreme.FirstOrDefaultAsync(x => x.Id == id && x.DeletedAt == null);
         if (item is null) return NotFound();
-        _context.ZaduzenjaOpreme.Remove(item);
+        item.DeletedAt = DateTime.UtcNow;
         await _context.SaveChangesAsync();
         return Ok();
     }

@@ -1,0 +1,115 @@
+@model Vjezba.App.ViewModels.AiAsistentViewModel
+
+@{
+    ViewData["Title"] = "AI Asistent - Unos podataka";
+}
+
+<section class="detail-panel form-panel">
+    <h1>AI Asistent - Unos podataka</h1>
+    <p class="header-subtitle">Upišite opis prirodnim jezikom i AI će predložiti vrijednosti za novu radnu opremu.</p>
+
+    <div class="form-field">
+        <label class="form-label" for="ai-user-text">Opis opreme</label>
+        <textarea id="ai-user-text" class="form-input" rows="6" placeholder="Npr: Dodaj radnu opremu bušilica Bosch, inventarni broj INV-123, serijski broj SN-456, lokacija Zagreb">@Model.UserText</textarea>
+    </div>
+
+    <div class="form-actions">
+        <button id="ai-parse-button" type="button" class="action-button action-button-primary">Analiziraj s AI</button>
+    </div>
+
+    <div id="ai-parse-feedback" class="validation-summary" style="display:none;"></div>
+
+    <hr />
+
+    <form asp-action="Spremi" method="post" class="entity-form" autocomplete="off">
+        @Html.AntiForgeryToken()
+        <div asp-validation-summary="ModelOnly" class="validation-summary"></div>
+
+        <input asp-for="LokacijaId" type="hidden" id="LokacijaId" />
+        <input asp-for="ProizvodacId" type="hidden" id="ProizvodacId" />
+        <input asp-for="KategorijaOpremeId" type="hidden" id="KategorijaOpremeId" />
+
+        <div class="form-field">
+            <label class="form-label" asp-for="Naziv">Naziv</label>
+            <input asp-for="Naziv" class="form-input" id="Naziv" />
+            <span asp-validation-for="Naziv" class="field-error"></span>
+        </div>
+
+        <div class="form-field">
+            <label class="form-label" asp-for="InventarniBroj">Inventarni broj</label>
+            <input asp-for="InventarniBroj" class="form-input" id="InventarniBroj" />
+            <span asp-validation-for="InventarniBroj" class="field-error"></span>
+        </div>
+
+        <div class="form-field">
+            <label class="form-label" asp-for="SerijskiBroj">Serijski broj</label>
+            <input asp-for="SerijskiBroj" class="form-input" id="SerijskiBroj" />
+            <span asp-validation-for="SerijskiBroj" class="field-error"></span>
+        </div>
+
+        <div class="form-actions">
+            <button type="submit" class="action-button action-button-primary">Spremi opremu</button>
+        </div>
+    </form>
+</section>
+
+@section Scripts {
+<script>
+    (() => {
+        const parseButton = document.getElementById('ai-parse-button');
+        const textInput = document.getElementById('ai-user-text');
+        const feedback = document.getElementById('ai-parse-feedback');
+
+        const setFeedback = (message, isError) => {
+            feedback.style.display = 'block';
+            feedback.textContent = message;
+            feedback.classList.toggle('field-error', !!isError);
+        };
+
+        if (!parseButton || !textInput || !feedback) {
+            return;
+        }
+
+        parseButton.addEventListener('click', async () => {
+            const text = textInput.value.trim();
+            if (!text) {
+                setFeedback('Unesite tekst koji AI treba analizirati.', true);
+                return;
+            }
+
+            parseButton.disabled = true;
+            setFeedback('AI analiza u tijeku...', false);
+
+            try {
+                const response = await fetch('/ai-asistent/parse', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ text })
+                });
+
+                if (!response.ok) {
+                    setFeedback('Analiza nije uspjela. Pokušajte ponovno.', true);
+                    return;
+                }
+
+                const data = await response.json();
+
+                document.getElementById('Naziv').value = data.naziv || '';
+                document.getElementById('InventarniBroj').value = data.inventarniBroj || '';
+                document.getElementById('SerijskiBroj').value = data.serijskiBroj || '';
+                document.getElementById('LokacijaId').value = data.lokacijaId || 0;
+                document.getElementById('ProizvodacId').value = data.proizvodacId || 0;
+                document.getElementById('KategorijaOpremeId').value = data.kategorijaOpremeId || 0;
+
+                setFeedback('Podaci su izdvojeni i forma je popunjena.', false);
+            } catch {
+                setFeedback('Došlo je do pogreške tijekom poziva AI servisa.', true);
+            } finally {
+                parseButton.disabled = false;
+            }
+        });
+    })();
+</script>
+}

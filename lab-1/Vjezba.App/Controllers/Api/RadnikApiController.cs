@@ -95,13 +95,13 @@ public class RadnikApiController : ControllerBase
     public async Task<IActionResult> Delete(int id)
     {
         _logger.LogInformation("Deleting Radnik with id {Id}", id);
-        var item = await _context.Radnici.FirstOrDefaultAsync(x => x.Id == id);
+        var item = await _context.Radnici.FirstOrDefaultAsync(x => x.Id == id && x.DeletedAt == null);
         if (item is null)
         {
             return NotFound();
         }
 
-        item.Aktivan = false;
+        item.DeletedAt = DateTime.UtcNow;
         await _context.SaveChangesAsync();
         return Ok();
     }

@@ -75,9 +75,9 @@ public class KategorijaOpremeApiController : ControllerBase
     public async Task<IActionResult> Delete(int id)
     {
         _logger.LogInformation("Deleting KategorijaOpreme with id {Id}", id);
-        var item = await _context.KategorijeOpreme.FirstOrDefaultAsync(x => x.Id == id);
+        var item = await _context.KategorijeOpreme.FirstOrDefaultAsync(x => x.Id == id && x.DeletedAt == null);
         if (item is null) return NotFound();
-        _context.KategorijeOpreme.Remove(item);
+        item.DeletedAt = DateTime.UtcNow;
         await _context.SaveChangesAsync();
         return Ok();
     }

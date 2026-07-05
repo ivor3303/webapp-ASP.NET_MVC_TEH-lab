@@ -112,13 +112,13 @@ public class RadnaOpremaApiController : ControllerBase
     public async Task<IActionResult> Delete(int id)
     {
         _logger.LogInformation("Deleting RadnaOprema with id {Id}", id);
-        var item = await _context.RadnaOprema.FirstOrDefaultAsync(x => x.Id == id);
+        var item = await _context.RadnaOprema.FirstOrDefaultAsync(x => x.Id == id && x.DeletedAt == null);
         if (item is null)
         {
             return NotFound();
         }
 
-        item.Status = StatusOpreme.Otpisana;
+        item.DeletedAt = DateTime.UtcNow;
         await _context.SaveChangesAsync();
         return Ok();
     }

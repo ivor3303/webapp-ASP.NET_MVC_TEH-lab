@@ -76,9 +76,9 @@ public class ProizvodacApiController : ControllerBase
     public async Task<IActionResult> Delete(int id)
     {
         _logger.LogInformation("Deleting Proizvodac with id {Id}", id);
-        var item = await _context.Proizvodaci.FirstOrDefaultAsync(x => x.Id == id);
+        var item = await _context.Proizvodaci.FirstOrDefaultAsync(x => x.Id == id && x.DeletedAt == null);
         if (item is null) return NotFound();
-        _context.Proizvodaci.Remove(item);
+        item.DeletedAt = DateTime.UtcNow;
         await _context.SaveChangesAsync();
         return Ok();
     }

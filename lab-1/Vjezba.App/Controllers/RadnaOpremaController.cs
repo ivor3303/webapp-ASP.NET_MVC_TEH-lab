@@ -164,7 +164,14 @@ public class RadnaOpremaController : Controller
     [Authorize(Roles = "Admin")]
     public IActionResult Delete(int id)
     {
-        _repository.Delete(id);
+        var item = _repository.GetById(id);
+        if (item is null)
+        {
+            return NotFound();
+        }
+
+        item.DeletedAt = DateTime.UtcNow;
+        _repository.Update(item);
         TempData["Success"] = "Radna oprema je uspješno obrisana.";
         return RedirectToAction(nameof(Index));
     }
