@@ -2,7 +2,8 @@
   "$schema": "https://railway.app/railway.schema.json",
   "build": {
     "builder": "DOCKERFILE",
-    "dockerfilePath": "Vjezba.App/Dockerfile"
+    "dockerfilePath": "lab-1/Vjezba.App/Dockerfile",
+    "buildContext": "lab-1"
   },
   "deploy": {
     "startCommand": "dotnet Vjezba.App.dll",
