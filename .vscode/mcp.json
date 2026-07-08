@@ -1,0 +1,10 @@
+{
+    "servers": {
+        "vjezba-mcp": {
+            "type": "stdio",
+            "command": "dotnet",
+            "args": ["run", "--project", "lab-1/Vjezba.MCP/Vjezba.MCP.csproj"],
+            "env": {}
+        }
+    }
+}
