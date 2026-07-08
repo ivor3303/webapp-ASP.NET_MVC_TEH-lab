@@ -1,4 +1,21 @@
-# Deployment Instructions
+# Deployment - Vjezba App
+
+## Railway.app Deploy (preporučeno - besplatno)
+
+### Koraci
+1. Idi na https://railway.app i prijavi se s GitHub računom
+2. Klikni "New Project" -> "Deploy from GitHub repo"
+3. Odaberi repozitorij: ivor3303/webapp-ASP.NET_MVC_TEH-lab
+4. U Settings -> General postavi Root Directory na `lab-1` (repozitorij sadrži više labova, Dockerfile i railway.json su unutar lab-1)
+5. Railway automatski detektira Dockerfile i deploya
+6. U Settings -> Variables dodaj:
+   - ASPNETCORE_ENVIRONMENT = Production
+   - Anthropic__ApiKey = tvoj-api-key (opcionalno)
+7. Nakon deploya dobiješ javni URL npr: https://vjezba-app.railway.app
+
+### Napomena
+Aplikacija koristi SQLite bazu koja se resetira pri svakom deployu.
+Za produkcijsku bazu koristiti Railway PostgreSQL addon ili Azure SQL.
 
 ## Status deploya
 Aplikacija je pripremljena za Azure deploy.
@@ -42,5 +59,5 @@ az webapp deployment list-publishing-profiles --name vjezba-app --resource-group
 ### Local Docker testing
 ```
 docker build -t vjezba-app -f Vjezba.App/Dockerfile .
-docker run -p 8080:80 vjezba-app
+docker run -p 8080:8080 vjezba-app
 ```
