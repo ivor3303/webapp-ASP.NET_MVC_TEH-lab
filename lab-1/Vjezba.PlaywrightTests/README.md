@@ -21,6 +21,10 @@
 18. API endpoint returns JSON for ZaduzenjeOpreme
 19. API returns 404 for non-existing Radnik
 20. Global search page loads with results
+21. AI API generate-maintenance returns response
+22. AI API generate-service-request returns response
+23. AI API returns 400 for empty body
+24. AI Asistent page has textarea and button
 
 ## Pokrivene API rute
 - GET /api/radnaOprema
@@ -34,6 +38,7 @@
 - GET /api/servisniZahtjev
 - GET /api/zaduzenjeOpreme
 - POST /api/ai/generate-maintenance
+- POST /api/ai/generate-service-request
 
 ## Pokrivene stranice
 - / (homepage)

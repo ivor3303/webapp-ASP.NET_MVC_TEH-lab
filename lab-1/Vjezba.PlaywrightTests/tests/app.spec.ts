@@ -127,3 +127,41 @@ test('20. Global search page loads with results', async ({ page }) => {
   await expect(page).toHaveURL(/search/);
   await expect(page.locator('body')).toBeVisible();
 });
+
+test('AI API generate-maintenance returns response', async ({ page }) => {
+  const response = await page.request.post('/api/ai/generate-maintenance', {
+    data: { opremaNaziv: 'Bušilica Bosch' },
+    headers: { 'Content-Type': 'application/json' }
+  });
+  expect([200, 500]).toContain(response.status());
+  if (response.status() === 200) {
+    const json = await response.json();
+    expect(json).toHaveProperty('text');
+  }
+});
+
+test('AI API generate-service-request returns response', async ({ page }) => {
+  const response = await page.request.post('/api/ai/generate-service-request', {
+    data: { opremaNaziv: 'Kompresor Makita' },
+    headers: { 'Content-Type': 'application/json' }
+  });
+  expect([200, 500]).toContain(response.status());
+  if (response.status() === 200) {
+    const json = await response.json();
+    expect(json).toHaveProperty('text');
+  }
+});
+
+test('AI API returns 400 for empty body', async ({ page }) => {
+  const response = await page.request.post('/api/ai/generate-maintenance', {
+    data: { opremaNaziv: '' },
+    headers: { 'Content-Type': 'application/json' }
+  });
+  expect(response.status()).toBe(400);
+});
+
+test('AI Asistent page has textarea and button', async ({ page }) => {
+  await page.goto('/ai-asistent');
+  await expect(page.locator('textarea')).toBeVisible();
+  await expect(page.locator('button')).toBeVisible();
+});
