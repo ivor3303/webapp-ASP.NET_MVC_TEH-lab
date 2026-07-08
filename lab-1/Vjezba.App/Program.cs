@@ -68,7 +68,10 @@ using (var scope = app.Services.CreateScope())
         else
             context.Database.EnsureCreated();
     }
-    catch { }
+    catch (Exception ex)
+    {
+        Log.Warning("Startup operation skipped: {Message}", ex.Message);
+    }
 
     try
     {
@@ -244,7 +247,61 @@ using (var scope = app.Services.CreateScope())
             context.SaveChanges();
         }
     }
-    catch { }
+    catch (Exception ex)
+    {
+        Log.Warning("Startup operation skipped: {Message}", ex.Message);
+    }
+}
+
+using (var scope = app.Services.CreateScope())
+{
+    try
+    {
+        var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+        string[] roles = { "Admin", "Manager" };
+
+        foreach (var role in roles)
+        {
+            if (!await roleManager.RoleExistsAsync(role))
+            {
+                await roleManager.CreateAsync(new IdentityRole(role));
+            }
+        }
+    }
+    catch (Exception ex)
+    {
+        Log.Warning("Role seed skipped: {Message}", ex.Message);
+    }
+}
+
+using (var scope = app.Services.CreateScope())
+{
+    try
+    {
+        var userManager = scope.ServiceProvider.GetRequiredService<UserManager<AppUser>>();
+
+        var demoEmail = "admin@vjezba.hr";
+        var existingUser = await userManager.FindByEmailAsync(demoEmail);
+
+        if (existingUser == null)
+        {
+            var demoUser = new AppUser
+            {
+                UserName = demoEmail,
+                Email = demoEmail,
+                EmailConfirmed = true,
+                OIB = "12345678901",
+                JMBG = "1234567890123"
+            };
+
+            await userManager.CreateAsync(demoUser, "Admin123!");
+            await userManager.AddToRoleAsync(demoUser, "Admin");
+        }
+    }
+    catch (Exception ex)
+    {
+        Log.Warning("Demo user seed skipped: {Message}", ex.Message);
+    }
 }
 
 if (!app.Environment.IsDevelopment())
