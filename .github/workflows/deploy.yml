@@ -1,12 +1,12 @@
-name: Deploy to Azure
+name: Build and Test
 
 on:
+  workflow_dispatch:
   push:
     branches: [ main ]
-  workflow_dispatch:
 
 jobs:
-  build-and-deploy:
+  build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -26,6 +26,7 @@ jobs:
         run: dotnet publish lab-1/Vjezba.App/Vjezba.App.csproj -c Release -o ./publish
 
       - name: Deploy to Azure Web App
+        if: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE != '' }}
         uses: azure/webapps-deploy@v3
         with:
           app-name: 'vjezba-app'

@@ -1,5 +1,16 @@
 # Deployment Instructions
 
+## Status deploya
+Aplikacija je pripremljena za Azure deploy.
+Dockerfile i GitHub Actions workflow su konfigurirani.
+Za aktivaciju deploya potrebno je:
+1. Kreirati Azure App Service (upute niže)
+2. Dodati AZURE_WEBAPP_PUBLISH_PROFILE secret u GitHub repo Settings > Secrets
+
+## Lokalno pokretanje
+dotnet run --project lab-1/Vjezba.App/Vjezba.App.csproj
+Aplikacija dostupna na: https://localhost:7001
+
 ## Azure App Service Deployment
 
 ### Prerequisites
