@@ -66,7 +66,7 @@ test('11. AI API generate-maintenance endpoint exists', async ({ page }) => {
     data: { opremaNaziv: 'Bušilica Bosch' },
     headers: { 'Content-Type': 'application/json' }
   });
-  expect([200, 500]).toContain(response.status());
+  expect(response.status()).toBe(200);
 });
 
 test('12. AI Asistent page loads', async ({ page }) => {
@@ -133,7 +133,7 @@ test('AI API generate-maintenance returns response', async ({ page }) => {
     data: { opremaNaziv: 'Bušilica Bosch' },
     headers: { 'Content-Type': 'application/json' }
   });
-  expect([200, 500]).toContain(response.status());
+  expect(response.status()).toBe(200);
   if (response.status() === 200) {
     const json = await response.json();
     expect(json).toHaveProperty('text');
@@ -145,7 +145,7 @@ test('AI API generate-service-request returns response', async ({ page }) => {
     data: { opremaNaziv: 'Kompresor Makita' },
     headers: { 'Content-Type': 'application/json' }
   });
-  expect([200, 500]).toContain(response.status());
+  expect(response.status()).toBe(200);
   if (response.status() === 200) {
     const json = await response.json();
     expect(json).toHaveProperty('text');
