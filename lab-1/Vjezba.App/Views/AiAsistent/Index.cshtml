@@ -96,6 +96,14 @@
 
                 const data = await response.json();
 
+                const hasData = Boolean(data.naziv || data.inventarniBroj || data.serijskiBroj
+                    || data.lokacijaId || data.proizvodacId || data.kategorijaOpremeId);
+
+                if (!hasData) {
+                    setFeedback('AI nije uspio prepoznati podatke iz teksta. Provjerite je li Anthropic API ključ postavljen (vidi USER_SECRETS.md) ili pokušajte s detaljnijim opisom.', true);
+                    return;
+                }
+
                 document.getElementById('Naziv').value = data.naziv || '';
                 document.getElementById('InventarniBroj').value = data.inventarniBroj || '';
                 document.getElementById('SerijskiBroj').value = data.serijskiBroj || '';
