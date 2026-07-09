@@ -6,7 +6,7 @@
 1. Idi na https://railway.app i prijavi se s GitHub računom
 2. Klikni "New Project" -> "Deploy from GitHub repo"
 3. Odaberi repozitorij: ivor3303/webapp-ASP.NET_MVC_TEH-lab
-4. Root Directory ostavi prazan/na korijenu repozitorija - railway.json (u korijenu) referencira lab-1/Vjezba.App/Dockerfile
+4. U Settings -> General postavi Root Directory na `lab-1` (railway.json u korijenu repozitorija referencira Vjezba.App/Dockerfile relativno na lab-1)
 5. Railway automatski detektira konfiguraciju iz railway.json i deploya
 6. U Settings -> Variables dodaj:
    - ASPNETCORE_ENVIRONMENT = Production
