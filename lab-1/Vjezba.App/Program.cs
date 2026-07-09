@@ -57,6 +57,10 @@ builder.Services.AddScoped<AiService>();
 
 var app = builder.Build();
 
+// Railway uses PORT environment variable
+var port = Environment.GetEnvironmentVariable("PORT") ?? "8080";
+app.Urls.Add($"http://+:{port}");
+
 using (var scope = app.Services.CreateScope())
 {
     var context = scope.ServiceProvider.GetRequiredService<VjezbaDbContext>();
