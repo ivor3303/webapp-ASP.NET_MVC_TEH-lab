@@ -1,5 +1,9 @@
 # Vjezba App - Evidencija održavanja radne opreme
 
+## 🌐 Live aplikacija
+URL: https://webapp-aspnetmvcteh-lab-production.up.railway.app
+Demo login: admin@vjezba.hr / Admin123!
+
 ## Demo pristupni podaci
 - URL lokalno: https://localhost:7001
 - Email: admin@vjezba.hr
