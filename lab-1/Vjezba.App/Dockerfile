@@ -18,4 +18,5 @@ RUN dotnet publish "Vjezba.App.csproj" -c Release -o /app/publish /p:UseAppHost=
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
+RUN mkdir -p /app/Logs
 ENTRYPOINT ["dotnet", "Vjezba.App.dll"]
