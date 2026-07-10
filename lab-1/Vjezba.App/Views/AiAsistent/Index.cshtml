@@ -89,18 +89,10 @@
                     body: JSON.stringify({ text })
                 });
 
-                if (!response.ok) {
-                    setFeedback('Analiza nije uspjela. Pokušajte ponovno.', true);
-                    return;
-                }
-
                 const data = await response.json();
 
-                const hasData = Boolean(data.naziv || data.inventarniBroj || data.serijskiBroj
-                    || data.lokacijaId || data.proizvodacId || data.kategorijaOpremeId);
-
-                if (!hasData) {
-                    setFeedback('AI nije uspio prepoznati podatke iz teksta. Provjerite je li Anthropic API ključ postavljen (vidi USER_SECRETS.md) ili pokušajte s detaljnijim opisom.', true);
+                if (!response.ok || !data.success) {
+                    setFeedback(data.error || 'Analiza nije uspjela. Pokušajte ponovno.', true);
                     return;
                 }
 

@@ -30,6 +30,8 @@ public class AiService
         _logger = logger;
     }
 
+    public bool IsConfigured => ResolveApiKey() is not null;
+
     public async Task<string> GenerateMaintenanceDescription(string opremaName, string type)
     {
         var apiKey = ResolveApiKey();

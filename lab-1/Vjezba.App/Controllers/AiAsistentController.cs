@@ -41,7 +41,13 @@ public class AiAsistentController : Controller
     {
         if (string.IsNullOrWhiteSpace(request.Text))
         {
-            return BadRequest(new { error = "Tekst je obavezan." });
+            return Json(new { success = false, error = "Tekst je obavezan." });
+        }
+
+        if (!_aiService.IsConfigured)
+        {
+            _logger.LogWarning("AI parse odbijen: Anthropic:ApiKey nije postavljen na serveru.");
+            return Json(new { success = false, error = "Anthropic API ključ nije postavljen na serveru (provjerite Railway varijable)." });
         }
 
         ParsedAiOprema parsed;
@@ -52,11 +58,21 @@ public class AiAsistentController : Controller
         catch (Exception ex)
         {
             _logger.LogError(ex, "Neočekivana greška prilikom AI parsiranja teksta.");
-            return StatusCode(500, new { error = "Došlo je do pogreške tijekom poziva AI servisa." });
+            return Json(new { success = false, error = "Greška poziva AI servisa: " + ex.Message });
+        }
+
+        var hasData = !string.IsNullOrWhiteSpace(parsed.Naziv)
+            || !string.IsNullOrWhiteSpace(parsed.InventarniBroj)
+            || !string.IsNullOrWhiteSpace(parsed.SerijskiBroj);
+
+        if (!hasData)
+        {
+            return Json(new { success = false, error = "AI nije uspio prepoznati podatke iz teksta. Pokušajte s detaljnijim opisom." });
         }
 
         return Json(new
         {
+            success = true,
             naziv = parsed.Naziv,
             inventarniBroj = parsed.InventarniBroj,
             serijskiBroj = parsed.SerijskiBroj,
