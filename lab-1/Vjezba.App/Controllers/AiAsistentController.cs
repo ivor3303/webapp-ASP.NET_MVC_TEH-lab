@@ -1,4 +1,3 @@
-using System.Text.Json;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -17,15 +16,18 @@ public class AiAsistentController : Controller
     private readonly AiService _aiService;
     private readonly EFRadnaOpremaRepository _radnaOpremaRepository;
     private readonly VjezbaDbContext _dbContext;
+    private readonly ILogger<AiAsistentController> _logger;
 
     public AiAsistentController(
         AiService aiService,
         EFRadnaOpremaRepository radnaOpremaRepository,
-        VjezbaDbContext dbContext)
+        VjezbaDbContext dbContext,
+        ILogger<AiAsistentController> logger)
     {
         _aiService = aiService;
         _radnaOpremaRepository = radnaOpremaRepository;
         _dbContext = dbContext;
+        _logger = logger;
     }
 
     [HttpGet("")]
@@ -42,8 +44,16 @@ public class AiAsistentController : Controller
             return BadRequest(new { error = "Tekst je obavezan." });
         }
 
-        var aiResponse = await _aiService.ParseOpremaFromText(request.Text.Trim());
-        var parsed = TryParseAiResponse(aiResponse);
+        ParsedAiOprema parsed;
+        try
+        {
+            parsed = await _aiService.ParseOpremaFromText(request.Text.Trim());
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Neočekivana greška prilikom AI parsiranja teksta.");
+            return StatusCode(500, new { error = "Došlo je do pogreške tijekom poziva AI servisa." });
+        }
 
         return Json(new
         {
@@ -96,37 +106,6 @@ public class AiAsistentController : Controller
         return RedirectToAction("Details", "RadnaOprema", new { id = entity.Id });
     }
 
-    private static ParsedAiOprema TryParseAiResponse(string aiResponse)
-    {
-        try
-        {
-            var candidate = aiResponse.Trim();
-            var firstBrace = candidate.IndexOf('{');
-            var lastBrace = candidate.LastIndexOf('}');
-
-            if (firstBrace >= 0 && lastBrace > firstBrace)
-            {
-                candidate = candidate.Substring(firstBrace, lastBrace - firstBrace + 1);
-            }
-
-            var parsed = JsonSerializer.Deserialize<ParsedAiOprema>(candidate, new JsonSerializerOptions
-            {
-                PropertyNameCaseInsensitive = true
-            });
-
-            if (parsed is null)
-            {
-                return new ParsedAiOprema();
-            }
-
-            return parsed;
-        }
-        catch
-        {
-            return new ParsedAiOprema();
-        }
-    }
-
     private int ResolveLokacijaId(int preferredId)
     {
         if (preferredId > 0 && _dbContext.Lokacije.Any(x => x.Id == preferredId && x.DeletedAt == null))
@@ -172,15 +151,5 @@ public class AiAsistentController : Controller
     public class ParseAiRequest
     {
         public string Text { get; set; } = string.Empty;
-    }
-
-    public class ParsedAiOprema
-    {
-        public string Naziv { get; set; } = string.Empty;
-        public string InventarniBroj { get; set; } = string.Empty;
-        public string SerijskiBroj { get; set; } = string.Empty;
-        public int LokacijaId { get; set; }
-        public int ProizvodacId { get; set; }
-        public int KategorijaOpremeId { get; set; }
     }
 }
