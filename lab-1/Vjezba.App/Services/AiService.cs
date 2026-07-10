@@ -76,6 +76,9 @@ public class AiService
     public async Task<ParsedAiOprema> ParseOpremaFromText(string userText)
     {
         var apiKey = ResolveApiKey();
+        _logger.LogInformation("AI parse: status Anthropic:ApiKey = {Status}",
+            apiKey is null ? "MISSING" : $"SET (length: {apiKey.Length})");
+
         if (apiKey is null)
         {
             _logger.LogWarning("AI parse preskočen: Anthropic:ApiKey nije postavljen (vidi USER_SECRETS.md).");
@@ -105,6 +108,8 @@ public class AiService
         var json = JsonSerializer.Serialize(requestBody);
         var content = new StringContent(json, Encoding.UTF8, "application/json");
 
+        _logger.LogInformation("Pozivam Anthropic API...");
+
         HttpResponseMessage response;
         try
         {
@@ -117,6 +122,7 @@ public class AiService
         }
 
         var responseBody = await response.Content.ReadAsStringAsync();
+        _logger.LogInformation("Anthropic API odgovor: status {StatusCode}, tijelo: {Body}", response.StatusCode, responseBody);
 
         if (!response.IsSuccessStatusCode)
         {
@@ -156,6 +162,8 @@ public class AiService
             {
                 candidate = candidate.Substring(firstBrace, lastBrace - firstBrace + 1);
             }
+
+            _logger.LogInformation("Izdvojeni JSON iz AI odgovora: {Json}", candidate);
 
             var parsed = JsonSerializer.Deserialize<ParsedAiOprema>(candidate, new JsonSerializerOptions
             {
