@@ -84,13 +84,9 @@ public class AiService
 
         ConfigureAnthropicHeaders(apiKey);
 
-        var extractionPrompt = $"""
-        Extract data from this text and return ONLY a JSON object with these exact fields: naziv, inventarniBroj, serijskiBroj.
-        No other text, just JSON. If a field cannot be determined, use an empty string.
-
-        Text:
-        {userText}
-        """;
+        var extractionPrompt = "Iz sljedećeg teksta izvuci podatke o radnoj opremi i vrati SAMO JSON objekt bez ikakvog dodatnog teksta, objašnjenja ili markdown formatiranja. " +
+            "JSON mora imati točno ova polja: naziv, inventarniBroj, serijskiBroj. Ako neko polje nije pronađeno, postavi ga na prazan string.\n\n" +
+            $"Tekst: {userText}";
 
         var requestBody = new
         {
